@@ -9,6 +9,7 @@
 * https://github.com/facebookresearch/VideoPose3D
 * https://arxiv.org/pdf/1907.00837.pdf
 
-## Image Data Augmentation
+## Data Augmentation
 * https://medium.com/@silvershine1st/data-augmentation-for-images-fa242d05729
+* https://stackoverflow.com/questions/39265746/data-augmentation-techniques-for-general-datasets/39272735
 * 
