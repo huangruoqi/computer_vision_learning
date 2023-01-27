@@ -1,7 +1,7 @@
 export PYTHONDONTWRITEBYTECODE=1
 .PHONY: start status code stop build run
 
-FOLDER=computer_vision_learning
+PROJECT=computer_vision_learning
 NAME=cv
 
 run:
@@ -9,8 +9,7 @@ run:
 
 build:
 	poetry add --dev poetry-lock-package
-	poetry build
-	poetry run poetry-lock-package --build
+	poetry run poetry-lock-package --build --ignore computer_vision_learning
 
 IS_CONTAINER=$(shell docker ps -a -f name=$(NAME) | wc -l)
 IS_RUNNING=$(shell docker ps -f name=$(NAME) | wc -l)
@@ -27,11 +26,11 @@ code: start
 endif
 
 code:
-	@code --folder-uri="vscode-remote://dev-container+${hex}/workspaces/$(FOLDER)"
+	@code --folder-uri="vscode-remote://dev-container+${hex}/workspaces/$(PROJECT)"
 
 stop:
 	@docker stop $(NAME) > /dev/null
-	@docker cp $(NAME):/workspaces/$(FOLDER)/code/ ./
+	@docker cp $(NAME):/workspaces/$(PROJECT)/code/ ./
 
 start:
 	@docker start $(NAME) > /dev/null
