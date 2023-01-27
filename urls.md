@@ -12,4 +12,4 @@
 ## Data Augmentation
 * https://medium.com/@silvershine1st/data-augmentation-for-images-fa242d05729
 * https://stackoverflow.com/questions/39265746/data-augmentation-techniques-for-general-datasets/39272735
-* 
+* https://towardsdatascience.com/augmenting-categorical-datasets-with-synthetic-data-for-machine-learning-a25095d6d7c8
