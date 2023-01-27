@@ -4,11 +4,16 @@ export PYTHONDONTWRITEBYTECODE=1
 FOLDER=computer_vision_learning
 NAME=cv
 
-IS_CONTAINER=$(shell docker ps -a -f name=$(NAME) | wc -l)
-IS_RUNNING=$(shell docker ps -f name=$(NAME) | wc -l)
-
 run:
 	poetry run python -B ./code/main.py
+
+build:
+	poetry add --dev poetry-lock-package
+	poetry build
+	poetry run poetry-lock-package --build
+
+IS_CONTAINER=$(shell docker ps -a -f name=$(NAME) | wc -l)
+IS_RUNNING=$(shell docker ps -f name=$(NAME) | wc -l)
 
 status:
 	@echo "CONTAINER:$(IS_CONTAINER)"
@@ -30,8 +35,3 @@ stop:
 
 start:
 	@docker start $(NAME) > /dev/null
-
-build:
-	poetry add --dev poetry-lock-package
-	poetry build
-	poetry run poetry-lock-package --build
