@@ -1,7 +1,0 @@
-{
-    "name": "cv",
-    "build": {
-        "dockerfile": "Dockerfile"
-    },
-    "runArgs": ["--name", "cv"]
-}
