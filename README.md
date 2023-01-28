@@ -9,6 +9,7 @@
         * opencv-python
         * mediapipe
         * pandas
+    * create `./video/` and `./data/` folders to store the outputs
     * run commands in `Makefile` without the prefix `poetry run`
 
 ## Numerical Data Augmentation
