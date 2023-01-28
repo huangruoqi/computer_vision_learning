@@ -1,0 +1,13 @@
+setup:
+	pip install opencv
+	pip install mediapipe
+	pip install pandas
+	mkdir video data
+run:
+	python -B ./code/main.py
+
+convert:
+	python -B ./code/video_to_3d_positions.py
+
+record:
+	python -B ./code/record_video.py
