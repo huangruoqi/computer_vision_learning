@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import os
  
 # Create a VideoCapture object
 cap = cv2.VideoCapture(0)
@@ -14,7 +15,7 @@ frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
  
 # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
-out = cv2.VideoWriter('outpy.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
+out = cv2.VideoWriter(os.path.join('video','out.mp4'),cv2.VideoWriter_fourcc(*'mpv4'), 10, (frame_width,frame_height))
  
 while(True):
   ret, frame = cap.read()

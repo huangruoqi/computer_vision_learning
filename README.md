@@ -1,4 +1,16 @@
 # computer_vision_learning
+## Setup
+* install `make` and `poetry`
+    * run `make setup` in terminal
+    * run `make record` to record video to `./video/` folder ()
+    * run `make convert` to convert all videos in `./video/` folder to 3D coordinates in `./data/` folder
+* or use `pip install`
+    * libraries:
+        * opencv-python
+        * mediapipe
+        * pandas
+    * run commands in `Makefile` without the prefix `poetry run`
+
 ## Numerical Data Augmentation
 1. **Uniform Random Generation** : This really naive method consists of creating a new instance based on the min and max of the existing ones, the value of each feature is generated randomly with a uniform probability. (The mins and maxs are calculated from the values of the concerned feature of the concerned class each time)
 2. **Normal Random Generation** : Same as Uniform but the probability is now a gaussian curve. Which is of course less naive since generated value fit the initial data distribution.
