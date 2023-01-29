@@ -14,4 +14,5 @@
 * https://stackoverflow.com/questions/39265746/data-augmentation-techniques-for-general-datasets/39272735
 * https://towardsdatascience.com/augmenting-categorical-datasets-with-synthetic-data-for-machine-learning-a25095d6d7c8
 * https://www.researchgate.net/post/Can-data-augmentation-techniques-be-applied-for-numeric-data-sets-If-so-please-suggest-some-of-the-techniques
+* https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0254841
 
