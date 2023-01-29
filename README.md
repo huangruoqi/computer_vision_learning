@@ -12,6 +12,7 @@
     * create `./video/` and `./data/` folders to store the outputs
     * run commands in `Makefile` without the prefix `poetry run`
 * **raspberrypi** only record video works
+    * `sudo raspi-config` and **enable camera**
     * `sudo apt update`
     * `sudo apt upgrade`
     * `sudo apt install ffmpeg python3-opencv python3-pip git fswebcam`
