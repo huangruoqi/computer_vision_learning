@@ -15,6 +15,8 @@
     * `sudo apt update`
     * `sudo apt upgrade`
     * `sudo apt install ffmpeg python3-opencv python3-pip git fswebcam`
+    * `git clone https://github.com/huangruoqi/computer_vision_learning.git`
+    * `cd computer_vision_learning`
     * *mediapipe*: https://github.com/superuser789/MediaPipe-on-RaspberryPi#readme
 
 

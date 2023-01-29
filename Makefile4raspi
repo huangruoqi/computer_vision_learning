@@ -1,7 +1,7 @@
 setup:
   sudo apt update
 	sudo apt upgrade
-	sudo apt install ffmpeg python3-opencv python3-pip git fswebcam
+	sudo apt install ffmpeg python3-opencv python3-pip fswebcam
 	mkdir video data
 
 run:
