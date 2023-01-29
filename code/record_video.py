@@ -1,9 +1,20 @@
 import cv2
 import numpy as np
 import os
- 
+import time
+from _thread import start_new_thread
+import pygame
+
+MAX_TIME = 10
+FPS = 10
+clock = pygame.time.Clock()
 # Create a VideoCapture object
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
+stop = False
+def record_until(max_time):
+  time.sleep(max_time)
+  global stop
+  stop = True
  
 # Check if camera opened successfully
 if (cap.isOpened() == False): 
@@ -15,9 +26,13 @@ frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
  
 # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
-out = cv2.VideoWriter(os.path.join('video','out.mp4'),cv2.VideoWriter_fourcc(*'mpv4'), 10, (frame_width,frame_height))
+out = cv2.VideoWriter(os.path.join('video','out.mp4'),cv2.VideoWriter_fourcc(*'mp4v'), FPS, (frame_width,frame_height))
  
+start_new_thread(record_until, (MAX_TIME,))
+
 while(True):
+  if stop:
+    break
   ret, frame = cap.read()
  
   if ret == True: 
@@ -25,12 +40,8 @@ while(True):
     # Write the frame into the file 'output.avi'
     out.write(frame)
  
-    # Display the resulting frame    
-    cv2.imshow('frame',frame)
- 
-    # Press Q on keyboard to stop recording
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-      break
+    delta_time = clock.tick(FPS)
+    print(f"FPS: {1000/delta_time}")
  
   # Break the loop
   else:
@@ -39,6 +50,3 @@ while(True):
 # When everything done, release the video capture and video write objects
 cap.release()
 out.release()
- 
-# Closes all the frames
-cv2.destroyAllWindows()

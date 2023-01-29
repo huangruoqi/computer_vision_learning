@@ -11,6 +11,12 @@
         * pandas
     * create `./video/` and `./data/` folders to store the outputs
     * run commands in `Makefile` without the prefix `poetry run`
+* **raspberrypi** only record video works
+    * `sudo apt update`
+    * `sudo apt upgrade`
+    * `sudo apt install ffmpeg python3-opencv python3-pip git fswebcam`
+    * *mediapipe*: https://github.com/superuser789/MediaPipe-on-RaspberryPi#readme
+
 
 ## Numerical Data Augmentation
 1. **Uniform Random Generation** : This really naive method consists of creating a new instance based on the min and max of the existing ones, the value of each feature is generated randomly with a uniform probability. (The mins and maxs are calculated from the values of the concerned feature of the concerned class each time)
