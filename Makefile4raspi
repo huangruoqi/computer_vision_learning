@@ -18,10 +18,10 @@ setup:
 	mkdir video data
 	
 run:
-	python -B ./code/main.py
+	python3.7 -B ./code/main.py
 
 convert:
-	python -B ./code/video_to_3d_positions.py
+	python3.7 -B ./code/video_to_3d_positions.py
 
 record:
-	python -B ./code/record_video.py
+	python3.7 -B ./code/record_video.py
