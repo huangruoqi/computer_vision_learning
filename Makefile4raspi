@@ -7,9 +7,9 @@ setup:
 	cd Python-3.7.0 ; sudo make -j 4
 	cd Python-3.7.0 ; sudo make altinstall
 	echo "alias python='/usr/local/bin/python3.7'" >> ~/.bashrc
-	source ~/.bashrc
+	. ~/.bashrc
 	wget https://bootstrap.pypa.io/get-pip.py
-	python get-pip.py
+	python3.7 get-pip.py
 	sudo apt install -y ffmpeg python3-opencv git fswebcam
 	pip3.7 install mediapipe-0.8-cp37-cp37m-linux_aarch64.whl
 	pip3.7 install protobuf==3.20.*
