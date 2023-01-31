@@ -1,11 +1,16 @@
 # computer_vision_learning
 ## Setup
 * **Windows**
-   * install `make` and `poetry`
-       * run `make setup` in terminal
-       * run `make record` to record video to `./video/` folder 
-            * change MAX_TIME, FPS for record time or frame per second in `./code/video_to_3d_positions.py`
-       * run `make convert` to convert all videos in `./video/` folder to 3D coordinates in `./data/` folder
+  * run this in powershell to install `poetry`
+    ```
+    (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python
+    ```
+  * download `make` utils 
+    * https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=gigenet&download=
+  * run `make setup` in terminal
+  * run `make record` to record video to `./video/` folder 
+    * change MAX_TIME, FPS for record time or frame per second in `./code/video_to_3d_positions.py`
+  * run `make convert` to convert all videos in `./video/` folder to 3D coordinates in `./data/` folder
 * **MacOS**
    * use `pip install`
        * libraries:
