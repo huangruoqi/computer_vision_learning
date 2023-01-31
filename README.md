@@ -1,4 +1,5 @@
 # computer_vision_learning
+Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## Setup
 * **Windows**
   * run this in powershell to install `poetry`
