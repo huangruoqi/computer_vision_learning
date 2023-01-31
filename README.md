@@ -12,7 +12,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
   * run `make record` to record video to `./video/` folder 
     * change MAX_TIME, FPS for record time or frame per second in `./code/video_to_3d_positions.py`
   * run `make convert` to convert all videos in `./video/` folder to 3D coordinates in `./data/` folder
-* **MacOS**
+* **MacOS** *(not tested)*
    * use `pip install`
        * libraries:
            * opencv-python
