@@ -2,7 +2,11 @@
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## Setup
 * **Windows**
-  * run this in powershell to install `poetry`
+  * run these commands in powershell to install `poetry`
+    ```
+    New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+    -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+    ```
     ```
     (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python
     ```
