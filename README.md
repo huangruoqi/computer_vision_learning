@@ -1,16 +1,20 @@
 # computer_vision_learning
 ## Setup
-* install `make` and `poetry`
-    * run `make setup` in terminal
-    * run `make record` to record video to `./video/` folder 
-    * run `make convert` to convert all videos in `./video/` folder to 3D coordinates in `./data/` folder
-* or use `pip install`
-    * libraries:
-        * opencv-python
-        * mediapipe
-        * pandas
-    * create `./video/` and `./data/` folders to store the outputs
-    * run commands in `Makefile` without the prefix `poetry run`
+* **Windows**
+   * install `make` and `poetry`
+       * run `make setup` in terminal
+       * run `make record` to record video to `./video/` folder 
+            * change MAX_TIME, FPS for record time or frame per second in `./code/video_to_3d_positions.py`
+       * run `make convert` to convert all videos in `./video/` folder to 3D coordinates in `./data/` folder
+* **MacOS**
+   * use `pip install`
+       * libraries:
+           * opencv-python
+           * mediapipe
+           * pandas
+           * pygame
+       * create `./video/` and `./data/` folders to store the outputs
+       * run commands in `Makefile` without the prefix `poetry run`
 * **RaspberryPi 64bit Lite OS** 
    * run the following commands
    ```
