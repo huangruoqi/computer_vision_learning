@@ -4,12 +4,15 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 * **Windows**
   * run these commands in powershell to install `poetry`
     ```
+    (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python
+    ```
+  * Enable long path for windows
+  * https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell
+    ```
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
     -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
     ```
-    ```
-    (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python
-    ```
+
   * download `make` utils 
     * https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=gigenet&download=
   * run `make setup` in terminal
