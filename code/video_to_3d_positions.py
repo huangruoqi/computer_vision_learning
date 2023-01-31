@@ -77,7 +77,7 @@ for video_name in video_names:
                 landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
             
             # uncomment this for display available
-            # cv2.imshow('MediaPipe Pose', cv2.flip(image, 1))
+            cv2.imshow('MediaPipe Pose', cv2.flip(image, 1))
             
             if cv2.waitKey(5) & 0xFF == 27:
               break

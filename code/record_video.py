@@ -9,7 +9,7 @@ MAX_TIME = 10
 FPS = 10
 clock = pygame.time.Clock()
 # Create a VideoCapture object
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0) # change to available camera
 stop = False
 def record_until(max_time):
   time.sleep(max_time)
@@ -38,13 +38,19 @@ while(True):
   if ret == True: 
      
     # Write the frame into the file 'output.avi'
+    image = frame.copy()
     out.write(frame)
- 
+
+    # uncomment this for display available
+    cv2.imshow('Recording', cv2.flip(image, 1))
+    cv2.waitKey(1)
+
     delta_time = clock.tick(FPS)
-    print(f"FPS: {1000/delta_time}")
+    # print(f"FPS: {1000/delta_time}")
  
   # Break the loop
   else:
+    print("No image avaliable")
     break 
  
 # When everything done, release the video capture and video write objects
