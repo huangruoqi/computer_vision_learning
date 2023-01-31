@@ -83,6 +83,8 @@ for video_name in video_names:
               break
         cap.release()
         data_to_csv(data, video_name)
-        os.remove(os.path.join('video', video_name))
+
+        # remove video after convertion finish
+        # os.remove(os.path.join('video', video_name))
 
 
