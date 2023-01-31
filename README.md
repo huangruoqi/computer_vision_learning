@@ -2,7 +2,7 @@
 ## Setup
 * install `make` and `poetry`
     * run `make setup` in terminal
-    * run `make record` to record video to `./video/` folder ()
+    * run `make record` to record video to `./video/` folder 
     * run `make convert` to convert all videos in `./video/` folder to 3D coordinates in `./data/` folder
 * or use `pip install`
     * libraries:
