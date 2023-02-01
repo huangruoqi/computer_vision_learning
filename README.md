@@ -12,13 +12,13 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 
 ## Setup
 * **Windows**
-  * Enable long path for windows
+  * Enable long path for windows in powershell
     * https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell
     ```
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
     -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
     ```
-  * run these commands in powershell to install `poetry`
+  * run in powershell to install `poetry`
     ```
     (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python
     ```
