@@ -9,3 +9,6 @@ convert:
 
 record:
 	poetry run python -B ./code/record_video.py
+
+hand:
+	poetry run python -B ./code/hand.py
