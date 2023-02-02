@@ -25,10 +25,11 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
   * download `make` utils 
     * https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=gigenet&download=
   * run `make setup` in terminal
+  * run `make run` to open camera and display real-time estimation for body and hands
   * run `make record` to record video to `./video/` folder 
     * change MAX_TIME, FPS for record time or frame per second in `./code/video_to_3d_positions.py`
   * run `make convert` to convert all videos in `./video/` folder to 3D coordinates in `./data/` folder
-* **MacOS** *(not tested)*
+* **MacOS** *(not tested)* (Macbook Air m2: mediapipe no version found)
    * use `pip install`
        * libraries:
            * opencv-python
