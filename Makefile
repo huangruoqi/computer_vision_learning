@@ -1,7 +1,10 @@
 # check for git submodules
-$(info abc)
 ifneq ($(findstring -, $(shell git submodule status)),)
-$(info INFO: Need to initialize git submodules)
+$(info INFO: Initializing submodules)
+$(shell git submodule update --init)
+endif
+ifneq ($(findstring +, $(shell git submodule status)),)
+$(info INFO: New updates in submodules, reinitializing...)
 $(shell git submodule update --init)
 endif
 
