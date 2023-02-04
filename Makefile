@@ -1,3 +1,10 @@
+# check for git submodules
+$(info abc)
+ifneq ($(findstring -, $(shell git submodule status)),)
+$(info INFO: Need to initialize git submodules)
+$(shell git submodule update --init)
+endif
+
 setup:
 	poetry install
 	mkdir video data
@@ -12,3 +19,8 @@ record:
 
 hand:
 	poetry run python -B ./code/hand.py
+
+check-and-reinit-submodules:
+	@if git submodule status | egrep -q '^[-]|^[+]' ; then \
+		echo ""; \
+	fi
