@@ -17,7 +17,7 @@ run:
 convert:
 #	poetry run python -B ./code/video_to_3d_positions.py
 #	poetry run python -B ./UI_BASE/index.py
-	poetry run python -B ./code/random_video_access.py
+	poetry run python -B ./index.py
 
 record:
 	poetry run python -B ./code/record_video.py
