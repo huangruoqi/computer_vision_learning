@@ -9,8 +9,7 @@ $(shell git submodule update --init)
 endif
 
 setup:
-	poetry install
-	mkdir video data
+	poetry install ; mkdir video data
 run:
 	poetry run python -B ./src/main.py
 
