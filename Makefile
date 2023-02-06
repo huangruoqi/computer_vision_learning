@@ -12,7 +12,7 @@ setup:
 	poetry install
 	mkdir video data
 run:
-	poetry run python -B ./code/main.py
+	poetry run python -B ./src/main.py
 
 convert:
 #	poetry run python -B ./code/video_to_3d_positions.py
@@ -20,10 +20,10 @@ convert:
 	poetry run python -B ./index.py
 
 record:
-	poetry run python -B ./code/record_video.py
+	poetry run python -B ./src/record_video.py
 
 hand:
-	poetry run python -B ./code/hand.py
+	poetry run python -B ./src/hand.py
 
 check-and-reinit-submodules:
 	@if git submodule status | egrep -q '^[-]|^[+]' ; then \
