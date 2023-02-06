@@ -14,19 +14,23 @@ class LabelingScene(Scene):
             text = self.get("text")
             x, y = text.get_pos()
             text.set_pos(500 - x, 500 - y)
-        # self.add("abc", Button(
-        #     text="abc",
-        #     text_fontsize=100,
-        #     x=100,
-        #     y=100,
-        #     on_click=on_click,
-        # ))
+            bar = self.get("progress_bar")
+            for i in range(10):
+                bar.set_color(i ,"green")
+
+        self.add("abc", Button(
+            text="abc",
+            text_fontsize=100,
+            x=100,
+            y=100,
+            on_click=on_click,
+        ))
         self.add("text", Text(
             "something",
             x=200,
             y=300
         ))
-        self.add("progress_bar", ColorBar(100, 50, 100, 100))
+        self.add("progress_bar", ColorBar(100, 50, 500, 500))
 
     def update(self, delta_time, mouse_pos, clicked, pressed):
         super().update(delta_time, mouse_pos, clicked, pressed)
