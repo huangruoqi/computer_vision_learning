@@ -8,6 +8,7 @@ app = App(
     LabelingScene,
     width,
     height + 60,
+    video_name=video_name,
     video_path=os.path.join(os.curdir, "video", video_name),
     labels=labels,
 )

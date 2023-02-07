@@ -8,6 +8,8 @@ from UI_BASE.UI.sound import Channel
 from UI_BASE.UI.utils import IMAGE, SOUND
 from .vutils import VideoContainer
 import pygame
+import os
+import pandas
 import numpy
 
 
@@ -15,8 +17,8 @@ class LabelingScene(Scene):
     def __init__(self, screen, *args, **kwargs):
         super(LabelingScene, self).__init__(screen, *args, **kwargs)
         # self.background_music = SOUND("castle.wav", Channel.BACKGROUND)
-        labels = kwargs.get("labels")
-        labels.append("Others")
+        self.labels = kwargs.get("labels")
+        self.labels.append("Others")
         self.playing = False
         self.add(
             "play_pause",
@@ -42,6 +44,19 @@ class LabelingScene(Scene):
                 on_click=lambda: self.next()
             ),
         )
+        self.add(
+            "save",
+            Button(
+                image=IMAGE("floppy-disk.png"),
+                height=50,
+                x=self.width-50,
+                y=30,
+                animation="opacity",
+                parameter={"factor": 0.5},
+                on_click=lambda: self.save()
+            ),
+        )
+        self.video_name = kwargs.get("video_name")
         self.vc = VideoContainer(kwargs.get("video_path"), 2000)
         def on_change(x):
             self.vc.set(int(self.vc.total * x))
@@ -91,8 +106,8 @@ class LabelingScene(Scene):
             return on_click
 
         self.colors = list(ColorBar.colors.keys())
-        self.colors[len(labels)-1] = "black"
-        for i, label in enumerate(labels):
+        self.colors[len(self.labels)-1] = "black"
+        for i, label in enumerate(self.labels):
             self.add(
                 f"label_{label}",
                 Button(
@@ -113,6 +128,7 @@ class LabelingScene(Scene):
         btn.set_temp_image(IMAGE("pause-solid.png"), height=50).set_pos(pos)
         btn.on_click = lambda: self.pause()
         self.get("next").hide()
+        self.get("save").hide()
 
     def pause(self):
         self.playing = False
@@ -120,9 +136,16 @@ class LabelingScene(Scene):
         btn.show()
         btn.on_click = lambda: self.play()
         self.get("next").show()
+        self.get("save").show()
 
     def next(self):
         self.set_display()
+
+    def save(self):
+        df = pandas.DataFrame(data={"label": list(map(lambda i: self.labels[i], self.frame2label))})
+        df.to_csv(os.path.join("data", f"{self.video_name}.csv"))
+
+        # pygame.event.post(pygame.QUIT)
 
     def set_display(self):
         self.set_label()
