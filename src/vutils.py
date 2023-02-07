@@ -20,10 +20,15 @@ class VideoContainer:
         self.loading_thread = threading.Thread(target=self.loop, args=())
         self.video = VideoRetriever(path)
         self.total = len(self.video.cap)
+        self.reloading = False
+        self.loading = False
         self.reload()
         self.loading_thread.start()
 
     def reload(self):
+        self.reloading = True
+        while self.loading and not self.stop:
+            time.sleep(0.1)
         self.current_index = 0
         start = self.absolute_index - self.previous_frame
         self.current_index = self.previous_frame
@@ -34,10 +39,15 @@ class VideoContainer:
             self.circular_list_done[i] = False
         for i in range(self.previous_frame + self.next_frame):
             self.put(self.video.get(i+start), i)
+        self.reloading = False
 
     def loop(self):
         while not self.stop:
+            self.loading = False
             time.sleep(0.1)
+            self.loading = True
+            if self.reloading:
+                continue
             if self.circular_list_done[self.mod(self.current_index + self.next_frame)] is False:
                 start = self.current_index+self.next_frame
                 abs_start = self.absolute_index+self.next_frame
@@ -45,12 +55,14 @@ class VideoContainer:
                     start = self.mod(start - 1)
                     abs_start-=1
                 for i in range(self.next_frame):
+                    if self.reloading:
+                        break
                     self.put(self.video.get(abs_start+i), start+i)
 
     def next(self):
         if self.absolute_index - self.previous_frame >= 0:
             self.circular_list_done[self.mod(self.current_index - self.previous_frame)] = False
-        result = self.circular_list_data[self.current_index]
+        result = self.circular_list_data[self.mod(self.current_index)]
         self.absolute_index += 1
         self.current_index = self.mod(self.current_index + 1)
         return result
@@ -64,8 +76,10 @@ class VideoContainer:
     def set(self, index):
         if self.absolute_index - self.previous_frame < index < self.absolute_index + self.next_frame:
             self.current_index = self.mod(self.current_index + self.absolute_index - index)
-
-        self.absolute_index = index
+            self.absolute_index = index
+        else:
+            self.absolute_index = index
+            self.reload()
 
     def progress(self):
         return self.absolute_index / self.total
@@ -83,6 +97,10 @@ class VideoRetriever:
         self.cap = pims.Video(path)
 
     def get(self, index):
+        print(index)
+        if index < self.current_index:
+            self.cap[0]
+            self.current_index = 0
         for i in range(self.current_index + 1, index):
             self.cap[i]
         self.current_index = index
