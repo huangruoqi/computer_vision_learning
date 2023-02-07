@@ -15,13 +15,25 @@ class VideoContainer:
         self.current_index = 0
 
         self.stop = False
-        self.video = VideoRetriever(path)
-        self.total = len(self.video.cap)
-        for i in range(self.previous_frame+self.next_frame):
-            self.put(self.video.get(i), i)
+        self.current_index = 0
 
         self.loading_thread = threading.Thread(target=self.loop, args=())
+        self.video = VideoRetriever(path)
+        self.total = len(self.video.cap)
+        self.reload()
         self.loading_thread.start()
+
+    def reload(self):
+        self.current_index = 0
+        start = self.absolute_index - self.previous_frame
+        self.current_index = self.previous_frame
+        if self.absolute_index < self.previous_frame:
+            start = 0
+            self.current_index = self.absolute_index
+        for i in range(self.size):
+            self.circular_list_done[i] = False
+        for i in range(self.previous_frame + self.next_frame):
+            self.put(self.video.get(i+start), i)
 
     def loop(self):
         while not self.stop:
@@ -29,19 +41,18 @@ class VideoContainer:
             if self.circular_list_done[self.mod(self.current_index + self.next_frame)] is False:
                 start = self.current_index+self.next_frame
                 abs_start = self.absolute_index+self.next_frame
-                if self.circular_list_done[self.mod(start-1)] is False:
-                    while self.circular_list_done[self.mod(start-1)] is False:
-                        start = self.mod(start - 1)
-                        abs_start-=1
+                while self.circular_list_done[self.mod(start-1)] is False:
+                    start = self.mod(start - 1)
+                    abs_start-=1
                 for i in range(self.next_frame):
                     self.put(self.video.get(abs_start+i), start+i)
 
     def next(self):
-        self.absolute_index += 1
-        if self.absolute_index - self.previous_frame > 0:
+        if self.absolute_index - self.previous_frame >= 0:
             self.circular_list_done[self.mod(self.current_index - self.previous_frame)] = False
-        self.current_index = self.mod(self.current_index + 1)
         result = self.circular_list_data[self.current_index]
+        self.absolute_index += 1
+        self.current_index = self.mod(self.current_index + 1)
         return result
 
     def put(self, data, index):
