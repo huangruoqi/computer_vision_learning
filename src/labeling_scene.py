@@ -62,6 +62,7 @@ class LabelingScene(Scene):
             self.vc.set(int(self.vc.total * x))
             self.slider.set_progress(self.vc.progress())
             arr = self.vc.peek()
+            print(arr)
             if arr is not None:
                 self.pixels.set(arr)
 
