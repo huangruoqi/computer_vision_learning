@@ -24,7 +24,5 @@ record:
 hand:
 	poetry run python -B ./src/hand.py
 
-check-and-reinit-submodules:
-	@if git submodule status | egrep -q '^[-]|^[+]' ; then \
-		echo ""; \
-	fi
+black:
+	poetry run black ./

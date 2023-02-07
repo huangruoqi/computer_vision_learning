@@ -13,6 +13,7 @@ mp_pose = mp.solutions.pose
 # might need to transform to other Landmark as origin
 # and time data can be added as well
 
+
 def data_to_csv(data, filename):
     """
     data = [
@@ -37,22 +38,26 @@ def data_to_csv(data, filename):
     """
     prepared_data = {
         f"{i}{j}": list(
-            map(lambda x: next(filter(lambda y: y[0].name[0] == j, x.ListFields()))[1], v)
+            map(
+                lambda x: next(filter(lambda y: y[0].name[0] == j, x.ListFields()))[1],
+                v,
+            )
         )
         for i, v in enumerate(list(zip(*data)))
         for j in "xyzv"
     }
 
     df = pandas.DataFrame(data=prepared_data)
-    df.to_csv(os.path.join("data" ,f"{filename}.csv"))
-
+    df.to_csv(os.path.join("data", f"{filename}.csv"))
 
 
 video_names = os.listdir("video")
 for video_name in video_names:
-    with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+    with mp_pose.Pose(
+        min_detection_confidence=0.5, min_tracking_confidence=0.5
+    ) as pose:
         data = []
-        cap = cv2.VideoCapture(os.path.join('video', video_name))
+        cap = cv2.VideoCapture(os.path.join("video", video_name))
         while cap.isOpened():
             success, image = cap.read()
             if not success:
@@ -74,17 +79,16 @@ for video_name in video_names:
                 image,
                 results.pose_landmarks,
                 mp_pose.POSE_CONNECTIONS,
-                landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
-            
+                landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(),
+            )
+
             # uncomment this for display available
-            cv2.imshow('MediaPipe Pose', cv2.flip(image, 1))
-            
+            cv2.imshow("MediaPipe Pose", cv2.flip(image, 1))
+
             if cv2.waitKey(5) & 0xFF == 27:
-              break
+                break
         cap.release()
         data_to_csv(data, video_name)
 
         # remove video after convertion finish
         # os.remove(os.path.join('video', video_name))
-
-
