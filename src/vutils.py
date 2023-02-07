@@ -16,6 +16,7 @@ class VideoContainer:
 
         self.stop = False
         self.video = VideoRetriever(path)
+        self.total = len(self.video.cap)
         for i in range(self.previous_frame+self.next_frame):
             self.put(self.video.get(i), i)
 
@@ -54,6 +55,9 @@ class VideoContainer:
             self.current_index = self.mod(self.current_index + self.absolute_index - index)
 
         self.absolute_index = index
+
+    def progress(self):
+        return self.absolute_index / self.total
 
     def mod(self, index):
         return index % self.size
