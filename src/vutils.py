@@ -44,7 +44,7 @@ class VideoContainer:
         return result
 
     def put(self, data, index):
-        self.circular_list_data[self.mod(index)] = data
+        self.circular_list_data[self.mod(index)] = data.swapaxes(0,1)
         self.circular_list_done[self.mod(index)] = True
 
 
@@ -68,7 +68,6 @@ class VideoRetriever:
         self.cap = pims.Video(path)
 
     def get(self, index):
-        print(index)
         for i in range(self.current_index + 1, index):
             self.cap[i]
         self.current_index = index
