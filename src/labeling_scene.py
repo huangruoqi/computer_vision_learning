@@ -31,7 +31,8 @@ class LabelingScene(Scene):
             self.vc.set(int(self.vc.total*x))
             self.slider.set_progress(self.vc.progress())
 
-        self.slider = self.add("slider", Slider(drag_width=self.width-100, on_change=on_change, x=self.width/2, y=750, color=(200,200,200), interval=[0,1]),1)
+        self.slider = self.add("slider", Slider(drag_width=self.width-100, on_change=on_change, x=self.width/2, y=750, color=(200,200,200), interval=[0,1],width=20,height=50),1)
+
         self.add("progress_bar", ColorBar(self.width-self.width%100, 50, self.width/2, 750, on_click=lambda progress: on_change(progress)))
         self.pixles = self.add("video", PixelDisplay(1280, 720, self.width/2, 720/2))
         self.vc = VideoContainer(kwargs.get("video_path"),1000)
