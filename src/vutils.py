@@ -68,8 +68,9 @@ class VideoContainer:
                 self.mod(self.current_index - self.previous_frame)
             ] = False
         result = self.circular_list_data[self.mod(self.current_index)]
-        self.absolute_index += 1
-        self.current_index = self.mod(self.current_index + 1)
+        if self.absolute_index<self.total-1:
+            self.absolute_index += 1
+            self.current_index = self.mod(self.current_index + 1)
         return result
     
     def peek(self):
