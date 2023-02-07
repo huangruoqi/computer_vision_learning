@@ -83,18 +83,19 @@ class VideoContainer:
             self.circular_list_done[self.mod(index)] = True
 
     def set(self, index):
-        if (
-            self.absolute_index - self.previous_frame
-            < index
-            < self.absolute_index + self.next_frame
-        ):
-            self.current_index = self.mod(
-                self.current_index + self.absolute_index - index
-            )
-            self.absolute_index = index
-        else:
-            self.absolute_index = index
-            self.reload()
+        # TODO still has bug setting index within cache range
+        # if (
+        #     self.absolute_index - self.previous_frame
+        #     < index
+        #     < self.absolute_index + self.next_frame
+        # ):
+        #     self.current_index = self.mod(
+        #         self.current_index + self.absolute_index - index
+        #     )
+        #     self.absolute_index = index
+        # else:
+        self.absolute_index = index
+        self.reload()
 
     def progress(self):
         return self.absolute_index / self.total
