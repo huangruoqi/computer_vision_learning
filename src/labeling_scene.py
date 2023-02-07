@@ -95,8 +95,8 @@ class LabelingScene(Scene):
                 Button(
                     text=label,
                     text_fontsize=50,
-                    x=100,
-                    y=100 + 80 * i,
+                    x=60,
+                    y=50 + 60 * i,
                     align_mode="TOPLEFT",
                     color=self.colors[i],
                     on_click=get_on_click(i),
