@@ -143,7 +143,7 @@ class LabelingScene(Scene):
 
     def save(self):
         df = pandas.DataFrame(data={"label": list(map(lambda i: self.labels[i], self.frame2label))})
-        df.to_csv(os.path.join("data", f"{self.video_name}.csv"))
+        df.to_csv(os.path.join("data", f"{self.video_name}_labels.csv"))
 
         # pygame.event.post(pygame.QUIT)
 
