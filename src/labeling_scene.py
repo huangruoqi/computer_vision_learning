@@ -76,6 +76,7 @@ class LabelingScene(Scene):
         self.pixels = self.add(
             "video", PixelDisplay(video_width,video_height, video_width/ 2, video_height / 2)
         )
+        self.pixels.set(self.vc.peek())
         self.current_label_index = -1
         self.frame2label = numpy.array([-1] * self.vc.total)
 
@@ -87,7 +88,7 @@ class LabelingScene(Scene):
             return on_click
 
         self.colors = list(ColorBar.colors.keys())
-        self.colors[-1] = "black"
+        self.colors[len(labels)-1] = "black"
         for i, label in enumerate(labels):
             self.add(
                 f"label_{label}",

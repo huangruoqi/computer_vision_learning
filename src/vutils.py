@@ -71,6 +71,9 @@ class VideoContainer:
         self.absolute_index += 1
         self.current_index = self.mod(self.current_index + 1)
         return result
+    
+    def peek(self):
+        return self.circular_list_data[self.mod(self.current_index)]
 
     def put(self, data, index):
         self.circular_list_data[self.mod(index)] = data.swapaxes(0, 1)
