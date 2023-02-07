@@ -9,13 +9,14 @@ class VideoContainer:
         self.next_frame = self.size // 4
         self.previous_frame = self.size // 2
         self.absolute_index = 0
+        self.left_bound = 0
+        self.right_bound = 0
 
         self.circular_list_data = [None] * self.size
         self.circular_list_done = [False] * self.size
         self.current_index = 0
 
         self.stop = False
-        self.current_index = 0
 
         self.loading_thread = threading.Thread(target=self.loop, args=())
         self.video = VideoRetriever(path)
@@ -39,6 +40,8 @@ class VideoContainer:
             self.circular_list_done[i] = False
         for i in range(self.previous_frame + self.next_frame):
             self.put(self.video.get(i + start), i)
+        self.left_bound = start-1
+        self.right_bound = start + self.previous_frame + self.next_frame
         self.reloading = False
 
     def loop(self):
@@ -58,16 +61,18 @@ class VideoContainer:
                     if self.reloading:
                         break
                     self.put(self.video.get(abs_start + i), start + i)
+                    self.right_bound = abs_start+i+1
 
     def next(self):
+        result = self.peek()
+        if self.absolute_index<self.total-1 and self.absolute_index<self.right_bound-1:
+            self.absolute_index += 1
+            self.current_index = self.mod(self.current_index + 1)
         if self.absolute_index - self.previous_frame >= 0:
             self.circular_list_done[
                 self.mod(self.current_index - self.previous_frame)
             ] = False
-        result = self.peek()
-        if self.absolute_index<self.total-1:
-            self.absolute_index += 1
-            self.current_index = self.mod(self.current_index + 1)
+            self.left_bound = max(self.absolute_index - self.previous_frame, self.left_bound)
         return result
     
     def peek(self):
@@ -84,11 +89,7 @@ class VideoContainer:
 
     def set(self, index):
         # TODO : dynamic range update
-        if (
-            self.absolute_index - self.previous_frame
-            < index
-            < self.absolute_index + self.next_frame
-        ):
+        if self.left_bound < index < self.right_bound:
             self.current_index = self.mod(
                 self.current_index + index - self.absolute_index
             )

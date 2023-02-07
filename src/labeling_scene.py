@@ -62,7 +62,6 @@ class LabelingScene(Scene):
             self.vc.set(int(self.vc.total * x))
             self.slider.set_progress(self.vc.progress())
             arr = self.vc.peek()
-            print(arr)
             if arr is not None:
                 self.pixels.set(arr)
 
@@ -89,6 +88,16 @@ class LabelingScene(Scene):
                 x=self.width / 2,
                 y=self.height-30,
                 on_click=lambda progress: on_change(progress),
+            ),
+        )
+        self.buffered = self.add(
+            "buffer_bar",
+            ColorBar(
+                width=self.width - self.width % 100 - 100,
+                height=9,
+                x=self.width / 2,
+                y=self.height-57,
+                color='grey'
             ),
         )
         video_width, video_height = self.width, self.height-60
@@ -121,6 +130,7 @@ class LabelingScene(Scene):
                     on_click=get_on_click(i),
                 ),
             )
+        self.set_buffered_bar()
 
     def play(self):
         self.playing = True
@@ -155,6 +165,11 @@ class LabelingScene(Scene):
         if arr is not None:
             self.pixels.set(arr)
 
+    def set_buffered_bar(self):
+        l, r = self.vc.left_bound, self.vc.right_bound
+        np_arr = numpy.array([(150,150,150) if l <= i*self.vc.total//100 <= r else (255,255,255) for i in range(100)])
+        self.buffered.set_arr(np_arr)
+
     def set_label(self):
         self.frame2label[self.vc.absolute_index] = self.current_label_index
         self.bar.set_color(
@@ -164,6 +179,7 @@ class LabelingScene(Scene):
 
     def update(self, delta_time, mouse_pos, clicked, pressed):
         super().update(delta_time, mouse_pos, clicked, pressed)
+        self.set_buffered_bar()
         if not self.playing:
             return
         if not pressed:
