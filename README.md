@@ -4,10 +4,19 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 - ~~Mediapipe hand tracking test~~
 - Data collection
   - 爬虫
-  - Simple GUI for labeling behaviors in video range
+  - ~~Simple GUI for labeling behaviors in video range~~
 - Tensorflow 
 - Behavior classification
 - Performance
+- Multi camera
+
+## Usage
+* `make run` to open camera and display real-time estimation for body and hands
+* `make record` to record video to `video/` folder 
+  * change MAX_TIME, FPS for record time or frame per second in `src/video_to_3d_positions.py`
+* run `make convert` to
+  * label video specified in `label_config.py` with GUI, labels per frame are saved in `data/name_label.csv`
+  * ~~convert all videos in `video/` folder to 3D coordinates in `data/` folder~~
 
 
 ## Setup
@@ -26,9 +35,9 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
     * https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=gigenet&download=
   * run `make setup` in terminal
   * run `make run` to open camera and display real-time estimation for body and hands
-  * run `make record` to record video to `./video/` folder 
-    * change MAX_TIME, FPS for record time or frame per second in `./code/video_to_3d_positions.py`
-  * run `make convert` to convert all videos in `./video/` folder to 3D coordinates in `./data/` folder
+  * run `make record` to record video to `video/` folder 
+    * change MAX_TIME, FPS for record time or frame per second in `src/video_to_3d_positions.py`
+  * run `make convert` to convert all videos in `video/` folder to 3D coordinates in `data/` folder
 * **MacOS** *(not tested)* (Macbook Air m2: mediapipe no version found)
    * use `pip install`
        * libraries:
@@ -36,7 +45,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
            * mediapipe
            * pandas
            * pygame
-       * create `./video/` and `./data/` folders to store the outputs
+       * create `video/` and `data/` folders to store the outputs
        * run commands in `Makefile` without the prefix `poetry run`
 * **RaspberryPi 64bit Lite OS** 
    * run the following commands
