@@ -97,7 +97,6 @@ class VideoRetriever:
         self.cap = pims.Video(path)
 
     def get(self, index):
-        print(index)
         if index < self.current_index:
             self.cap[0]
             self.current_index = 0
