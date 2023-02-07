@@ -23,8 +23,8 @@ class LabelingScene(Scene):
             Button(
                 image=IMAGE("play-solid.png"),
                 height=50,
-                x=130,
-                y=690,
+                x=50,
+                y=self.height-30,
                 animation="opacity",
                 parameter={"factor": 0.5},
                 on_click=lambda: self.play()
@@ -35,8 +35,8 @@ class LabelingScene(Scene):
             Button(
                 image=IMAGE("arrow-right-solid.png"),
                 height=50,
-                x=530,
-                y=690,
+                x=self.width-50,
+                y=self.height-30,
                 animation="opacity",
                 parameter={"factor": 0.5},
                 on_click=lambda: self.next()
@@ -115,7 +115,7 @@ class LabelingScene(Scene):
         self.get("next").show()
 
     def next(self):
-        self.set_display(next(self.gen))
+        self.set_display()
 
     def set_label(self):
         self.frame2label[self.vc.absolute_index] = self.current_label_index
@@ -123,13 +123,17 @@ class LabelingScene(Scene):
             int(self.vc.absolute_index / self.vc.total * 100),
             self.colors[self.current_label_index],
         )
+    def set_display(self):
+        self.set_label()
+        self.slider.set_progress(self.vc.progress())
+        self.pixels.set(self.vc.next())
 
     def update(self, delta_time, mouse_pos, clicked, pressed):
         super().update(delta_time, mouse_pos, clicked, pressed)
+        if not self.playing:
+            return
         if not pressed:
-            self.pixels.set(self.vc.next())
-            self.set_label()
-            self.slider.set_progress(self.vc.progress())
+            self.set_display()
 
     def close(self):
         self.vc.close()
