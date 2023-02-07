@@ -83,6 +83,7 @@ class VideoContainer:
             self.circular_list_done[self.mod(index)] = True
 
     def set(self, index):
+        # TODO : dynamic range update
         if (
             self.absolute_index - self.previous_frame
             < index
