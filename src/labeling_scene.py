@@ -15,8 +15,8 @@ class LabelingScene(Scene):
     def __init__(self, screen, *args, **kwargs):
         super(LabelingScene, self).__init__(screen, *args, **kwargs)
         # self.background_music = SOUND("castle.wav", Channel.BACKGROUND)
-        self.vc = VideoContainer(kwargs.get("video_path"), 1000)
         labels = kwargs.get("labels")
+        labels.append("Others")
         self.playing = False
         self.add(
             "play_pause",
@@ -42,6 +42,7 @@ class LabelingScene(Scene):
                 on_click=lambda: self.next()
             ),
         )
+        self.vc = VideoContainer(kwargs.get("video_path"), 1000)
         def on_change(x):
             self.vc.set(int(self.vc.total * x))
             self.slider.set_progress(self.vc.progress())
@@ -86,6 +87,7 @@ class LabelingScene(Scene):
             return on_click
 
         self.colors = list(ColorBar.colors.keys())
+        self.colors[-1] = "black"
         for i, label in enumerate(labels):
             self.add(
                 f"label_{label}",
