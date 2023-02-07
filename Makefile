@@ -1,12 +1,12 @@
 # check for git submodules
-# ifneq ($(findstring -, $(shell git submodule status)),)
-# $(info INFO: Initializing submodules)
-# $(shell git submodule update --init)
-# endif
-# ifneq ($(findstring +, $(shell git submodule status)),)
-# $(info INFO: New updates in submodules, reinitializing...)
-# $(shell git submodule update --init)
-# endif
+ifneq ($(findstring -, $(shell git submodule status)),)
+$(info INFO: Initializing submodules)
+$(shell git submodule update --init)
+endif
+ifneq ($(findstring +, $(shell git submodule status)),)
+$(info INFO: New updates in submodules, reinitializing...)
+$(shell git submodule update --init)
+endif
 
 setup:
 	poetry install ; mkdir video data
