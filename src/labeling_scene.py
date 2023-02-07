@@ -42,10 +42,13 @@ class LabelingScene(Scene):
                 on_click=lambda: self.next()
             ),
         )
-        self.vc = VideoContainer(kwargs.get("video_path"), 1000)
+        self.vc = VideoContainer(kwargs.get("video_path"), 2000)
         def on_change(x):
             self.vc.set(int(self.vc.total * x))
             self.slider.set_progress(self.vc.progress())
+            arr = self.vc.peek()
+            if arr is not None:
+                self.pixels.set(arr)
 
         self.slider = self.add(
             "slider",
@@ -124,7 +127,9 @@ class LabelingScene(Scene):
     def set_display(self):
         self.set_label()
         self.slider.set_progress(self.vc.progress())
-        self.pixels.set(self.vc.next())
+        arr = self.vc.next()
+        if arr is not None:
+            self.pixels.set(arr)
 
     def set_label(self):
         self.frame2label[self.vc.absolute_index] = self.current_label_index

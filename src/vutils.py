@@ -19,7 +19,7 @@ class VideoContainer:
 
         self.loading_thread = threading.Thread(target=self.loop, args=())
         self.video = VideoRetriever(path)
-        self.total = len(self.video.cap)
+        self.total = self.video.total
         self.reloading = False
         self.loading = False
         self.reload()
@@ -48,13 +48,10 @@ class VideoContainer:
             self.loading = True
             if self.reloading:
                 continue
-            if (
-                self.circular_list_done[self.mod(self.current_index + self.next_frame)]
-                is False
-            ):
-                start = self.current_index + self.next_frame
-                abs_start = self.absolute_index + self.next_frame
-                while self.circular_list_done[self.mod(start - 1)] is False:
+            start = self.current_index + self.next_frame
+            abs_start = self.absolute_index + self.next_frame
+            if not self.circular_list_done[self.mod(start)]:
+                while not self.circular_list_done[self.mod(start - 1)]:
                     start = self.mod(start - 1)
                     abs_start -= 1
                 for i in range(self.next_frame):
@@ -67,18 +64,23 @@ class VideoContainer:
             self.circular_list_done[
                 self.mod(self.current_index - self.previous_frame)
             ] = False
-        result = self.circular_list_data[self.mod(self.current_index)]
+        result = self.peek()
         if self.absolute_index<self.total-1:
             self.absolute_index += 1
             self.current_index = self.mod(self.current_index + 1)
         return result
     
     def peek(self):
-        return self.circular_list_data[self.mod(self.current_index)]
+        if not self.circular_list_done[self.current_index]:
+            return None
+        return self.circular_list_data[self.current_index]
 
     def put(self, data, index):
-        self.circular_list_data[self.mod(index)] = data.swapaxes(0, 1)
-        self.circular_list_done[self.mod(index)] = True
+        if data is None:
+            self.circular_list_done[self.mod(index)] = False
+        else:
+            self.circular_list_data[self.mod(index)] = data.swapaxes(0, 1)
+            self.circular_list_done[self.mod(index)] = True
 
     def set(self, index):
         if (
@@ -109,8 +111,10 @@ class VideoRetriever:
     def __init__(self, path):
         self.current_index = 0
         self.cap = pims.Video(path)
+        self.total = len(self.cap)
 
     def get(self, index):
+        if index >= self.total: return None
         if index < self.current_index:
             self.cap[0]
             self.current_index = 0
