@@ -52,7 +52,7 @@ class LabelingScene(Scene):
                 drag_width=self.width - 100 - self.width%100,
                 on_change=on_change,
                 x=self.width / 2,
-                y=750,
+                y=self.height-30,
                 color=(200, 200, 200),
                 interval=[0, 1],
                 width=20,
@@ -64,15 +64,16 @@ class LabelingScene(Scene):
         self.bar = self.add(
             "progress_bar",
             ColorBar(
-                self.width - self.width % 100 - 100,
-                50,
-                self.width / 2,
-                750,
+                width=self.width - self.width % 100 - 100,
+                height=50,
+                x=self.width / 2,
+                y=self.height-30,
                 on_click=lambda progress: on_change(progress),
             ),
         )
+        video_width, video_height = self.width, self.height-60
         self.pixels = self.add(
-            "video", PixelDisplay(1280, 720, self.width / 2, 720 / 2)
+            "video", PixelDisplay(video_width,video_height, video_width/ 2, video_height / 2)
         )
         self.current_label_index = -1
         self.frame2label = numpy.array([-1] * self.vc.total)
@@ -117,16 +118,17 @@ class LabelingScene(Scene):
     def next(self):
         self.set_display()
 
+    def set_display(self):
+        self.set_label()
+        self.slider.set_progress(self.vc.progress())
+        self.pixels.set(self.vc.next())
+
     def set_label(self):
         self.frame2label[self.vc.absolute_index] = self.current_label_index
         self.bar.set_color(
             int(self.vc.absolute_index / self.vc.total * 100),
             self.colors[self.current_label_index],
         )
-    def set_display(self):
-        self.set_label()
-        self.slider.set_progress(self.vc.progress())
-        self.pixels.set(self.vc.next())
 
     def update(self, delta_time, mouse_pos, clicked, pressed):
         super().update(delta_time, mouse_pos, clicked, pressed)
