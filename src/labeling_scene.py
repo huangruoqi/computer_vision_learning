@@ -101,7 +101,7 @@ class LabelingScene(Scene):
                     x=60,
                     y=50 + 60 * i,
                     align_mode="TOPLEFT",
-                    color=self.colors[i],
+                    color=ColorBar.colors[self.colors[i]],
                     on_click=get_on_click(i),
                 ),
             )
