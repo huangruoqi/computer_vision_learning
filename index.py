@@ -3,7 +3,7 @@ from src.labeling_scene import LabelingScene
 import os
 from label_config import labels, video_name, width, height, fps
 
-MAX_HEIGHT=900
+MAX_HEIGHT = 900
 
 app = App(
     LabelingScene,

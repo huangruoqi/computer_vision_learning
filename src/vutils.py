@@ -37,7 +37,7 @@ class VideoContainer:
             self.current_index = self.absolute_index
         for i in range(self.previous_frame + self.next_frame):
             self.put(self.video.get(i + start), i)
-        self.left_bound = start-1
+        self.left_bound = start - 1
         self.right_bound = start + self.previous_frame + self.next_frame
         self.reloading = False
 
@@ -57,18 +57,23 @@ class VideoContainer:
                     if self.reloading:
                         break
                     self.put(self.video.get(abs_start + i), start + i)
-                    self.right_bound = abs_start+i+1
+                    self.right_bound = abs_start + i + 1
 
     def next(self):
         result = self.peek()
-        if self.absolute_index<self.total-1 and self.absolute_index<self.right_bound-1:
+        if (
+            self.absolute_index < self.total - 1
+            and self.absolute_index < self.right_bound - 1
+        ):
             self.absolute_index += 1
             self.current_index = self.mod(self.current_index + 1)
         return result
 
     def refresh_bound(self):
-        self.left_bound = max(self.absolute_index - self.previous_frame, -1, self.left_bound)
-    
+        self.left_bound = max(
+            self.absolute_index - self.previous_frame, -1, self.left_bound
+        )
+
     def peek(self):
         return self.circular_list_data[self.current_index]
 
@@ -77,7 +82,6 @@ class VideoContainer:
             self.circular_list_data[self.mod(index)] = data.swapaxes(0, 1)
         else:
             self.circular_list_data[self.mod(index)] = data
-
 
     def set(self, index):
         if self.left_bound < index < self.right_bound:
@@ -107,7 +111,8 @@ class VideoRetriever:
         self.total = len(self.cap)
 
     def get(self, index):
-        if index >= self.total: return None
+        if index >= self.total:
+            return None
         if index < self.current_index:
             self.cap[0]
             self.current_index = 0
