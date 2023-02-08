@@ -14,7 +14,9 @@ run:
 	poetry run python -B ./src/main.py
 
 convert:
-#	poetry run python -B ./code/video_to_3d_positions.py
+	poetry run python -B ./src/video_to_3d_positions.py
+
+label:
 	poetry run python -B ./index.py
 
 record:

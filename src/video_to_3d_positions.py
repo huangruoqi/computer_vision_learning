@@ -50,6 +50,15 @@ def data_to_csv(data, filename):
     df = pandas.DataFrame(data=prepared_data)
     df.to_csv(os.path.join("data", f"{filename}.csv"))
 
+# convert origin to nose coordinates
+def convert(landmarks):
+    nose = landmarks[0]
+    for landmark in landmarks:
+        x, y, z = landmark.x,landmark.y, landmark.z
+        landmark.x = x - nose.x
+        landmark.y = y - nose.y
+        landmark.z = z - nose.z
+    return landmarks[0:25]
 
 video_names = os.listdir("video")
 for video_name in video_names:
@@ -70,7 +79,8 @@ for video_name in video_names:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             results = pose.process(image)
             if results.pose_landmarks:
-                data.append(results.pose_world_landmarks.landmark)
+                converted_landmarks = convert(results.pose_world_landmarks.landmark)
+                data.append(converted_landmarks)
 
             # Draw the pose annotation on the image.
             image.flags.writeable = True
