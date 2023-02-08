@@ -166,6 +166,7 @@ class LabelingScene(Scene):
             self.pixels.set(arr)
 
     def set_buffered_bar(self):
+        self.vc.refresh_bound()
         l, r = self.vc.left_bound, self.vc.right_bound
         np_arr = numpy.array([(150,150,150) if l <= i*self.vc.total//100 <= r else (255,255,255) for i in range(100)])
         self.buffered.set_arr(np_arr)
