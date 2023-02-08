@@ -53,10 +53,9 @@ class VideoContainer:
                 continue
             start = self.current_index + self.next_frame
             abs_start = self.absolute_index + self.next_frame
-            if not self.circular_list_done[self.mod(start)]:
-                while not self.circular_list_done[self.mod(start - 1)]:
-                    start = self.mod(start - 1)
-                    abs_start -= 1
+            if abs_start >= self.right_bound:
+                start -= abs_start - self.right_bound
+                abs_start = self.right_bound
                 for i in range(self.next_frame):
                     if self.reloading:
                         break
