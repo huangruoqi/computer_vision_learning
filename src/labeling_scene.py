@@ -25,11 +25,12 @@ class LabelingScene(Scene):
             Button(
                 image=IMAGE("play-solid.png"),
                 height=50,
-                x=50,
+                x=25,
                 y=self.height-30,
                 animation="opacity",
                 parameter={"factor": 0.5},
-                on_click=lambda: self.play()
+                on_click=lambda: self.play(),
+                can_hover=lambda: not self.slider.dragged
             ),
         )
         self.add(
@@ -37,11 +38,12 @@ class LabelingScene(Scene):
             Button(
                 image=IMAGE("arrow-right-solid.png"),
                 height=50,
-                x=self.width-50,
+                x=self.width-25,
                 y=self.height-30,
                 animation="opacity",
                 parameter={"factor": 0.5},
-                on_click=lambda: self.next()
+                on_click=lambda: self.next(),
+                can_hover=lambda: not self.slider.dragged
             ),
         )
         self.add(
@@ -53,7 +55,8 @@ class LabelingScene(Scene):
                 y=30,
                 animation="opacity",
                 parameter={"factor": 0.5},
-                on_click=lambda: self.save()
+                on_click=lambda: self.save(),
+                can_hover=lambda: not self.slider.dragged
             ),
         )
         self.video_name = kwargs.get("video_name")
@@ -80,29 +83,9 @@ class LabelingScene(Scene):
             1,
         )
 
-        self.bar = self.add(
-            "progress_bar",
-            ColorBar(
-                width=self.width - self.width % 100 - 100,
-                height=50,
-                x=self.width / 2,
-                y=self.height-30,
-                on_click=lambda progress: on_change(progress),
-            ),
-        )
-        self.buffered = self.add(
-            "buffer_bar",
-            ColorBar(
-                width=self.width - self.width % 100 - 100,
-                height=9,
-                x=self.width / 2,
-                y=self.height-57,
-                color='grey'
-            ),
-        )
-        video_width, video_height = self.width, self.height-60
+        video_width, video_height = kwargs.get("video_width"), kwargs.get("video_height")
         self.pixels = self.add(
-            "video", PixelDisplay(video_width,video_height, video_width/ 2, video_height / 2)
+            "video", PixelDisplay(video_width,video_height, self.width/ 2, (self.height-60) / 2)
         )
         self.pixels.set(self.vc.peek())
         self.current_label_index = -1
@@ -128,8 +111,29 @@ class LabelingScene(Scene):
                     align_mode="TOPLEFT",
                     color=ColorBar.colors[self.colors[i]],
                     on_click=get_on_click(i),
+                    can_hover=lambda: not self.slider.dragged
                 ),
             )
+        self.bar = self.add(
+            "progress_bar",
+            ColorBar(
+                width=self.width - self.width % 100 - 100,
+                height=50,
+                x=self.width / 2,
+                y=self.height-30,
+                on_click=lambda progress: on_change(progress),
+            )
+        )
+        self.buffered = self.add(
+            "buffer_bar",
+            ColorBar(
+                width=self.width - self.width % 100 - 100,
+                height=9,
+                x=self.width / 2,
+                y=self.height-57,
+                color='grey'
+            )
+        )
         self.set_buffered_bar()
 
     def play(self):

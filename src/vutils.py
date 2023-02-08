@@ -67,7 +67,7 @@ class VideoContainer:
         return result
 
     def refresh_bound(self):
-        self.left_bound = max(self.absolute_index - self.previous_frame, 0, self.left_bound)
+        self.left_bound = max(self.absolute_index - self.previous_frame, -1, self.left_bound)
     
     def peek(self):
         return self.circular_list_data[self.current_index]

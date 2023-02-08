@@ -1,6 +1,6 @@
-video_name = "test2.mp4"
-width=1280
-height=720
+video_name = "test.mp4"
+width=720
+height=1280
 fps=30
 
 # unlabeled data = "Others"
