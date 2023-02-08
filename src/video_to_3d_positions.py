@@ -14,7 +14,7 @@ mp_pose = mp.solutions.pose
 # and time data can be added as well
 
 
-def data_to_csv(data, filename):
+def data_to_csv(data, labels, filename):
     """
     data = [
         [Landmark0, Landmark1, ... , landmark32], # frame 1
@@ -46,7 +46,7 @@ def data_to_csv(data, filename):
         for i, v in enumerate(list(zip(*data)))
         for j in "xyzv"
     }
-
+    prepared_data["label"] = labels["label"]
     df = pandas.DataFrame(data=prepared_data)
     df.to_csv(os.path.join("data", f"{filename}.csv"))
 
@@ -62,43 +62,48 @@ def convert(landmarks):
 
 video_names = os.listdir("video")
 for video_name in video_names:
-    with mp_pose.Pose(
-        min_detection_confidence=0.5, min_tracking_confidence=0.5
-    ) as pose:
-        data = []
-        cap = cv2.VideoCapture(os.path.join("video", video_name))
-        while cap.isOpened():
-            success, image = cap.read()
-            if not success:
-                print(f"Finish estimation for <{video_name}>")
-                break
+    try:
+        labels = pandas.read_csv(os.path.join("data", f"{video_name}_labels.csv"))
+        with mp_pose.Pose(
+            min_detection_confidence=0.5, min_tracking_confidence=0.5
+        ) as pose:
+            data = []
+            cap = cv2.VideoCapture(os.path.join("video", video_name))
+            while cap.isOpened():
+                success, image = cap.read()
+                if not success:
+                    print(f"Finish estimation for <{video_name}>")
+                    break
 
-            # To improve performance, optionally mark the image as not writeable to
-            # pass by reference.
-            image.flags.writeable = False
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            results = pose.process(image)
-            if results.pose_landmarks:
-                converted_landmarks = convert(results.pose_world_landmarks.landmark)
-                data.append(converted_landmarks)
+                # To improve performance, optionally mark the image as not writeable to
+                # pass by reference.
+                image.flags.writeable = False
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                results = pose.process(image)
+                if results.pose_landmarks:
+                    converted_landmarks = convert(results.pose_world_landmarks.landmark)
+                    data.append(converted_landmarks)
 
-            # Draw the pose annotation on the image.
-            image.flags.writeable = True
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            mp_drawing.draw_landmarks(
-                image,
-                results.pose_landmarks,
-                mp_pose.POSE_CONNECTIONS,
-                landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(),
-            )
+                # Draw the pose annotation on the image.
+                image.flags.writeable = True
+                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                mp_drawing.draw_landmarks(
+                    image,
+                    results.pose_landmarks,
+                    mp_pose.POSE_CONNECTIONS,
+                    landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(),
+                )
 
-            # uncomment this for display available
-            cv2.imshow("MediaPipe Pose", cv2.flip(image, 1))
+                # uncomment this for display available
+                cv2.imshow("MediaPipe Pose", cv2.flip(image, 1))
 
-            if cv2.waitKey(5) & 0xFF == 27:
-                break
-        cap.release()
-        data_to_csv(data, video_name)
+                if cv2.waitKey(5) & 0xFF == 27:
+                    break
+            cap.release()
+            data_to_csv(data, labels, video_name)
 
-        # remove video after convertion finish
-        # os.remove(os.path.join('video', video_name))
+            # remove video after convertion finish
+            # os.remove(os.path.join('video', video_name))
+    except Exception as e:
+        print(e)
+
