@@ -1,8 +1,8 @@
 import cv2
-import mediapipe as mp
 import numpy as np
 import pandas
 import os
+import mediapipe as mp
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -104,6 +104,5 @@ for video_name in video_names:
 
             # remove video after convertion finish
             # os.remove(os.path.join('video', video_name))
-    except Exception as e:
-        print(e)
-
+    except FileNotFoundError as e:
+        print(f"Please edit `label_config.py` and label <{video_name}> with `make label`")
