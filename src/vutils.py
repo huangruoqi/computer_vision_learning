@@ -13,7 +13,6 @@ class VideoContainer:
         self.right_bound = 0
 
         self.circular_list_data = [None] * self.size
-        self.circular_list_done = [False] * self.size
         self.current_index = 0
 
         self.stop = False
@@ -36,8 +35,6 @@ class VideoContainer:
         if self.absolute_index < self.previous_frame:
             start = 0
             self.current_index = self.absolute_index
-        for i in range(self.size):
-            self.circular_list_done[i] = False
         for i in range(self.previous_frame + self.next_frame):
             self.put(self.video.get(i + start), i)
         self.left_bound = start-1
@@ -68,26 +65,20 @@ class VideoContainer:
             self.absolute_index += 1
             self.current_index = self.mod(self.current_index + 1)
         if self.absolute_index - self.previous_frame >= 0:
-            self.circular_list_done[
-                self.mod(self.current_index - self.previous_frame)
-            ] = False
             self.left_bound = max(self.absolute_index - self.previous_frame, self.left_bound)
         return result
     
     def peek(self):
-        if not self.circular_list_done[self.current_index]:
-            return None
         return self.circular_list_data[self.current_index]
 
     def put(self, data, index):
-        if data is None:
-            self.circular_list_done[self.mod(index)] = False
-        else:
+        if data is not None:
             self.circular_list_data[self.mod(index)] = data.swapaxes(0, 1)
-            self.circular_list_done[self.mod(index)] = True
+        else:
+            self.circular_list_data[self.mod(index)] = data
+
 
     def set(self, index):
-        # TODO : dynamic range update
         if self.left_bound < index < self.right_bound:
             self.current_index = self.mod(
                 self.current_index + index - self.absolute_index
