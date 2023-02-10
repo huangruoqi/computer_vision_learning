@@ -12,5 +12,4 @@ labels = [
     "Wave",
     "Yawn",
     "Rage",
-    "Rage",
 ]
