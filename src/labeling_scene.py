@@ -18,7 +18,7 @@ class LabelingScene(Scene):
         super(LabelingScene, self).__init__(screen, *args, **kwargs)
         # self.background_music = SOUND("castle.wav", Channel.BACKGROUND)
         self.labels = kwargs.get("labels")
-        self.labels.append("Others")
+        self.labels.append("Unlabeled")
         self.playing = False
         self.add(
             "play_pause",

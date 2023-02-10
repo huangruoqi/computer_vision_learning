@@ -1,11 +1,16 @@
 video_name = "test.mp4"
-width = 720
-height = 1280
-fps = 30
+width = 640
+height = 480
+fps = 10
 
-# unlabeled data = "Others"
+# unlabeled data = "Unlabeled"
 labels = [
     "Nothing",
-    "Nodding",
-    "Shaking",
+    "Nod",
+    "Shake",
+    "Clap",
+    "Wave",
+    "Yawn",
+    "Rage",
+    "Rage",
 ]
