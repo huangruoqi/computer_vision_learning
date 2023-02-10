@@ -25,6 +25,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             results = pose.process(image)
 
+            if results.pose_landmarks is None: continue
             landmark = results.pose_landmarks.landmark
             if sum([landmark[i].visibility for i in range(15, 23)]) / (23 - 15) > 0.1:
                 hand_results = hands.process(image)
