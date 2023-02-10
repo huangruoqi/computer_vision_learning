@@ -107,13 +107,16 @@ class LabelingScene(Scene):
         self.colors = list(ColorBar.colors.keys())
         self.colors[len(self.labels) - 1] = "black"
         for i, label in enumerate(self.labels):
+            height = (self.height - 100)// 100 * 100
+            x = (50 * i) // height * 200
+            y = (50 * i) % height
             self.add(
                 f"label_{label}",
                 Button(
                     text=label,
                     text_fontsize=50,
-                    x=60,
-                    y=50 + 60 * i,
+                    x=x+20,
+                    y=y+20,
                     align_mode="TOPLEFT",
                     color=ColorBar.colors[self.colors[i]],
                     on_click=get_on_click(i),
