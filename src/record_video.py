@@ -30,7 +30,7 @@ frame_height = int(cap.get(4))
 
 # Define the codec and create VideoWriter object.The output is stored in 'outpy.avi' file.
 out = cv2.VideoWriter(
-    os.path.join("video", "out.mp4"),
+    os.path.join("video", f"{int(time.time())}.mp4"),
     cv2.VideoWriter_fourcc(*"mp4v"),
     FPS,
     (frame_width, frame_height),
