@@ -50,6 +50,8 @@ class VideoContainer:
                 continue
             start = self.current_index + self.next_frame
             abs_start = self.absolute_index + self.next_frame
+            if abs_start >= self.total: 
+                continue
             if abs_start >= self.right_bound:
                 start -= abs_start - self.right_bound
                 abs_start = self.right_bound

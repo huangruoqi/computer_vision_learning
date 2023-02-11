@@ -17,6 +17,11 @@ class LabelingScene(Scene):
     def __init__(self, screen, *args, **kwargs):
         super(LabelingScene, self).__init__(screen, *args, **kwargs)
         # self.background_music = SOUND("castle.wav", Channel.BACKGROUND)
+        self.fps = kwargs.get("fps")
+        screen_fps = 30
+        self.fps_ratio = screen_fps / self.fps
+        self.frame_count = 0
+
         self.labels = kwargs.get("labels")
         self.labels.append("Unlabeled")
         self.playing = False
@@ -206,7 +211,11 @@ class LabelingScene(Scene):
         if not self.playing:
             return
         if not pressed:
-            self.set_display()
+            self.frame_count+=1
+            if self.frame_count>=self.fps_ratio:
+                self.set_display()
+                self.frame_count-=self.fps_ratio
+            
 
     def close(self):
         self.vc.close()

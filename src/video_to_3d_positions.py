@@ -37,7 +37,7 @@ def data_to_csv(data, labels, filename):
     } # x, y, z - world coordnates | v - visibility
     """
     prepared_data = {
-        f"{i}{j}": list(
+        f"{j}{i}": list(
             map(
                 lambda x: next(filter(lambda y: y[0].name[0] == j, x.ListFields()))[1],
                 v,
