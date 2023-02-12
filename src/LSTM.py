@@ -6,7 +6,7 @@ import sys
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from label_config import labels
-DB = pd.read_csv(os.path.join("data", "1676004101.mp4.csv"), index_col=0)
+DB = pd.read_csv(os.path.join("data", "1676242134.mp4.csv"), index_col=0)
 
 labels2int = {b:a for a, b in enumerate(labels+['Unlabeled'])}
 
