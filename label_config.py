@@ -1,4 +1,4 @@
-video_name = "1676004175.mp4"
+video_name = "1676004101.mp4"
 width = 640
 height = 480
 fps=10
@@ -10,6 +10,4 @@ labels = [
     "Shake",
     "Clap",
     "Wave",
-    "Yawn",
-    "Rage",
 ]
