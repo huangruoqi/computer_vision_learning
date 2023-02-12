@@ -84,7 +84,7 @@ lstm = tf.keras.layers.LSTM(128, return_sequences=True)(expand_dims)
 flatten = tf.keras.layers.Flatten()(lstm)
 #output is 5, but expecting 4. With the code it excludes the highest number.
 #Reads the value as [0,5) not [0,5]
-outputs = tf.keras.layers.Dense(8,activation='softmax')(flatten)
+outputs = tf.keras.layers.Dense(len(labels2int),activation='softmax')(flatten)
 model = tf.keras.Model(inputs = inputs, outputs = outputs)
 print(model.summary())
 #Compile
