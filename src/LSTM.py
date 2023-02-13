@@ -7,8 +7,16 @@ import random
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from label_config import labels
-DB = pd.read_csv(os.path.join("data", "1676242134.mp4.csv"), index_col=0)
-DB2 = pd.read_csv(os.path.join("data", "1676004101.mp4.csv"), index_col=0)
+
+data = [
+    "1676265052",
+    "1676004101",
+    "1676242134",
+]
+
+DBs = [pd.read_csv(os.path.join("data", f"{name}.mp4.csv"), index_col=0) for name in data]
+
+DB = pd.concat(DBs, axis=0, ignore_index=True, sort=False)
 
 labels2int = {b:a for a, b in enumerate(labels+['Unlabeled'])}
 
@@ -20,7 +28,6 @@ def convert_df_labels(df1, labels2int):
     return df
 
 DB = convert_df_labels(DB, labels2int)
-DB2 = convert_df_labels(DB2, labels2int)
 
 def split_data_with_label(df, valid_size=0.1, test_size = 0.2):
     df_input = df.copy()
@@ -70,7 +77,6 @@ def split_data_without_label(df, valid_size=0.1, test_size = 0.2):
     
 
 x_train, y_train, x_valid, y_valid, x_test, y_test = split_data_without_label(DB)
-extra_test_x,extra_test_y, _, _, _, _ = split_data_without_label(DB, 0, 0)
 # groups = {}
 
 # current_group_label = None
@@ -117,13 +123,11 @@ model.compile(loss = 'sparse_categorical_crossentropy', optimizer = 'adam', metr
 Validation_data should be derived from the training portion (referring to the 
 80/20 cut). For this project we cut 10% of the training portion to be validation
 data. Chosen Batch size was arbitrary.'''
-history = model.fit(x_train,y_train, epochs = 50, validation_data =(x_valid,y_valid),
+history = model.fit(x_train,y_train, epochs = 70, validation_data =(x_valid,y_valid),
                     validation_split=0.2,
                     batch_size=32,
                     )
 
 #Evaluation of model's accuracy
 model_acc = model.evaluate(x_test, y_test, verbose=0)[1]
-print("Test Accuracy {:.3f}%".format(model_acc*100))
-model_acc = model.evaluate(extra_test_x, extra_test_y, verbose=0)[1]
 print("Test Accuracy {:.3f}%".format(model_acc*100))
