@@ -9,9 +9,14 @@ $(shell git submodule update --init)
 endif
 
 setup:
-	poetry install ; mkdir video data
+	poetry install
+	poetry run pip install tensorflow==2.11.0 --force-reinstall
+	mkdir video data
 run:
 	poetry run python -B ./src/main.py
+
+model:
+	poetry run python -B ./src/LSTM.py
 
 convert:
 	poetry run python -B ./src/video_to_3d_positions.py
@@ -21,9 +26,6 @@ label:
 
 record:
 	poetry run python -B ./src/record_video.py
-
-hand:
-	poetry run python -B ./src/hand.py
 
 black:
 	poetry run black ./

@@ -37,7 +37,7 @@ def data_to_csv(data, labels, filename):
     } # x, y, z - world coordnates | v - visibility
     """
     prepared_data = {
-        f"{i}{j}": list(
+        f"{j}{i}": list(
             map(
                 lambda x: next(filter(lambda y: y[0].name[0] == j, x.ListFields()))[1],
                 v,
@@ -46,31 +46,38 @@ def data_to_csv(data, labels, filename):
         for i, v in enumerate(list(zip(*data)))
         for j in "xyzv"
     }
-    prepared_data["label"] = labels["label"]
+    prepared_data["label"] = labels
     df = pandas.DataFrame(data=prepared_data)
     df.to_csv(os.path.join("data", f"{filename}.csv"))
+
 
 # convert origin to nose coordinates
 def convert(landmarks):
     nose = landmarks[0]
     for landmark in landmarks:
-        x, y, z = landmark.x,landmark.y, landmark.z
+        x, y, z = landmark.x, landmark.y, landmark.z
         landmark.x = x - nose.x
         landmark.y = y - nose.y
         landmark.z = z - nose.z
     return landmarks[0:25]
 
+
 video_names = os.listdir("video")
 for video_name in video_names:
     try:
-        labels = pandas.read_csv(os.path.join("data", f"{video_name}_labels.csv"))
+        labels = pandas.read_csv(os.path.join("data", f"{video_name}_labels.csv"))[
+            "label"
+        ]
+        skip_frames = [False] * len(labels)
         with mp_pose.Pose(
             min_detection_confidence=0.5, min_tracking_confidence=0.5
         ) as pose:
             data = []
             cap = cv2.VideoCapture(os.path.join("video", video_name))
+            i = 0
             while cap.isOpened():
                 success, image = cap.read()
+                i += 1
                 if not success:
                     print(f"Finish estimation for <{video_name}>")
                     break
@@ -83,6 +90,9 @@ for video_name in video_names:
                 if results.pose_landmarks:
                     converted_landmarks = convert(results.pose_world_landmarks.landmark)
                     data.append(converted_landmarks)
+                else:
+                    skip_frames[i] = True
+                    print(f"No pose found for <frame {i}>")
 
                 # Draw the pose annotation on the image.
                 image.flags.writeable = True
@@ -100,9 +110,14 @@ for video_name in video_names:
                 if cv2.waitKey(5) & 0xFF == 27:
                     break
             cap.release()
-            data_to_csv(data, labels, video_name)
+            filtered_labels = []
+            for i in range(len(labels)):
+                if not skip_frames[i]:
+                    filtered_labels.append(labels[i])
 
-            # remove video after convertion finish
-            # os.remove(os.path.join('video', video_name))
+            data_to_csv(data, filtered_labels, video_name)
+
     except FileNotFoundError as e:
-        print(f"Please edit `label_config.py` and label <{video_name}> with `make label`")
+        print(
+            f"Please edit `label_config.py` and label <{video_name}> with `make label`"
+        )

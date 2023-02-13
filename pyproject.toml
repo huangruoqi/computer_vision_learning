@@ -6,7 +6,7 @@ authors = ["Ruoqi Huang <huangruoqi374@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9, <3.12"
 opencv-python = "^4.7.0.68"
 mediapipe = "^0.9.0.1"
 pandas = "^1.5.3"
@@ -15,6 +15,7 @@ pims = "^0.6.1"
 imageio = "^2.25.0"
 av = "^10.0.0"
 psutil = "^5.9.4"
+tensorflow = "^2.11.0"
 
 
 [build-system]
