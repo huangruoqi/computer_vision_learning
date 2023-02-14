@@ -2,6 +2,9 @@
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
 - Tensorflow 
+  - easier labels
+  - different angles
+  - full upper body coverage
 - Behavior classification
 - Code refactor
 - Performance
