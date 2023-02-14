@@ -22,7 +22,8 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
 # mp_hands = mp.solutions.hands
-LSTM = tf.keras.models.load_model(os.path.join("model", "LSTM_1676399018"))
+
+LSTM = tf.keras.models.load_model(os.path.join("model", "only_shake_and_clap"))
 
 def convert(landmarks):
     nose = landmarks[0]
@@ -53,8 +54,8 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         if results.pose_landmarks is not None:
             # Model prediction
             inputs = convert(results.pose_world_landmarks.landmark)
-            outputs = LSTM.predict(np.array([inputs]))
-            print([labels[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
+            outputs = LSTM.predict(np.array([inputs]), verbose=0)
+            print([labels[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs][0])
             landmark = results.pose_landmarks.landmark
             # Draw the pose annotation on the image.
             image.flags.writeable = True

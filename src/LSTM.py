@@ -10,7 +10,7 @@ sys.path.append(
 from label_config import labels
 
 data = [
-    "1676265052.mp4x3",
+    "1676265052.mp4",
     "1676242134.mp4",
 ]
 
@@ -123,7 +123,7 @@ model.compile(loss = 'sparse_categorical_crossentropy', optimizer = 'adam', metr
 Validation_data should be derived from the training portion (referring to the 
 80/20 cut). For this project we cut 10% of the training portion to be validation
 data. Chosen Batch size was arbitrary.'''
-history = model.fit(x_train,y_train, epochs = 40, validation_data =(x_valid,y_valid),
+history = model.fit(x_train,y_train, epochs = 50, validation_data =(x_valid,y_valid),
                     validation_split=0.2,
                     batch_size=32,
                     )
