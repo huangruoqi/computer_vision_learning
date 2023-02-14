@@ -41,7 +41,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
            * mediapipe
            * pandas
            * pygame
-           * and other modules defined in poetry
+           * and other modules defined in pyproject.toml
        * create `video/` and `data/` folders to store the outputs
        * run commands in `Makefile` without the prefix `poetry run`
 * **RaspberryPi 64bit Lite OS** 
