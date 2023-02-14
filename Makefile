@@ -1,3 +1,5 @@
+.PHONY: model
+
 # check for git submodules
 ifneq ($(findstring -, $(shell git submodule status)),)
 $(info INFO: Initializing submodules)
@@ -29,3 +31,6 @@ record:
 
 black:
 	poetry run black ./
+
+predict: 
+	poetry run python -B ./src/predict.py

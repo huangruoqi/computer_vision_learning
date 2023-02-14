@@ -10,8 +10,7 @@ sys.path.append(
 from label_config import labels
 
 data = [
-    "1676265052",
-    "1676004101",
+    # "1676265052",
     "1676242134",
 ]
 
@@ -131,5 +130,5 @@ history = model.fit(x_train,y_train, epochs = 70, validation_data =(x_valid,y_va
 
 #Evaluation of model's accuracy
 model_acc = model.evaluate(x_test, y_test, verbose=0)[1]
-model.save(os.path.join("model", f"LSTM_{time.time()//1}"))
+model.save(os.path.join("model", f"LSTM_{int(time.time()//1)}"))
 print("Test Accuracy {:.3f}%".format(model_acc*100))
