@@ -10,11 +10,11 @@ sys.path.append(
 from label_config import labels
 
 data = [
-    "1676242134",
-    "1676265052",
+    "1676242134.mp4",
+    "1676265052.mp4x9",
 ]
 
-DBs = [pd.read_csv(os.path.join("data", f"{name}.mp4.csv"), index_col=0) for name in data]
+DBs = [pd.read_csv(os.path.join("data", f"{name}.csv"), index_col=0) for name in data]
 
 DB = pd.concat(DBs, axis=0, ignore_index=True, sort=False)
 
@@ -123,12 +123,12 @@ model.compile(loss = 'sparse_categorical_crossentropy', optimizer = 'adam', metr
 Validation_data should be derived from the training portion (referring to the 
 80/20 cut). For this project we cut 10% of the training portion to be validation
 data. Chosen Batch size was arbitrary.'''
-history = model.fit(x_train,y_train, epochs = 50, validation_data =(x_valid,y_valid),
+history = model.fit(x_train,y_train, epochs = 5, validation_data =(x_valid,y_valid),
                     validation_split=0.2,
                     batch_size=32,
                     )
 
 #Evaluation of model's accuracy
 model_acc = model.evaluate(x_test, y_test, verbose=0)[1]
-tf.keras.models.save_model(os.path.join("model", f"LSTM_{int(time.time()//1)}"))
+tf.keras.models.save_model(model, os.path.join("model", f"LSTM_{int(time.time()//1)}"))
 print("Test Accuracy {:.3f}%".format(model_acc*100))

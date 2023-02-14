@@ -22,7 +22,7 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
 # mp_hands = mp.solutions.hands
-LSTM = tf.keras.models.load_model(os.path.join("model", "kind_of_dumb"))
+LSTM = tf.keras.models.load_model(os.path.join("model", "LSTM_1676397717"))
 
 def convert(landmarks):
     nose = landmarks[0]
@@ -94,15 +94,3 @@ def convert_df_labels(df1, labels2int):
         label = df['label'][i]
         df.at[i, 'label'] = labels2int[label]
     return df
-
-# data = [
-#     "1676004101"
-# ]
-# DBs = [pd.read_csv(os.path.join("data", f"{name}.mp4.csv"), index_col=0) for name in data]
-# DB = pd.concat(DBs, axis=0, ignore_index=True, sort=False)
-# DB = convert_df_labels(DB, labels2int)
-# x_train, y_train, x_valid, y_valid, x_test, y_test = split_data_without_label(DB, 0, 0)
-
-# for i in range(0, len(x_train), 20):
-#     outputs = LSTM.predict(x_train[i:i+20])
-#     print([(labels+["Unlabeled"])[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
