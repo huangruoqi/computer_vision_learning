@@ -66,7 +66,7 @@ def convert(landmarks):
     return landmarks[0:25]
 
 
-REPEAT = 3
+REPEAT = 1
 # video_names = os.listdir("video")
 # for video_name in video_names:
 try:
