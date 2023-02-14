@@ -3,6 +3,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
 - Tensorflow 
 - Behavior classification
+- code refactor
 - Performance
 - Multi camera
 
@@ -13,10 +14,13 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 * `make label` to label video specified in `label_config.py` with GUI, labels per frame are saved in `data/<name>_labels.csv`
 * `make convert` to convert video specified in `label_config.py` to 3D coordinates in `data/` folder
   * change REPEAT to convert a video multiple times since Pose Estimation Model is probably also recurrent
-
+* `make model` to run `LSTM.py` and save model to `model/`
+  * specify `<name>.mp4.csv` files in `LSTM.py` to train
+* `make predict` to test LSTM model
+  * specify model folder to load in `src/predict.py`
 
 ## Setup
-* **Windows**
+* **Windows** *(recommended)*
   * Enable long path for windows in powershell
     * https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell
     ```
@@ -30,12 +34,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
   * download `make` utils 
     * https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=gigenet&download=
   * run `make setup` in terminal
-  * run `make run` to open camera and display real-time estimation for body and hands
-  * run `make record` to record video to `video/` folder 
-    * change MAX_TIME, FPS for record time or frame per second in `src/video_to_3d_positions.py`
-  * run `make convert` to convert all videos in `video/` folder to 3D coordinates in `data/` folder
-  * run `make model` to run `LSTM.py` and save model to `model/`
-    * specify `<name>.mp4.csv` files in `LSTM.py` to train
+
 * **MacOS** *(not tested)* (Macbook Air m2: mediapipe no version found)
    * use `pip install`
        * libraries:
@@ -46,6 +45,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
            * and other modules defined in pyproject.toml
        * create `video/` and `data/` folders to store the outputs
        * run commands in `Makefile` without the prefix `poetry run`
+
 * **RaspberryPi 64bit Lite OS** 
    * run the following commands
    ```
