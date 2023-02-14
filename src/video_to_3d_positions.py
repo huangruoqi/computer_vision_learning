@@ -12,11 +12,8 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
 
-
-# world coordinates are defined as: origin at the middle of left and right hips
-# might need to transform to other Landmark as origin
-# and time data can be added as well
-
+# repeating 0 times means only convert one time.
+REPEAT = 0
 
 def data_to_csv(data, labels, filename):
     """
@@ -63,10 +60,10 @@ def convert(landmarks):
         landmark.x = x - nose.x
         landmark.y = y - nose.y
         landmark.z = z - nose.z
+    # only need upper body coordinates
     return landmarks[0:25]
 
 
-REPEAT = 1
 # video_names = os.listdir("video")
 # for video_name in video_names:
 try:
@@ -80,7 +77,7 @@ try:
         data = []
         i = 0
 
-        for j in range(REPEAT):
+        for j in range(REPEAT+1):
             cap = cv2.VideoCapture(os.path.join("video", video_name))
             while cap.isOpened():
                 success, image = cap.read()
