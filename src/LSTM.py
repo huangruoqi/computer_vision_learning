@@ -10,7 +10,8 @@ sys.path.append(
 from label_config import labels
 
 data = [
-    # "1676265052",
+    # "1676004101",
+    "1676265052",
     "1676242134",
 ]
 
@@ -62,7 +63,7 @@ def split_data_with_label(df, valid_size=0.1, test_size = 0.2):
             (y_train if i < n_train else y_valid if i < n_train+n_valid else y_test).append(label)
     return np.array(x_train), np.array(y_train),np.array(x_valid), np.array(y_valid),np.array(x_test), np.array(y_test)
     
-def split_data_without_label(df, valid_size=0.1, test_size = 0.2):
+def split_data_without_label(df, valid_size=0.3, test_size = 0.1):
     df_input = df.copy()
     df_target = df_input.pop('label')
     x_train, x_valid, x_test = [], [], []
@@ -123,7 +124,7 @@ model.compile(loss = 'sparse_categorical_crossentropy', optimizer = 'adam', metr
 Validation_data should be derived from the training portion (referring to the 
 80/20 cut). For this project we cut 10% of the training portion to be validation
 data. Chosen Batch size was arbitrary.'''
-history = model.fit(x_train,y_train, epochs = 70, validation_data =(x_valid,y_valid),
+history = model.fit(x_train,y_train, epochs = 50, validation_data =(x_valid,y_valid),
                     validation_split=0.2,
                     batch_size=32,
                     )
