@@ -4,6 +4,7 @@ import tensorflow as tf
 import os
 import sys
 import random
+import time
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from label_config import labels
@@ -130,4 +131,5 @@ history = model.fit(x_train,y_train, epochs = 70, validation_data =(x_valid,y_va
 
 #Evaluation of model's accuracy
 model_acc = model.evaluate(x_test, y_test, verbose=0)[1]
+model.save(os.path.join("model", f"LSTM_{time.time()//1}"))
 print("Test Accuracy {:.3f}%".format(model_acc*100))
