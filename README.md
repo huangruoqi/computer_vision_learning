@@ -34,6 +34,8 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
   * run `make record` to record video to `video/` folder 
     * change MAX_TIME, FPS for record time or frame per second in `src/video_to_3d_positions.py`
   * run `make convert` to convert all videos in `video/` folder to 3D coordinates in `data/` folder
+  * run `make model` to run `LSTM.py` and save model to `model/`
+    * specify `<name>.mp4.csv` files in `LSTM.py` to train
 * **MacOS** *(not tested)* (Macbook Air m2: mediapipe no version found)
    * use `pip install`
        * libraries:
