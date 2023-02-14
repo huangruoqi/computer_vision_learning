@@ -3,7 +3,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
 - Tensorflow 
 - Behavior classification
-- code refactor
+- Code refactor
 - Performance
 - Multi camera
 
