@@ -22,7 +22,7 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
 # mp_hands = mp.solutions.hands
-LSTM = tf.keras.models.load_model(os.path.join("model", "LSTM_1676359051"))
+LSTM = tf.keras.models.load_model(os.path.join("model", "LSTM_1676361711"))
 
 def convert(landmarks):
     nose = landmarks[0]
@@ -35,45 +35,42 @@ def convert(landmarks):
         result.append(v)
     return np.array(result)
 
-# input_frames = deque([], 50)
-input_frames = []
 
-# cap = cv2.VideoCapture(0)
-# with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
-#     while cap.isOpened():
-#         success, image = cap.read()
-#         if not success:
-#             print("Ignoring empty camera frame.")
-#             # If loading a video, use 'break' instead of 'continue'.
-#             continue
+cap = cv2.VideoCapture(0)
+with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+    while cap.isOpened():
+        success, image = cap.read()
+        if not success:
+            print("Ignoring empty camera frame.")
+            # If loading a video, use 'break' instead of 'continue'.
+            continue
 
-#         # To improve performance, optionally mark the image as not writeable to
-#         # pass by reference.
-#         image.flags.writeable = False
-#         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-#         results = pose.process(image)
-#         if results.pose_landmarks is not None:
-#             # Model prediction
-#             input_frames.append(convert(results.pose_world_landmarks.landmark))
-#             # outputs = LSTM.predict(np.array(list(input_frames)))
-#             # print([labels[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
-#             landmark = results.pose_landmarks.landmark
-#             # Draw the pose annotation on the image.
-#             image.flags.writeable = True
-#             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-#             mp_drawing.draw_landmarks(
-#                 image,
-#                 results.pose_landmarks,
-#                 mp_pose.POSE_CONNECTIONS,
-#                 landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(),
-#             )
-#         # Flip the image horizontally for a selfie-view display.
-#         cv2.imshow("Pose Classification", cv2.flip(image, 1))
-#         if cv2.waitKey(1) & 0xFF == 27:
-#             break
-#         delta_time = clock.tick(FPS)
-#         if len(input_frames) > 300: break
-# cap.release()
+        # To improve performance, optionally mark the image as not writeable to
+        # pass by reference.
+        image.flags.writeable = False
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        results = pose.process(image)
+        if results.pose_landmarks is not None:
+            # Model prediction
+            inputs = convert(results.pose_world_landmarks.landmark)
+            outputs = LSTM.predict(np.array([inputs]))
+            print([labels[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
+            landmark = results.pose_landmarks.landmark
+            # Draw the pose annotation on the image.
+            image.flags.writeable = True
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            mp_drawing.draw_landmarks(
+                image,
+                results.pose_landmarks,
+                mp_pose.POSE_CONNECTIONS,
+                landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(),
+            )
+        # Flip the image horizontally for a selfie-view display.
+        cv2.imshow("Pose Classification", cv2.flip(image, 1))
+        if cv2.waitKey(1) & 0xFF == 27:
+            break
+        delta_time = clock.tick(FPS)
+cap.release()
 
 def split_data_without_label(df, valid_size=0.1, test_size = 0.2):
     df_input = df.copy()
@@ -98,18 +95,14 @@ def convert_df_labels(df1, labels2int):
         df.at[i, 'label'] = labels2int[label]
     return df
 
-data = [
-    "1676004101"
-]
-DBs = [pd.read_csv(os.path.join("data", f"{name}.mp4.csv"), index_col=0) for name in data]
-DB = pd.concat(DBs, axis=0, ignore_index=True, sort=False)
-DB = convert_df_labels(DB, labels2int)
-x_train, y_train, x_valid, y_valid, x_test, y_test = split_data_without_label(DB, 0, 0)
+# data = [
+#     "1676004101"
+# ]
+# DBs = [pd.read_csv(os.path.join("data", f"{name}.mp4.csv"), index_col=0) for name in data]
+# DB = pd.concat(DBs, axis=0, ignore_index=True, sort=False)
+# DB = convert_df_labels(DB, labels2int)
+# x_train, y_train, x_valid, y_valid, x_test, y_test = split_data_without_label(DB, 0, 0)
 
-for i in range(0, len(x_train), 20):
-    outputs = LSTM.predict(x_train[i:i+20])
-    print([labels[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
-
-
-# outputs = LSTM.predict(np.array(input_frames))
-# print([labels[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
+# for i in range(0, len(x_train), 20):
+#     outputs = LSTM.predict(x_train[i:i+20])
+#     print([(labels+["Unlabeled"])[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
