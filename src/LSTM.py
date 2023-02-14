@@ -10,9 +10,8 @@ sys.path.append(
 from label_config import labels
 
 data = [
-    # "1676004101",
-    "1676265052",
     "1676242134",
+    "1676265052",
 ]
 
 DBs = [pd.read_csv(os.path.join("data", f"{name}.mp4.csv"), index_col=0) for name in data]

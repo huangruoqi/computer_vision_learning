@@ -3,6 +3,10 @@ import numpy as np
 import pandas
 import os
 import mediapipe as mp
+import sys
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+from label_config import video_name
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -48,7 +52,7 @@ def data_to_csv(data, labels, filename):
     }
     prepared_data["label"] = labels
     df = pandas.DataFrame(data=prepared_data)
-    df.to_csv(os.path.join("data", f"{filename}.csv"))
+    df.to_csv(os.path.join("data", f"{filename}x9.csv"))
 
 
 # convert origin to nose coordinates
@@ -62,22 +66,24 @@ def convert(landmarks):
     return landmarks[0:25]
 
 
-video_names = os.listdir("video")
-for video_name in video_names:
-    try:
-        labels = pandas.read_csv(os.path.join("data", f"{video_name}_labels.csv"))[
-            "label"
-        ]
-        skip_frames = [False] * len(labels)
-        with mp_pose.Pose(
-            min_detection_confidence=0.5, min_tracking_confidence=0.5
-        ) as pose:
-            data = []
+REPEAT = 9
+# video_names = os.listdir("video")
+# for video_name in video_names:
+try:
+    labels = pandas.read_csv(os.path.join("data", f"{video_name}_labels.csv"))[
+        "label"
+    ]
+    skip_frames = [True] * (len(labels) * REPEAT)
+    with mp_pose.Pose(
+        min_detection_confidence=0.5, min_tracking_confidence=0.5
+    ) as pose:
+        data = []
+        i = 0
+
+        for j in range(REPEAT):
             cap = cv2.VideoCapture(os.path.join("video", video_name))
-            i = 0
             while cap.isOpened():
                 success, image = cap.read()
-                i += 1
                 if not success:
                     print(f"Finish estimation for <{video_name}>")
                     break
@@ -90,34 +96,34 @@ for video_name in video_names:
                 if results.pose_landmarks:
                     converted_landmarks = convert(results.pose_world_landmarks.landmark)
                     data.append(converted_landmarks)
+                    skip_frames[i] = False
                 else:
-                    skip_frames[i] = True
                     print(f"No pose found for <frame {i}>")
+                i += 1
 
                 # Draw the pose annotation on the image.
-                image.flags.writeable = True
-                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-                mp_drawing.draw_landmarks(
-                    image,
-                    results.pose_landmarks,
-                    mp_pose.POSE_CONNECTIONS,
-                    landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(),
-                )
+                # image.flags.writeable = True
+                # image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                # mp_drawing.draw_landmarks(
+                #     image,
+                #     results.pose_landmarks,
+                #     mp_pose.POSE_CONNECTIONS,
+                #     landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(),
+                # )
 
-                # uncomment this for display available
-                cv2.imshow("MediaPipe Pose", cv2.flip(image, 1))
-
-                if cv2.waitKey(5) & 0xFF == 27:
-                    break
+                # # uncomment this for display available
+                # cv2.imshow("MediaPipe Pose", cv2.flip(image, 1))
+                # if cv2.waitKey(1) & 0xFF == 27:
+                #     break
             cap.release()
-            filtered_labels = []
-            for i in range(len(labels)):
-                if not skip_frames[i]:
-                    filtered_labels.append(labels[i])
 
-            data_to_csv(data, filtered_labels, video_name)
+        filtered_labels = []
+        for k in range(len(labels)*REPEAT):
+            if not skip_frames[k]:
+                filtered_labels.append(labels[k%len(labels)])
+        data_to_csv(data, filtered_labels, video_name)
 
-    except FileNotFoundError as e:
-        print(
-            f"Please edit `label_config.py` and label <{video_name}> with `make label`"
-        )
+except FileNotFoundError as e:
+    print(
+        f"Please edit `label_config.py` and label <{video_name}> with `make label`"
+    )

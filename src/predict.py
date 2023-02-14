@@ -22,7 +22,7 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
 # mp_hands = mp.solutions.hands
-LSTM = tf.keras.models.load_model(os.path.join("model", "LSTM_1676359051"))
+LSTM = tf.keras.models.load_model(os.path.join("model", "kind_of_dumb"))
 
 def convert(landmarks):
     nose = landmarks[0]
