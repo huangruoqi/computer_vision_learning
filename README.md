@@ -1,10 +1,6 @@
 # computer_vision_learning
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
-- ~~Mediapipe hand tracking test~~
-- Data collection
-  - 爬虫
-  - ~~Simple GUI for labeling behaviors in video range~~
 - Tensorflow 
 - Behavior classification
 - Performance
