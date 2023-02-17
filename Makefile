@@ -21,7 +21,7 @@ model:
 	poetry run python -B ./src/LSTM.py
 
 convert:
-	poetry run python -B ./src/video_to_3d_positions.py
+	poetry run python -B ./src/convert.py
 
 label:
 	poetry run python -B ./index.py

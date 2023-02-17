@@ -14,14 +14,14 @@ setup:
 	pip3.7 install mediapipe-0.8-cp37-cp37m-linux_aarch64.whl
 	pip3.7 install protobuf==3.20.*
 	pip3.7 install pandas pygame
-	cp code/download_utils.py ~/.local/lib/python3.7/site-packages/mediapipe/python/solutions/download_utils.py
+	cp src/download_utils.py ~/.local/lib/python3.7/site-packages/mediapipe/python/solutions/download_utils.py
 	mkdir video data
 	
 run:
-	python3.7 -B ./code/main.py
+	python3.7 -B ./src/main.py
 
 convert:
-	python3.7 -B ./code/video_to_3d_positions.py
+	python3.7 -B ./src/convert.py
 
 record:
-	python3.7 -B ./code/record_video.py
+	python3.7 -B ./src/record_video.py
