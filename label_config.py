@@ -1,10 +1,10 @@
-video_name = "1676265052.mp4"
-width = 640
-height = 480
-fps=10
+VIDEO_NAME = "1676004101.mp4"
+WIDTH = 640
+HEIGHT = 480
+FPS=10
 
 # unlabeled data = "Unlabeled"
-labels = [
+LABELS = [
     "Nothing",
     "Nod",
     "Shake",

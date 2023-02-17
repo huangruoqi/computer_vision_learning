@@ -1,12 +1,7 @@
-import sys
-import os
-import tensorflow as tf
-import time
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-from mutils import split_data, labels2int, save_model_info
+Model path    : model\LSTM_TEST
+Model accuracy: 0.6558296084403992
 
-# Don't remove the comment below
-#MODEL_INFO
+--- MODEL INFO ---
 MODEL_NAME  = "LSTM_TEST"
 DATA        = [
     "1676265052.mp4x2",
@@ -31,14 +26,3 @@ history = model.fit(x_train,y_train, epochs=EPOCHS, validation_data =(x_valid,y_
                     validation_split=0.2,
                     batch_size=BATCH_SIZE,
                     )
-#MODEL_INFO
-# Don't remove the comment above
-
-model_acc = model.evaluate(x_test, y_test, verbose=0)[1]
-if len(MODEL_NAME)==0:
-    MODEL_NAME = f"LSTM_{int(time.time()//1)}"
-model_path = os.path.join("model", MODEL_NAME)
-tf.keras.models.save_model(model, model_path)
-print("Test Accuracy {:.3f}%".format(model_acc*100))
-
-save_model_info(model_path, model_acc)

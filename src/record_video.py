@@ -5,7 +5,7 @@ import time
 from _thread import start_new_thread
 import pygame
 
-MAX_TIME = 60
+MAX_TIME = 10
 FPS = 10
 clock = pygame.time.Clock()
 # Create a VideoCapture object

@@ -6,7 +6,7 @@ import mediapipe as mp
 import sys
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from label_config import video_name
+from label_config import VIDEO_NAME
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -14,6 +14,7 @@ mp_pose = mp.solutions.pose
 
 # repeating 0 times means only convert one time.
 REPEAT = 0
+DATA_NAME = VIDEO_NAME
 
 def data_to_csv(data, labels, filename):
     """
@@ -49,7 +50,7 @@ def data_to_csv(data, labels, filename):
     }
     prepared_data["label"] = labels
     df = pandas.DataFrame(data=prepared_data)
-    df.to_csv(os.path.join("data", f"{filename}x9.csv"))
+    df.to_csv(os.path.join("data", f"{filename}.csv"))
 
 
 # convert origin to nose coordinates
@@ -67,10 +68,10 @@ def convert(landmarks):
 # video_names = os.listdir("video")
 # for video_name in video_names:
 try:
-    labels = pandas.read_csv(os.path.join("data", f"{video_name}_labels.csv"))[
+    labels = pandas.read_csv(os.path.join("data", f"{VIDEO_NAME}_labels.csv"))[
         "label"
     ]
-    skip_frames = [True] * (len(labels) * REPEAT)
+    skip_frames = [True] * (len(labels) * (REPEAT+1))
     with mp_pose.Pose(
         min_detection_confidence=0.5, min_tracking_confidence=0.5
     ) as pose:
@@ -78,11 +79,11 @@ try:
         i = 0
 
         for j in range(REPEAT+1):
-            cap = cv2.VideoCapture(os.path.join("video", video_name))
+            cap = cv2.VideoCapture(os.path.join("video", VIDEO_NAME))
             while cap.isOpened():
                 success, image = cap.read()
                 if not success:
-                    print(f"Finish estimation for <{video_name}>")
+                    print(f"Finish estimation for <{VIDEO_NAME}>")
                     break
 
                 # To improve performance, optionally mark the image as not writeable to
@@ -115,12 +116,12 @@ try:
             cap.release()
 
         filtered_labels = []
-        for k in range(len(labels)*REPEAT):
+        for k in range(len(labels)*(REPEAT+1)):
             if not skip_frames[k]:
                 filtered_labels.append(labels[k%len(labels)])
-        data_to_csv(data, filtered_labels, video_name)
+        data_to_csv(data, filtered_labels, DATA_NAME if REPEAT==0 else f"{DATA_NAME}x{REPEAT+1}")
 
 except FileNotFoundError as e:
     print(
-        f"Please edit `label_config.py` and label <{video_name}> with `make label`"
+        f"Please edit `label_config.py` and label <{VIDEO_NAME}> with `make label`"
     )

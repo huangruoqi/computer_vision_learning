@@ -4,10 +4,8 @@ from UI_BASE.UI.components.text import Text
 from UI_BASE.UI.components.color_bar import ColorBar
 from UI_BASE.UI.components.pixel_display import PixelDisplay
 from UI_BASE.UI.components.slider import Slider
-from UI_BASE.UI.sound import Channel
 from UI_BASE.UI.utils import IMAGE, SOUND
 from .vutils import VideoContainer
-import pygame
 import os
 import pandas
 import numpy

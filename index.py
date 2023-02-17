@@ -1,20 +1,20 @@
 from UI_BASE.UI.app import App
 from src.labeling_scene import LabelingScene
 import os
-from label_config import labels, video_name, width, height, fps
+from label_config import LABELS, VIDEO_NAME, WIDTH, HEIGHT, FPS
 
 MAX_HEIGHT = 900
 
 app = App(
     LabelingScene,
-    width,
-    min(MAX_HEIGHT, height + 60),
-    fps=fps,
+    WIDTH,
+    min(MAX_HEIGHT, HEIGHT + 60),
+    fps=FPS,
     title="Video Labler",
-    video_name=video_name,
-    video_path=os.path.join(os.curdir, "video", video_name),
-    video_width=width,
-    video_height=height,
-    labels=labels,
+    video_name=VIDEO_NAME,
+    video_path=os.path.join(os.curdir, "video", VIDEO_NAME),
+    video_width=WIDTH,
+    video_height=HEIGHT,
+    labels=LABELS,
 )
 app.run()

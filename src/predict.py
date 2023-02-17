@@ -16,7 +16,7 @@ import random
 import time
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from label_config import labels
+from label_config import LABELS
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -55,7 +55,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             # Model prediction
             inputs = convert(results.pose_world_landmarks.landmark)
             outputs = LSTM.predict(np.array([inputs]), verbose=0)
-            print([labels[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs][0])
+            print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs][0])
             landmark = results.pose_landmarks.landmark
             # Draw the pose annotation on the image.
             image.flags.writeable = True
@@ -87,7 +87,7 @@ def split_data_without_label(df, valid_size=0.1, test_size = 0.2):
     return np.array(x_train), np.array(y_train),np.array(x_valid), np.array(y_valid),np.array(x_test), np.array(y_test)
     
 
-labels2int = {b:a for a, b in enumerate(labels+['Unlabeled'])}
+labels2int = {b:a for a, b in enumerate(LABELS+['Unlabeled'])}
 
 def convert_df_labels(df1, labels2int):
     df = df1.copy()
