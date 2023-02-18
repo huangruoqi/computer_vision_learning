@@ -85,3 +85,13 @@ def save_model_info(model_path, model_acc):
         f.write(f"Model accuracy: {model_acc}\n\n")
         f.write("--- MODEL INFO ---")
         f.write(model_info)
+    src = 'label_config.py'
+    dst = os.path.join(model_path, 'label_config.py')
+    src_file = open(src, 'r')
+    content = src_file.read().split("#LABEL")
+    src_file.close()
+    assert len(content) == 2
+    label_info = content[1]
+    with open(dst, 'w') as f:
+        f.write("--- MODEL INFO ---")
+        f.write(label_info)

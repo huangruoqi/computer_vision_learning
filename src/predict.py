@@ -3,27 +3,25 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import tensorflow as tf
-from collections import deque
-import pandas as pd
-
 import pygame
-
-FPS = 10
-clock = pygame.time.Clock()
-
 import sys
-import random
-import time
+
+MODEL_NAME = "kind_of_dumb"
+FPS = 10
+
+
 sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, "model", MODEL_NAME)))
 from label_config import LABELS
+
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
 # mp_hands = mp.solutions.hands
+clock = pygame.time.Clock()
 
-LSTM = tf.keras.models.load_model(os.path.join("model", "only_shake_and_clap"))
+LSTM = tf.keras.models.load_model(os.path.join("model", MODEL_NAME))
 
 def convert(landmarks):
     nose = landmarks[0]
@@ -72,26 +70,3 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             break
         delta_time = clock.tick(FPS)
 cap.release()
-
-def split_data_without_label(df, valid_size=0.1, test_size = 0.2):
-    df_input = df.copy()
-    df_target = df_input.pop('label')
-    x_train, x_valid, x_test = [], [], []
-    y_train, y_valid, y_test = [], [], []
-    n_test = int(len(df_input) * test_size)
-    n_valid = int(len(df_input) * valid_size)
-    n_train = len(df_input) - n_test - n_valid
-    for i, row in enumerate(df_input.itertuples(index=False)):
-        (x_train if i < n_train else x_valid if i < n_train+n_valid else x_test).append(row)
-        (y_train if i < n_train else y_valid if i < n_train+n_valid else y_test).append(df_target[i])
-    return np.array(x_train), np.array(y_train),np.array(x_valid), np.array(y_valid),np.array(x_test), np.array(y_test)
-    
-
-labels2int = {b:a for a, b in enumerate(LABELS+['Unlabeled'])}
-
-def convert_df_labels(df1, labels2int):
-    df = df1.copy()
-    for i in range(len(df)):
-        label = df['label'][i]
-        df.at[i, 'label'] = labels2int[label]
-    return df

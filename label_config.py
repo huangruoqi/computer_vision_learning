@@ -3,7 +3,7 @@ WIDTH = 640
 HEIGHT = 480
 FPS=10
 
-# unlabeled data = "Unlabeled"
+#LABEL
 LABELS = [
     "Nothing",
     "Nod",
@@ -11,3 +11,4 @@ LABELS = [
     "Clap",
     "Wave",
 ]
+# unlabeled data = "Unlabeled"
