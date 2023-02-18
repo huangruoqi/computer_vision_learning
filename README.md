@@ -19,7 +19,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 * `make model` to run `LSTM.py` and save model to `model/`
   * specify `<name>.mp4.csv` files in `LSTM.py` to train
 * `make predict` to test LSTM model
-  * specify model folder to load in `src/predict.py`
+  * specify MODEL_NAME to load in `src/predict.py`
   * might need to retrain model on different machine to get the working `keras_metadata.pb` file
 
 ## Setup
