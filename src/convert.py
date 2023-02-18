@@ -115,11 +115,17 @@ try:
                 #     break
             cap.release()
 
-        filtered_labels = []
+        filtered_labels_with_unlabeled = []
         for k in range(len(labels)*(REPEAT+1)):
             if not skip_frames[k]:
-                filtered_labels.append(labels[k%len(labels)])
-        data_to_csv(data, filtered_labels, DATA_NAME if REPEAT==0 else f"{DATA_NAME}x{REPEAT+1}")
+                filtered_labels_with_unlabeled.append(labels[k%len(labels)])
+        filtered_data = []
+        filtered_labels = []
+        for k in range(len(data)):
+            if filtered_labels_with_unlabeled[k] != "Unlabeled":
+                filtered_data.append(data[k])
+                filtered_labels.append(filtered_labels_with_unlabeled[k])
+        data_to_csv(filtered_data, filtered_labels, DATA_NAME if REPEAT==0 else f"{DATA_NAME}x{REPEAT+1}")
 
 except FileNotFoundError as e:
     print(
