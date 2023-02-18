@@ -1,8 +1,6 @@
+
 LABELS = [
     "Nothing",
-    "Nod",
     "Shake",
-    "Clap",
-    "Wave",
+    "Fall",
 ]
-# unlabeled data = "Unlabeled"

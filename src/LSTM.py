@@ -9,8 +9,9 @@ from mutils import split_data, labels2int, save_model_info
 #MODEL_INFO
 MODEL_NAME  = "LSTM_TEST"
 DATA        = [
-    "1676265052.mp4x2",
-    "1676242134.mp4",
+    "1676004101.mp4"
+    # "1676265052.mp4x2",
+    # "1676242134.mp4",
 ]
 EPOCHS      = 1
 VALID_RATIO = 0.3

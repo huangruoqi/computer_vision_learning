@@ -9,4 +9,3 @@ LABELS = [
     "Shake",
     "Fall",
 ]
-# unlabeled data = "Unlabeled"

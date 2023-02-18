@@ -6,7 +6,7 @@ import tensorflow as tf
 import pygame
 import sys
 
-MODEL_NAME = "kind_of_dumb"
+MODEL_NAME = "LSTM_TEST"
 FPS = 10
 
 

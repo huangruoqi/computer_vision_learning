@@ -1,11 +1,12 @@
 Model path    : model\LSTM_TEST
-Model accuracy: 0.6457399129867554
+Model accuracy: 0.3137255012989044
 
 --- MODEL INFO ---
 MODEL_NAME  = "LSTM_TEST"
 DATA        = [
-    "1676265052.mp4x2",
-    "1676242134.mp4",
+    "1676004101.mp4"
+    # "1676265052.mp4x2",
+    # "1676242134.mp4",
 ]
 EPOCHS      = 1
 VALID_RATIO = 0.3

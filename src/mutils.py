@@ -6,7 +6,7 @@ import numpy as np
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from label_config import LABELS
-labels2int = {b:a for a, b in enumerate(LABELS+['Unlabeled'])}
+labels2int = {b:a for a, b in enumerate(LABELS)}
 
 
 
