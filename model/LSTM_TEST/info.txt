@@ -1,5 +1,5 @@
 Model path    : model\LSTM_TEST
-Model accuracy: 0.6558296084403992
+Model accuracy: 0.6457399129867554
 
 --- MODEL INFO ---
 MODEL_NAME  = "LSTM_TEST"

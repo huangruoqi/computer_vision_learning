@@ -93,5 +93,4 @@ def save_model_info(model_path, model_acc):
     assert len(content) == 2
     label_info = content[1]
     with open(dst, 'w') as f:
-        f.write("--- MODEL INFO ---")
         f.write(label_info)
