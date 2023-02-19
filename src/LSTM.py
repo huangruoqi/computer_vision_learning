@@ -7,16 +7,17 @@ from mutils import split_data, labels2int, save_model_info
 
 # Don't remove the comment below
 #MODEL_INFO
-MODEL_NAME  = "LSTM_TEST"
+MODEL_NAME  = ""
 DATA        = [
-    "1676004101.mp4"
-    # "1676265052.mp4x2",
-    # "1676242134.mp4",
+    "1676842496.mp4",
+    "1676842883.mp4",
+    "1676843917.mp4",
+    "1676842689.mp4",
 ]
-EPOCHS      = 1
-VALID_RATIO = 0.3
+EPOCHS      = 10
+VALID_RATIO = 0.1
 TEST_RATIO  = 0.1
-BATCH_SIZE  = 32
+BATCH_SIZE  = 1
 
 x_train, y_train, x_valid, y_valid, x_test, y_test = split_data(DATA, VALID_RATIO, TEST_RATIO)
 

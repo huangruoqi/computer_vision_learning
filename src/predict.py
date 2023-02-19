@@ -6,7 +6,7 @@ import tensorflow as tf
 import pygame
 import sys
 
-MODEL_NAME = "LSTM_TEST"
+MODEL_NAME = "Nothing_Fall"
 FPS = 10
 
 
@@ -53,6 +53,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             # Model prediction
             inputs = convert(results.pose_world_landmarks.landmark)
             outputs = LSTM.predict(np.array([inputs]), verbose=0)
+            print(outputs[0])
             print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs][0])
             landmark = results.pose_landmarks.landmark
             # Draw the pose annotation on the image.
