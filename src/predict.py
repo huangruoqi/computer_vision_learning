@@ -8,6 +8,7 @@ import sys
 
 MODEL_NAME = "Nothing_Fall"
 FPS = 10
+BATCH_SIZE = 1
 
 
 sys.path.append(
@@ -22,6 +23,7 @@ mp_pose = mp.solutions.pose
 clock = pygame.time.Clock()
 
 LSTM = tf.keras.models.load_model(os.path.join("model", MODEL_NAME))
+input_buffer = []
 
 def convert(landmarks):
     nose = landmarks[0]
@@ -52,9 +54,12 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         if results.pose_landmarks is not None:
             # Model prediction
             inputs = convert(results.pose_world_landmarks.landmark)
-            outputs = LSTM.predict(np.array([inputs]), verbose=0)
-            print(outputs[0])
-            print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs][0])
+            input_buffer.append(inputs)
+            if len(input_buffer) >= BATCH_SIZE:
+                outputs = LSTM.predict(np.array(input_buffer), verbose=0)
+                print(outputs)
+                print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
+                input_buffer.clear()
             landmark = results.pose_landmarks.landmark
             # Draw the pose annotation on the image.
             image.flags.writeable = True
