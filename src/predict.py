@@ -6,7 +6,7 @@ import tensorflow as tf
 import pygame
 import sys
 
-MODEL_NAME = "Nothing_Fall"
+MODEL_NAME = "Perceptron_Test"
 FPS = 10
 BATCH_SIZE = 1
 

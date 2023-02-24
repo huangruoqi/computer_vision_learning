@@ -9,14 +9,14 @@ from mutils import split_data, labels2int, save_model_info
 
 # Don't remove the comment below
 #MODEL_INFO
-MODEL_NAME  = ""
+MODEL_NAME  = "Perceptron_Test"
 DATA        = [
     "1676842496.mp4",
     "1676842883.mp4",
     "1676843917.mp4",
     "1676842689.mp4",
 ]
-EPOCHS      = 50
+EPOCHS      = 10
 VALID_RATIO = 0.1
 TEST_RATIO  = 0.1
 BATCH_SIZE  = 1
@@ -24,8 +24,9 @@ BATCH_SIZE  = 1
 x_train, y_train, x_valid, y_valid, x_test, y_test = split_data(DATA, VALID_RATIO, TEST_RATIO)
 
 model = Sequential([
-    Dense(100,activation='sigmoid', input_shape=(x_train.shape[1], )),
-    Dense(200,activation='sigmoid'),
+    Dense(100,activation='sigmoid', input_shape=(x_train.shape[1],)),
+    Dense(200,activation='relu'),
+    Dense(10,activation='relu'),
     Dense(len(labels2int),activation='softmax'),
 ])
 print(model.summary())
@@ -44,4 +45,4 @@ model_path = os.path.join("model", MODEL_NAME)
 tf.keras.models.save_model(model, model_path)
 print("Test Accuracy {:.3f}%".format(model_acc*100))
 
-save_model_info(__file__, model_path, model_acc)
+save_model_info("Perceptron", __file__, model_path, model_acc)

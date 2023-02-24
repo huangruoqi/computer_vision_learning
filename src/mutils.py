@@ -72,7 +72,7 @@ def split_data(DATA, VALID_RATIO, TEST_RATIO):
 
     return split_data_without_label(DB, VALID_RATIO, TEST_RATIO)
 
-def save_model_info(file_path, model_path, model_acc):
+def save_model_info(model_type, file_path, model_path, model_acc):
     dst = os.path.join(model_path, 'info.txt')
     src_file = open(file_path, 'r')
     content = src_file.read().split("#MODEL_INFO")
@@ -80,6 +80,7 @@ def save_model_info(file_path, model_path, model_acc):
     assert len(content) == 3
     model_info = content[1]
     with open(dst, 'w') as f:
+        f.write(f"Model type: {model_type}\n")
         f.write(f"Model accuracy: {'{:.3f}%'.format(model_acc*100)}\n\n")
         f.write("--- MODEL INFO ---")
         f.write(model_info)

@@ -43,4 +43,4 @@ model_path = os.path.join("model", MODEL_NAME)
 tf.keras.models.save_model(model, model_path)
 print("Test Accuracy {:.3f}%".format(model_acc*100))
 
-save_model_info(model_path, model_acc)
+save_model_info("LSTM", __file__, model_path, model_acc)
