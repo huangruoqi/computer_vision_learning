@@ -17,8 +17,13 @@ setup:
 run:
 	poetry run python -B ./src/main.py
 
+# If the first argument is "model"
+ifeq (model,$(firstword $(MAKECMDGOALS)))
+  MODELFILE := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(MODELFILE):;@:)
+endif
 model:
-	poetry run python -B ./src/LSTM.py
+	poetry run python -B ./src/nn/$(MODELFILE).py
 
 convert:
 	poetry run python -B ./src/convert.py
