@@ -6,9 +6,9 @@ import tensorflow as tf
 import pygame
 import sys
 
-MODEL_NAME = "Perceptron_Test"
+MODEL_NAME = "Offset_first_try"
 FPS = 10
-BATCH_SIZE = 1
+BATCH_SIZE = 16
 
 
 sys.path.append(
