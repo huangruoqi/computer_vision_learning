@@ -2,7 +2,7 @@
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
 - Tensorflow (behavior classification)
-  - LSTM tested on ["Nothing", "Shake", "Fall"] lables
+  - LSTM tested on ["Nothing", "Shake", "Fall"] labels using coordinates offset between frames
 - Code refactor
 - Performance
 - Multi camera
