@@ -16,7 +16,9 @@ mp_pose = mp.solutions.pose
 REPEAT = 0
 DATA_NAME = VIDEO_NAME
 
-def data_to_csv(data, labels, filename):
+
+
+def data_to_csv_back_up(data, labels, filename):
     """
     data = [
         [Landmark0, Landmark1, ... , landmark32], # frame 1
@@ -52,17 +54,32 @@ def data_to_csv(data, labels, filename):
     df = pandas.DataFrame(data=prepared_data)
     df.to_csv(os.path.join("data", f"{filename}.csv"))
 
+def data_to_csv(data, labels, filename):
+    prepared_data = {
+        f"{'xyzv'[i&3]}{i>>2}": v
+        for i, v in enumerate(list(zip(*data)))
+    }
+    prepared_data["label"] = labels
+    df = pandas.DataFrame(data=prepared_data)
+    df.to_csv(os.path.join("data", f"{filename}.csv"))
 
-# convert origin to nose coordinates
+
+landmark_indices = [
+    0, 11, 12, 13, 14, 15, 16, 23, 24
+]
+# convert landmarks to only selected landmarks
 def convert(landmarks):
-    nose = landmarks[0]
-    for landmark in landmarks:
-        x, y, z = landmark.x, landmark.y, landmark.z
-        landmark.x = x - nose.x
-        landmark.y = y - nose.y
-        landmark.z = z - nose.z
-    # only need upper body coordinates
-    return landmarks[0:25]
+    result = []
+    for index in landmark_indices:
+        landmark = landmarks[index]
+        result.extend([landmark.x, landmark.y, landmark.z, landmark.visibility])
+    return result
+
+# offset according to previous frame
+def offset(curr, prev):
+    result = [(v[0] - v[1]) if i&3!=3 else v[0] for i, v in enumerate(zip(curr, prev))]
+    # print(sum([v for i, v in enumerate(result) if i&3!=3]))
+    return result
 
 
 # video_names = os.listdir("video")
@@ -80,6 +97,7 @@ try:
 
         for j in range(REPEAT+1):
             cap = cv2.VideoCapture(os.path.join("video", VIDEO_NAME))
+            previous_landmarks = None
             while cap.isOpened():
                 success, image = cap.read()
                 if not success:
@@ -93,8 +111,13 @@ try:
                 results = pose.process(image)
                 if results.pose_landmarks:
                     converted_landmarks = convert(results.pose_world_landmarks.landmark)
-                    data.append(converted_landmarks)
-                    skip_frames[i] = False
+                    if previous_landmarks is None:
+                        previous_landmarks = converted_landmarks
+                    else:
+                        offset_landmarks = offset(converted_landmarks, previous_landmarks)
+                        previous_landmarks = converted_landmarks
+                        data.append(offset_landmarks)
+                        skip_frames[i] = False
                 else:
                     print(f"No pose found for <frame {i}>")
                 i += 1

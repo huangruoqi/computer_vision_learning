@@ -25,20 +25,27 @@ clock = pygame.time.Clock()
 LSTM = tf.keras.models.load_model(os.path.join("model", MODEL_NAME))
 input_buffer = []
 
+landmark_indices = [
+    0, 11, 12, 13, 14, 15, 16, 23, 24
+]
+# convert landmarks to only selected landmarks
 def convert(landmarks):
-    nose = landmarks[0]
     result = []
-    for landmark in landmarks[0:25]:
-        x, y, z, v = landmark.x, landmark.y, landmark.z, landmark.visibility
-        result.append(x - nose.x)
-        result.append(y - nose.y)
-        result.append(z - nose.z)
-        result.append(v)
-    return np.array(result)
+    for index in landmark_indices:
+        landmark = landmarks[index]
+        result.extend([landmark.x, landmark.y, landmark.z, landmark.visibility])
+    return result
+
+# offset according to previous frame
+def offset(curr, prev):
+    result = [(v[0] - v[1]) if i&3!=3 else v[0] for i, v in enumerate(zip(curr, prev))]
+    # print(sum([v for i, v in enumerate(result) if i&3!=3]))
+    return result
 
 
 cap = cv2.VideoCapture(0)
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+    previous_landmarks = None
     while cap.isOpened():
         success, image = cap.read()
         if not success:
@@ -52,14 +59,18 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = pose.process(image)
         if results.pose_landmarks is not None:
-            # Model prediction
-            inputs = convert(results.pose_world_landmarks.landmark)
-            input_buffer.append(inputs)
-            if len(input_buffer) >= BATCH_SIZE:
-                outputs = LSTM.predict(np.array(input_buffer), verbose=0)
-                print(outputs)
-                print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
-                input_buffer.clear()
+            converted_landmarks = convert(results.pose_world_landmarks.landmark)
+            if previous_landmarks is None:
+                previous_landmarks = converted_landmarks
+            else:
+                offset_landmarks = offset(converted_landmarks, previous_landmarks)
+                previous_landmarks = converted_landmarks
+                input_buffer.append(offset_landmarks)
+                if len(input_buffer) >= BATCH_SIZE:
+                    outputs = LSTM.predict(np.array(input_buffer), verbose=0)
+                    print(outputs)
+                    print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
+                    input_buffer.clear()
             landmark = results.pose_landmarks.landmark
             # Draw the pose annotation on the image.
             image.flags.writeable = True

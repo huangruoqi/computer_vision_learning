@@ -52,4 +52,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             cv2.imshow("MediaPipe Pose", cv2.flip(image, 1))
             if cv2.waitKey(5) & 0xFF == 27:
                 break
+            mp_drawing.plot_landmarks(
+                results.pose_world_landmarks, mp_pose.POSE_CONNECTIONS)
+            print(results.pose_world_landmarks.landmark)
 cap.release()
