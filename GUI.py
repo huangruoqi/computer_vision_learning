@@ -10,15 +10,16 @@ scene_name = sys.argv[1]
 
 app = None
 if scene_name=="label":
-    from label_config import LABELS, VIDEO_NAME, WIDTH, HEIGHT, FPS
+    from label_config import LABELS, WIDTH, HEIGHT, FPS
+    video_name = sys.argv[2]
     app = App(
         LabelingScene,
         WIDTH,
         min(MAX_HEIGHT, HEIGHT + 60),
         fps=FPS,
         title="Video Labler",
-        video_name=VIDEO_NAME,
-        video_path=os.path.join(os.curdir, "video", VIDEO_NAME),
+        video_name=video_name,
+        video_path=os.path.join(os.curdir, "video", video_name),
         video_width=WIDTH,
         video_height=HEIGHT,
         labels=LABELS,
