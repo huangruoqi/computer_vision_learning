@@ -12,6 +12,9 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 * `make record` to record video to `video/` folder 
   * change MAX_TIME, FPS for record time or frame per second in `src/convert.py`
 * `make label` to show all videos in `video/` folder (max=10) with GUI, click 'label' then 'convert' to label each video.
+  * something like this
+  * <img width="914" alt="Screen Shot 2023-03-04 at 2 20 56 PM" src="https://user-images.githubusercontent.com/44049919/222931197-10e69854-2bf4-4a1f-be65-d483c9677016.png">
+
 * `make model <file_name_in_nn_folder>`
   * `make model LSTM` to run `LSTM.py` and save model to `model/` 
   * specify `<name>.mp4.csv` files in `LSTM.py` to train
