@@ -8,13 +8,21 @@ import os
 
 def label_video(name):
     os.system(f'poetry run python -B GUI.py label "{name}"')
-
+import time
 class SelectScene(Scene):
     def __init__(self, screen, *args, **kwargs):
         super(SelectScene, self).__init__(screen, *args, **kwargs)
         self.item_pos = {}
         self.videos = None
-        self.add("Title", Text(text="VIDEOS", align_mode="CENTER", size=66, x=self.width//2, y=35))
+        self.convert_task = None
+        self.convert_task_wait = 0
+        self.add("title", Text(text="VIDEOS", align_mode="CENTER", size=66, x=self.width//2, y=35))
+        self.ci = self.add("convert_indicator", Text(text="Converting...", align_mode="CENTER", size=160, color=(100,120,140), x=self.width//2, y=self.height//2), 4)
+        self.ci.hide()
+        def convert_video(i):
+            self.ci.show()
+            self.convert_task = i
+            
         for i in range(10):
             x = (i&1) * (self.width // 2)
             y = (i//2) + 100*(i//2) + 70
@@ -28,7 +36,7 @@ class SelectScene(Scene):
             ))
             self.add(f"item_{i}_convert_bt", Button(
                 text="convert", x=x+180, y=y+50, text_fontsize=20,
-                # on_click=(lambda x: lambda: convert_video_with_label(self.videos[x][0]))(i)
+                on_click=(lambda x: lambda: convert_video(x))(i)
             ))
         self.refresh_videos()
 
@@ -53,6 +61,18 @@ class SelectScene(Scene):
                 self.get(f"item_{index}_convert_bt").show()
             else:
                 self.get(f"item_{index}_convert_bt").hide()
+
+    def update(self, delta_time, mouse_pos, clicked, pressed):
+        super().update(delta_time, mouse_pos, clicked, pressed)
+        if self.convert_task:
+            if self.convert_task_wait > 1:
+                # convert_video_with_label(self.videos[self.convert_task][0])
+                time.sleep(10)
+                self.convert_task = None
+                self.ci.hide()
+                self.convert_task_wait = 0
+            else:
+                self.convert_task_wait += 1
 
 
 
