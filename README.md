@@ -14,7 +14,8 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 * `make label` to label video specified in `label_config.py` with GUI, labels per frame are saved in `data/<name>_labels.csv`
 * `make convert` to convert video specified in `label_config.py` to 3D coordinates in `data/` folder
   * change REPEAT to convert a video multiple times since Pose Estimation Model is probably also recurrent
-* `make model` to run `LSTM.py` and save model to `model/`
+* `make model <file_name_in_nn_folder>`
+  * `make model LSTM` to run `LSTM.py` and save model to `model/` 
   * specify `<name>.mp4.csv` files in `LSTM.py` to train
 * `make predict` to test LSTM model
   * specify MODEL_NAME to load in `src/predict.py`
@@ -36,7 +37,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
     * https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=gigenet&download=
   * run `make setup` in terminal
 
-* **MacOS** *(not tested)* (Macbook Air m2: mediapipe no version found)
+* **MacOS** (intel chip only)
    * use `pip install`
        * libraries:
            * opencv-python
