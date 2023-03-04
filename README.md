@@ -8,7 +8,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 - Multi camera
 
 ## Usage
-* `make run` to open camera and display real-time estimation for body and hands
+* `make test` to open camera and display real-time estimation for body and hands
 * `make record` to record video to `video/` folder 
   * change MAX_TIME, FPS for record time or frame per second in `src/convert.py`
 * `make label` to label video specified in `label_config.py` with GUI, labels per frame are saved in `data/<name>_labels.csv`

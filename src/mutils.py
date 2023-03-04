@@ -8,7 +8,22 @@ sys.path.append(
 from label_config import LABELS
 labels2int = {b:a for a, b in enumerate(LABELS)}
 
+landmark_indices = [
+    0, 11, 12, 13, 14, 15, 16, 23, 24
+]
+# convert landmarks to only selected landmarks
+def convert(landmarks):
+    result = []
+    for index in landmark_indices:
+        landmark = landmarks[index]
+        result.extend([landmark.x, landmark.y, landmark.z, landmark.visibility])
+    return result
 
+# offset according to previous frame
+def offset(curr, prev):
+    result = [(v[0] - v[1]) if i&3!=3 else v[0] for i, v in enumerate(zip(curr, prev))]
+    # print(sum([v for i, v in enumerate(result) if i&3!=3]))
+    return result
 
 def convert_df_labels(df1, labels2int):
     df = df1.copy()
@@ -93,3 +108,5 @@ def save_model_info(model_type, file_path, model_path, model_acc):
     label_info = content[1]
     with open(dst, 'w') as f:
         f.write(label_info)
+
+
