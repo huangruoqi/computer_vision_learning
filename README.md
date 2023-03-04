@@ -11,9 +11,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 * `make test` to open camera and display real-time estimation for body and hands
 * `make record` to record video to `video/` folder 
   * change MAX_TIME, FPS for record time or frame per second in `src/convert.py`
-* `make label` to label video specified in `label_config.py` with GUI, labels per frame are saved in `data/<name>_labels.csv`
-* `make convert` to convert video specified in `label_config.py` to 3D coordinates in `data/` folder
-  * change REPEAT to convert a video multiple times since Pose Estimation Model is probably also recurrent
+* `make label` to show all videos in `video/` folder (max=10) with GUI, click 'label' then 'convert' to label each video.
 * `make model <file_name_in_nn_folder>`
   * `make model LSTM` to run `LSTM.py` and save model to `model/` 
   * specify `<name>.mp4.csv` files in `LSTM.py` to train

@@ -23,7 +23,7 @@ mp_pose = mp.solutions.pose
 # mp_hands = mp.solutions.hands
 clock = pygame.time.Clock()
 
-LSTM = tf.keras.models.load_model(os.path.join("model", MODEL_NAME))
+MODEL = tf.keras.models.load_model(os.path.join("model", MODEL_NAME))
 input_buffer = []
 
 cap = cv2.VideoCapture(0)
@@ -50,7 +50,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 previous_landmarks = converted_landmarks
                 input_buffer.append(offset_landmarks)
                 if len(input_buffer) >= BATCH_SIZE:
-                    outputs = LSTM.predict(np.array(input_buffer), verbose=0)
+                    outputs = MODEL.predict(np.array(input_buffer), verbose=0)
                     print(outputs)
                     print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
                     input_buffer.clear()
