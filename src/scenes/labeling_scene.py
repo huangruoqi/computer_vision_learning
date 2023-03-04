@@ -1,10 +1,9 @@
 from UI_BASE.UI.scene import Scene
 from UI_BASE.UI.components.button import Button
-from UI_BASE.UI.components.text import Text
 from UI_BASE.UI.components.color_bar import ColorBar
 from UI_BASE.UI.components.pixel_display import PixelDisplay
 from UI_BASE.UI.components.slider import Slider
-from UI_BASE.UI.utils import IMAGE, SOUND
+from UI_BASE.UI.utils import IMAGE
 from ..vutils import VideoContainer
 import os
 import pandas
@@ -14,7 +13,6 @@ import numpy
 class LabelingScene(Scene):
     def __init__(self, screen, *args, **kwargs):
         super(LabelingScene, self).__init__(screen, *args, **kwargs)
-        # self.background_music = SOUND("castle.wav", Channel.BACKGROUND)
         self.fps = kwargs.get("fps")
         screen_fps = 30
         self.fps_ratio = screen_fps / self.fps

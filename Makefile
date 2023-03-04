@@ -25,11 +25,8 @@ endif
 model:
 	poetry run python -B ./src/nn/$(MODELFILE).py
 
-convert:
-	poetry run python -B ./src/convert.py
-
 label:
-	poetry run python -B ./index.py
+	poetry run python -B ./GUI.py select
 
 record:
 	poetry run python -B ./src/record_video.py
