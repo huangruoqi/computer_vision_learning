@@ -6,8 +6,7 @@ from UI_BASE.UI.utils import IMAGE
 # from ..convert import convert_video_with_label
 import os
 
-def label_video(name):
-    os.system(f'poetry run python -B GUI.py label "{name}"')
+
 import time
 class SelectScene(Scene):
     def __init__(self, screen, *args, **kwargs):
@@ -23,6 +22,10 @@ class SelectScene(Scene):
             self.ci.show()
             self.convert_task = i
             
+        def label_video(name):
+            os.system(f'poetry run python -B GUI.py label "{name}"')
+            self.refresh_videos()
+        
         for i in range(10):
             x = (i&1) * (self.width // 2)
             y = (i//2) + 100*(i//2) + 70
