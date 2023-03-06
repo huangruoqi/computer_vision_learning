@@ -69,6 +69,7 @@ class SelectScene(Scene):
                 # convert_video_with_label(self.videos[self.convert_task][0])
                 time.sleep(10)
                 self.convert_task = None
+                self.refresh_videos()
                 self.ci.hide()
                 self.convert_task_wait = 0
             else:
