@@ -38,6 +38,11 @@ class SelectScene(Scene):
                 text="convert", x=x+180, y=y+50, text_fontsize=20,
                 on_click=(lambda x: lambda: convert_video(x))(i)
             ))
+            self.add(f"item_{i}_converted", Text(
+                text="Converted", x=x+200, y=y+50, size=60, color=(100, 120, 140), align_mode="CENTER"
+            ), 4)
+            self.get(f"item_{i}_converted").hide()
+
         self.refresh_videos()
 
         
@@ -54,6 +59,7 @@ class SelectScene(Scene):
             self.get(f"item_{index}_name").change_text("")
             self.get(f"item_{index}_label_bt").hide()
             self.get(f"item_{index}_convert_bt").hide()
+            self.get(f"item_{index}_converted").hide()
         else:
             self.get(f"item_{index}_name").change_text(info[0])
             self.get(f"item_{index}_label_bt").show()
@@ -61,13 +67,17 @@ class SelectScene(Scene):
                 self.get(f"item_{index}_convert_bt").show()
             else:
                 self.get(f"item_{index}_convert_bt").hide()
+            if info[2]:
+                self.get(f"item_{index}_converted").show()
+            else:
+                self.get(f"item_{index}_converted").hide()
 
     def update(self, delta_time, mouse_pos, clicked, pressed):
         super().update(delta_time, mouse_pos, clicked, pressed)
         if self.convert_task:
             if self.convert_task_wait > 1:
                 # convert_video_with_label(self.videos[self.convert_task][0])
-                time.sleep(10)
+                time.sleep(5)
                 self.convert_task = None
                 self.ci.hide()
                 self.convert_task_wait = 0
@@ -78,7 +88,11 @@ class SelectScene(Scene):
 
     def get_videos(self):
         videos = os.listdir("video")
-        return [(v, os.path.exists(os.path.join("data", f"{v}_labels.csv"))) for v in videos]
+        return [(
+                    v, 
+                    os.path.exists(os.path.join("data", f"{v}_labels.csv")),
+                    os.path.exists(os.path.join("data", f"{v}.csv")),
+                ) for v in videos]
         
 
     def close(self):
