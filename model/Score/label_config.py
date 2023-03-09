@@ -1,0 +1,6 @@
+
+LABELS = [
+    "Nothing",
+    "Shake",
+    "Fall",
+]
