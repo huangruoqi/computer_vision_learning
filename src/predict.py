@@ -8,7 +8,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from mutils import convert, offset
 
-MODEL_NAME = "Score_test"
+MODEL_NAME = "Score"
 FPS = 10
 TIMESTAMPS = 16
 
