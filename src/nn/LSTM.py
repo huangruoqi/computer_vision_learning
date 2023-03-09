@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from mutils import split_data, labels2int, save_model_info
+from mutils import split_data, group_data, group_data_score, labels2int, save_model_info
 
 # Don't remove the comment below
 #MODEL_INFO
@@ -14,23 +14,31 @@ DATA        = [
     "1676843917.mp4",
     "1676842689.mp4",
 ]
-EPOCHS      = 10
+EPOCHS      = 100
 VALID_RATIO = 0.1
 TEST_RATIO  = 0.1
 BATCH_SIZE  = 16
+TIMESTAMPS  = 16
 
 x_train, y_train, x_valid, y_valid, x_test, y_test = split_data(DATA, VALID_RATIO, TEST_RATIO)
+x_train = group_data(x_train, TIMESTAMPS)
+y_train = group_data_score(y_train, TIMESTAMPS)
+x_valid = group_data(x_valid, TIMESTAMPS)
+y_valid = group_data_score(y_valid, TIMESTAMPS)
+x_test = group_data(x_test, TIMESTAMPS)
+y_test = group_data_score(y_test, TIMESTAMPS)
 
-inputs = tf.keras.Input(shape=(x_train.shape[1],))
-expand_dims = tf.expand_dims(inputs, axis=2)
-lstm = tf.keras.layers.LSTM(128, return_sequences=True)(expand_dims)
-flatten = tf.keras.layers.Flatten()(lstm)
-outputs = tf.keras.layers.Dense(len(labels2int),activation='softmax')(flatten)
+print(x_train.shape)
+print(y_train.shape)
+
+
+inputs = tf.keras.Input(shape=(x_train.shape[1], x_train.shape[2]))
+lstm = tf.keras.layers.LSTM(128)(inputs)
+outputs = tf.keras.layers.Dense(1, activation='linear')(lstm)
 model = tf.keras.Model(inputs = inputs, outputs = outputs)
 print(model.summary())
-model.compile(loss = 'sparse_categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+model.compile(loss = 'mean_squared_error', optimizer = 'adam', metrics = ['accuracy'])
 history = model.fit(x_train,y_train, epochs=EPOCHS, validation_data =(x_valid,y_valid),
-                    validation_split=0.2,
                     batch_size=BATCH_SIZE,
                     )
 #MODEL_INFO
