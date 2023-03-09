@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 import pygame
 import sys
+from .mutils import convert, offset
 
 MODEL_NAME = "Offset_first_try"
 FPS = 10
@@ -22,26 +23,8 @@ mp_pose = mp.solutions.pose
 # mp_hands = mp.solutions.hands
 clock = pygame.time.Clock()
 
-LSTM = tf.keras.models.load_model(os.path.join("model", MODEL_NAME))
+MODEL = tf.keras.models.load_model(os.path.join("model", MODEL_NAME))
 input_buffer = []
-
-landmark_indices = [
-    0, 11, 12, 13, 14, 15, 16, 23, 24
-]
-# convert landmarks to only selected landmarks
-def convert(landmarks):
-    result = []
-    for index in landmark_indices:
-        landmark = landmarks[index]
-        result.extend([landmark.x, landmark.y, landmark.z, landmark.visibility])
-    return result
-
-# offset according to previous frame
-def offset(curr, prev):
-    result = [(v[0] - v[1]) if i&3!=3 else v[0] for i, v in enumerate(zip(curr, prev))]
-    # print(sum([v for i, v in enumerate(result) if i&3!=3]))
-    return result
-
 
 cap = cv2.VideoCapture(0)
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
@@ -67,7 +50,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 previous_landmarks = converted_landmarks
                 input_buffer.append(offset_landmarks)
                 if len(input_buffer) >= BATCH_SIZE:
-                    outputs = LSTM.predict(np.array(input_buffer), verbose=0)
+                    outputs = MODEL.predict(np.array(input_buffer), verbose=0)
                     print(outputs)
                     print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
                     input_buffer.clear()

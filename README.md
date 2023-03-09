@@ -1,25 +1,27 @@
 # computer_vision_learning
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
-- Tensorflow (behavior classification)
-  - learn lstm
-  - easier labels
-  - different angles
-  - full upper body coverage
-- Code refactor
+- Tensorflow (behavior scores)
+  - pop "visibiliity" from inputs
+  - convert labels to scores (average of labels in given interval)
+  - change LSTM to accept multiple timestamps
+  - Use methods such as PCA to reduce input dimensions
+  
 - Performance
 - Multi camera
 
 ## Usage
-* `make run` to open camera and display real-time estimation for body and hands
+* `make test` to open camera and display real-time estimation for body and hands
 * `make record` to record video to `video/` folder 
   * change MAX_TIME, FPS for record time or frame per second in `src/convert.py`
-* `make label` to label video specified in `label_config.py` with GUI, labels per frame are saved in `data/<name>_labels.csv`
-* `make convert` to convert video specified in `label_config.py` to 3D coordinates in `data/` folder
-  * change REPEAT to convert a video multiple times since Pose Estimation Model is probably also recurrent
-* `make model` to run `LSTM.py` and save model to `model/`
+* `make label` to show all videos in `video/` folder (max=10) with GUI, click 'label' then 'convert' to label each video.
+  * something like this
+  * <img width="914" alt="Screen Shot 2023-03-04 at 2 20 56 PM" src="https://user-images.githubusercontent.com/44049919/222931197-10e69854-2bf4-4a1f-be65-d483c9677016.png">
+
+* `make model <file_name_in_nn_folder>`
+  * `make model LSTM` to run `LSTM.py` and save model to `model/` 
   * specify `<name>.mp4.csv` files in `LSTM.py` to train
-* `make predict` to test LSTM model
+* `make predict` to test model
   * specify MODEL_NAME to load in `src/predict.py`
   * might need to retrain model on different machine to get the working `keras_metadata.pb` file
 
@@ -39,7 +41,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
     * https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=gigenet&download=
   * run `make setup` in terminal
 
-* **MacOS** *(not tested)* (Macbook Air m2: mediapipe no version found)
+* **MacOS** (intel chip only)
    * use `pip install`
        * libraries:
            * opencv-python
