@@ -14,7 +14,7 @@ DATA        = [
     "1676843917.mp4",
     "1676842689.mp4",
 ]
-EPOCHS      = 100
+EPOCHS      = 50
 VALID_RATIO = 0.1
 TEST_RATIO  = 0.1
 BATCH_SIZE  = 16
@@ -28,12 +28,9 @@ y_valid = group_data_score(y_valid, TIMESTAMPS)
 x_test = group_data(x_test, TIMESTAMPS)
 y_test = group_data_score(y_test, TIMESTAMPS)
 
-print(x_train.shape)
-print(y_train.shape)
-
-
 inputs = tf.keras.Input(shape=(x_train.shape[1], x_train.shape[2]))
-lstm = tf.keras.layers.LSTM(128)(inputs)
+lstm = tf.keras.layers.LSTM(256, return_sequences=True)(inputs)
+lstm = tf.keras.layers.LSTM(32)(lstm)
 outputs = tf.keras.layers.Dense(1, activation='linear')(lstm)
 model = tf.keras.Model(inputs = inputs, outputs = outputs)
 print(model.summary())
