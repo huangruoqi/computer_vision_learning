@@ -23,7 +23,10 @@ class SelectScene(Scene):
             self.convert_task = i
             
         def label_video(name):
-            os.system(f'python -B GUI.py label "{name}"')
+            command = f'python -B GUI.py label "{name}"'
+            if os.system("poetry -V")==0:
+                command = "poetry run " + command
+            os.system(command)
             self.refresh_videos()
         
         for i in range(10):
