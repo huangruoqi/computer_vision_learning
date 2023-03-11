@@ -1,5 +1,0 @@
-trained with:
-    model\kind_of_dumb\assets\1676265052.mp4.csv
-    model\kind_of_dumb\assets\1676242134.mp4.csv
-    
-60 : 30 : 10

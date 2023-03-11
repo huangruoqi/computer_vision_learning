@@ -1,6 +1,0 @@
-
-LABELS = [
-    "Nothing",
-    "Shake",
-    "Fall",
-]

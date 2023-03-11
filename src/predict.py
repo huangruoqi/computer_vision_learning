@@ -5,11 +5,12 @@ import numpy as np
 import tensorflow as tf
 import pygame
 import sys
-from .mutils import convert, offset
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+from mutils import convert, offset
 
-MODEL_NAME = "Offset_first_try"
+MODEL_NAME = "Score"
 FPS = 10
-BATCH_SIZE = 16
+TIMESTAMPS = 16
 
 
 sys.path.append(
@@ -49,10 +50,11 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 offset_landmarks = offset(converted_landmarks, previous_landmarks)
                 previous_landmarks = converted_landmarks
                 input_buffer.append(offset_landmarks)
-                if len(input_buffer) >= BATCH_SIZE:
-                    outputs = MODEL.predict(np.array(input_buffer), verbose=0)
+                if len(input_buffer) >= TIMESTAMPS:
+                    inputs = np.array([input_buffer])
+                    outputs = MODEL.predict(inputs, verbose=0)
                     print(outputs)
-                    print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
+                    # print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
                     input_buffer.clear()
             landmark = results.pose_landmarks.landmark
             # Draw the pose annotation on the image.

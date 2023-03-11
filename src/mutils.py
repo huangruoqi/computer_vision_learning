@@ -77,7 +77,7 @@ def split_data_without_label(df, valid_size, test_size):
     for i, row in enumerate(df_input.itertuples(index=False)):
         (x_train if i < n_train else x_valid if i < n_train+n_valid else x_test).append(row)
         (y_train if i < n_train else y_valid if i < n_train+n_valid else y_test).append(df_target[i])
-    return np.array(x_train), np.array(y_train),np.array(x_valid), np.array(y_valid),np.array(x_test), np.array(y_test)
+    return x_train, y_train,x_valid, y_valid,x_test, y_test
     
 
 def split_data(DATA, VALID_RATIO, TEST_RATIO):
@@ -109,4 +109,24 @@ def save_model_info(model_type, file_path, model_path, model_acc):
     with open(dst, 'w') as f:
         f.write(label_info)
 
+def group_data(data, group_size):
+    result = []
+    temp = []
+    for i in data:
+        temp.append(i)
+        if len(temp)==group_size:
+            result.append(temp)
+            temp = []
 
+    return np.array(result)
+
+def group_data_score(data, group_size):
+    result = []
+    temp = []
+    for i in data:
+        temp.append(i)
+        if len(temp)==group_size:
+            result.append(sum(temp)/16/2)
+            temp = []
+
+    return np.array(result)

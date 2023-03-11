@@ -23,7 +23,10 @@ class SelectScene(Scene):
             self.convert_task = i
             
         def label_video(name):
-            os.system(f'poetry run python -B GUI.py label "{name}"')
+            command = f'python -B GUI.py label "{name}"'
+            if os.system("poetry -V")==0:
+                command = "poetry run " + command
+            os.system(command)
             self.refresh_videos()
         
         for i in range(10):
@@ -77,7 +80,7 @@ class SelectScene(Scene):
 
     def update(self, delta_time, mouse_pos, clicked, pressed):
         super().update(delta_time, mouse_pos, clicked, pressed)
-        if self.convert_task:
+        if self.convert_task is not None:
             if self.convert_task_wait > 1:
                 # convert_video_with_label(self.videos[self.convert_task][0])
                 time.sleep(5)
