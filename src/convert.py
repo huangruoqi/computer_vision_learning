@@ -55,7 +55,7 @@ def data_to_csv_back_up(data, labels, filename):
 
 def data_to_csv(data, labels, filename):
     prepared_data = {
-        f"{'xyzv'[i&3]}{i>>2}": v
+        f"{'xyz'[i%3]}{i//3}": v
         for i, v in enumerate(list(zip(*data)))
     }
     prepared_data["label"] = labels

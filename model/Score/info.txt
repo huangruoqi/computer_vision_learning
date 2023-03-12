@@ -1,5 +1,5 @@
 Model type: LSTM
-Model accuracy: 76.923%
+Model accuracy: 66.667%
 
 --- MODEL INFO ---
 MODEL_NAME  = "Score"

@@ -3,7 +3,7 @@ from UI_BASE.UI.components.button import Button
 from UI_BASE.UI.components.text import Text
 from UI_BASE.UI.components.color_bar import ColorBar
 from UI_BASE.UI.utils import IMAGE
-# from ..convert import convert_video_with_label
+from ..convert import convert_video_with_label
 import os
 
 
@@ -45,7 +45,7 @@ class SelectScene(Scene):
                 on_click=(lambda x: lambda: convert_video(x))(i)
             ))
             self.add(f"item_{i}_converted", Text(
-                text="Converted", x=x+200, y=y+50, size=60, color=(100, 120, 140), align_mode="CENTER"
+                text="Converted", x=x+200, y=y+50, size=60, color=(100, 120, 140), align_mode="CENTER", opacity=50
             ), 4)
             self.get(f"item_{i}_converted").hide()
 
@@ -82,8 +82,8 @@ class SelectScene(Scene):
         super().update(delta_time, mouse_pos, clicked, pressed)
         if self.convert_task is not None:
             if self.convert_task_wait > 1:
-                # convert_video_with_label(self.videos[self.convert_task][0])
-                time.sleep(5)
+                convert_video_with_label(self.videos[self.convert_task][0])
+                # time.sleep(5)
                 self.convert_task = None
                 self.refresh_videos()
                 self.ci.hide()

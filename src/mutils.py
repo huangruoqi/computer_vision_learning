@@ -16,13 +16,12 @@ def convert(landmarks):
     result = []
     for index in landmark_indices:
         landmark = landmarks[index]
-        result.extend([landmark.x, landmark.y, landmark.z, landmark.visibility])
+        result.extend([landmark.x, landmark.y, landmark.z])
     return result
 
 # offset according to previous frame
 def offset(curr, prev):
-    result = [(v[0] - v[1]) if i&3!=3 else v[0] for i, v in enumerate(zip(curr, prev))]
-    # print(sum([v for i, v in enumerate(result) if i&3!=3]))
+    result = [a-b for a, b in zip(curr, prev)]
     return result
 
 def convert_df_labels(df1, labels2int):
