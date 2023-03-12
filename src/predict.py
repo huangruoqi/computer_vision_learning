@@ -6,7 +6,7 @@ import tensorflow as tf
 import pygame
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from mutils import convert, offset
+from mutils import convert, offset, preprocess
 
 MODEL_NAME = "Score"
 FPS = 10

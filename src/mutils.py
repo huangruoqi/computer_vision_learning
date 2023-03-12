@@ -24,6 +24,10 @@ def offset(curr, prev):
     result = [a-b for a, b in zip(curr, prev)]
     return result
 
+def preprocess(data):
+    result = data
+    return result
+
 def convert_df_labels(df1, labels2int):
     df = df1.copy()
     for i in range(len(df)):
