@@ -112,7 +112,8 @@ def save_model_info(model_type, file_path, model_path, model_acc):
     with open(dst, 'w') as f:
         f.write(label_info)
 
-def group_data(data, group_size):
+def group_data(data, group_size, pca_matrix):
+    #TODO: reduce input dimension with pca
     result = []
     temp = []
     for i in data:
@@ -133,3 +134,7 @@ def group_data_score(data, group_size):
             temp = []
 
     return np.array(result)
+
+def save_pca_matrix(data):
+    #TODO: save and return pca matrix from train data set
+    pass
