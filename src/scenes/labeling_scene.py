@@ -10,7 +10,7 @@ import pandas
 import numpy
 import cv2
 
-VIDEO_RESIZE_DIMENSION = 400, 300
+VIDEO_RESIZE_DIMENSION = 640, 480
 
 class LabelingScene(Scene):
     def __init__(self, screen, *args, **kwargs):
@@ -58,10 +58,23 @@ class LabelingScene(Scene):
                 image_relative=True,
                 height=50,
                 x=self.width - 50,
-                y=30,
+                y=80,
                 animation="opacity",
                 parameter={"factor": 0.5},
                 on_click=lambda: self.save(),
+                can_hover=lambda: not self.slider.dragged,
+            ),
+        )
+        self.add(
+            "close",
+            Button(
+                text="X",
+                text_fontsize=50,
+                x=self.width - 50,
+                y=30,
+                animation="opacity",
+                parameter={"factor": 0.5},
+                on_click=lambda: self.app.change_scene(0, lambda scene: scene.refresh_videos()),
                 can_hover=lambda: not self.slider.dragged,
             ),
         )
@@ -146,9 +159,9 @@ class LabelingScene(Scene):
                 color="grey",
             ),
         )
-        # self.set_video(kwargs.get("video_path"))
 
-    def set_video(self,video_path):
+    def set_video(self, video_path, video_name):
+        self.video_name = video_name
         self.vc = VideoContainer(video_path, 2000)
         self.set_pixels(self.vc.peek())
         self.current_label_index = -1
@@ -186,8 +199,6 @@ class LabelingScene(Scene):
             data={"label": list(map(lambda i: self.labels[i], self.frame2label))}
         )
         df.to_csv(os.path.join("data", f"{self.video_name}_labels.csv"))
-
-        # pygame.event.post(pygame.QUIT)
 
     def set_display(self):
         self.set_label()

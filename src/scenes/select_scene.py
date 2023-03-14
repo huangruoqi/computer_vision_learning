@@ -7,7 +7,6 @@ from ..convert import convert_video_with_label
 import os
 
 
-import time
 class SelectScene(Scene):
     def __init__(self, screen, *args, **kwargs):
         super(SelectScene, self).__init__(screen, *args, **kwargs)
@@ -23,9 +22,7 @@ class SelectScene(Scene):
             self.convert_task = i
             
         def label_video(name):
-            command = f'python -B GUI.py label "{name}"'
-            os.system(command)
-            self.refresh_videos()
+            self.app.change_scene(1, lambda scene: scene.set_video(os.path.join('video', name), name))
         
         for i in range(10):
             x = (i&1) * (self.width // 2)
