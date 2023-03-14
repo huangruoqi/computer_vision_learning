@@ -8,7 +8,9 @@ from ..vutils import VideoContainer
 import os
 import pandas
 import numpy
+import cv2
 
+VIDEO_RESIZE_DIMENSION = 400, 300
 
 class LabelingScene(Scene):
     def __init__(self, screen, *args, **kwargs):
@@ -64,14 +66,14 @@ class LabelingScene(Scene):
             ),
         )
         self.video_name = kwargs.get("video_name")
-        self.vc = VideoContainer(kwargs.get("video_path"), 2000)
+        self.vc = None 
 
         def on_change(x):
             self.vc.set(int(self.vc.total * x))
             self.slider.set_progress(self.vc.progress())
             arr = self.vc.peek()
             if arr is not None:
-                self.pixels.set(arr)
+                self.set_pixels(arr)
 
         self.slider = self.add(
             "slider",
@@ -88,18 +90,15 @@ class LabelingScene(Scene):
             1,
         )
 
-        video_width, video_height = kwargs.get("video_width"), kwargs.get(
-            "video_height"
-        )
+        video_width, video_height = VIDEO_RESIZE_DIMENSION
         self.pixels = self.add(
             "video",
             PixelDisplay(
                 video_width, video_height, self.width / 2, (self.height - 60) / 2
             ),
         )
-        self.pixels.set(self.vc.peek())
         self.current_label_index = -1
-        self.frame2label = numpy.array([-1] * self.vc.total)
+        self.frame2label = None
 
         def get_on_click(i):
             def on_click():
@@ -147,7 +146,20 @@ class LabelingScene(Scene):
                 color="grey",
             ),
         )
+        # self.set_video(kwargs.get("video_path"))
+
+    def set_video(self,video_path):
+        self.vc = VideoContainer(video_path, 2000)
+        self.set_pixels(self.vc.peek())
+        self.current_label_index = -1
+        self.frame2label = numpy.array([-1] * self.vc.total)
         self.set_buffered_bar()
+
+    def set_pixels(self, frame):
+        video_width, video_height = VIDEO_RESIZE_DIMENSION
+        res = cv2.resize(frame, dsize=(video_height, video_width), interpolation=cv2.INTER_CUBIC)
+        self.pixels.set(res)
+
 
     def play(self):
         self.playing = True
@@ -182,7 +194,7 @@ class LabelingScene(Scene):
         self.slider.set_progress(self.vc.progress())
         arr = self.vc.next()
         if arr is not None:
-            self.pixels.set(arr)
+            self.set_pixels(arr)
 
     def set_buffered_bar(self):
         self.vc.refresh_bound()
