@@ -10,7 +10,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
     - https://www.tensorflow.org/tfx/transform/api_docs/python/tft/pca
   
 - Performance
-  - [ ] test coral TPU on RaspberryPi with mediapipe pose model
+  <!-- - [ ] test coral TPU on RaspberryPi with mediapipe pose model -->
 - Multi camera
 
 ## Usage
@@ -19,7 +19,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
   * change MAX_TIME, FPS for record time or frame per second in `src/convert.py`
 * `make label` to show all videos in `video/` folder (max=10) with GUI, click 'label' then 'convert' to label each video.
   * something like this
-  * <img width="914" alt="Screen Shot 2023-03-04 at 2 20 56 PM" src="https://user-images.githubusercontent.com/44049919/222931197-10e69854-2bf4-4a1f-be65-d483c9677016.png">
+  * <img width="500" alt="Screen Shot 2023-03-04 at 2 20 56 PM" src="https://user-images.githubusercontent.com/44049919/222931197-10e69854-2bf4-4a1f-be65-d483c9677016.png">
 
 * `make model <file_name_in_nn_folder>`
   * `make model LSTM` to run `LSTM.py` and save model to `model/` 
@@ -30,7 +30,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 
 ## Setup
 * **Windows** *(recommended)*
-  * Enable long path for windows in powershell
+  <!-- * Enable long path for windows in powershell
     * https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell
     ```
     New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
@@ -39,7 +39,14 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
   * run in powershell to install `poetry`
     ```
     (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python
-    ```
+    ``` -->
+  * use `pip install`
+      * libraries:
+          * opencv-python
+          * mediapipe
+          * pandas
+          * pygame
+          * and other modules defined in pyproject.toml
   * download `make` utils 
     * https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=gigenet&download=
   * run `make setup` in terminal
@@ -53,7 +60,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
            * pygame
            * and other modules defined in pyproject.toml
        * create `video/` and `data/` folders to store the outputs
-       * run commands in `Makefile` without the prefix `poetry run`
+       * run commands in `Makefile`
 
 * **RaspberryPi 64bit Lite OS** 
    * run the following commands
