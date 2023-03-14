@@ -3,13 +3,14 @@ import os
 import sys
 import numpy as np
 import pickle
+import json
 
 
 
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from label_config import LABELS
-labels2int = {b:a for a, b in enumerate(LABELS)}
+setting_file = open('settings.json')
+settings = json.load(setting_file)
+setting_file.close()
+labels2int = {b:a for a, b in enumerate(settings['labels'])}
 
 landmark_indices = [
     0, 11, 12, 13, 14, 15, 16, 23, 24
@@ -119,15 +120,15 @@ def save_model_info(model_type, file_path, model_path, model_acc):
         f.write(f"Model accuracy: {'{:.3f}%'.format(model_acc*100)}\n\n")
         f.write("--- MODEL INFO ---")
         f.write(model_info)
-    src = 'label_config.py'
-    dst = os.path.join(model_path, 'label_config.py')
-    src_file = open(src, 'r')
-    content = src_file.read().split("#LABEL")
-    src_file.close()
-    assert len(content) == 2
-    label_info = content[1]
-    with open(dst, 'w') as f:
-        f.write(label_info)
+    # src = 'label_config.py'
+    # dst = os.path.join(model_path, 'label_config.py')
+    # src_file = open(src, 'r')
+    # content = src_file.read().split("#LABEL")
+    # src_file.close()
+    # assert len(content) == 2
+    # label_info = content[1]
+    # with open(dst, 'w') as f:
+    #     f.write(label_info)
 
 def group_data(data, group_size, preprocessor):
     result = []

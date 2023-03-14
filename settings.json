@@ -1,0 +1,8 @@
+{
+    "fps": 10,
+    "labels": [
+        "Nothing",
+        "Shake",
+        "Fall"
+    ]
+}

@@ -7,7 +7,7 @@ from mutils import split_data, group_data, group_data_score, labels2int, save_mo
 
 # Don't remove the comment below
 #MODEL_INFO
-MODEL_NAME  = "Score"
+MODEL_NAME  = ""
 DATA        = [
     "1676842496.mp4",
     "1676842883.mp4",
