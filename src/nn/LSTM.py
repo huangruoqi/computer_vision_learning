@@ -36,7 +36,7 @@ drop = tf.keras.layers.Dropout(0.2)(lstm)
 outputs = tf.keras.layers.Dense(1, activation='linear')(drop)
 model = tf.keras.Model(inputs = inputs, outputs = outputs)
 print(model.summary())
-model.compile(loss = 'mean_squared_error', optimizer = 'adam', metrics = ['accuracy'])
+model.compile(loss = 'mean_squared_error', optimizer = 'adam', metrics = ['mean_squared_error'])
 history = model.fit(x_train,y_train, epochs=EPOCHS, validation_data =(x_valid,y_valid),
                     batch_size=BATCH_SIZE,
                     )
