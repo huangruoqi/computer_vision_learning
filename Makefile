@@ -1,21 +1,19 @@
 .PHONY: model
 
 # check for git submodules
-ifneq ($(findstring -, $(shell git submodule status)),)
-$(info INFO: Initializing submodules)
-$(shell git submodule update --init)
-endif
-ifneq ($(findstring +, $(shell git submodule status)),)
-$(info INFO: New updates in submodules, reinitializing...)
-$(shell git submodule update --init)
-endif
+# ifneq ($(findstring -, $(shell git submodule status)),)
+# $(info INFO: Initializing submodules)
+# $(shell git submodule update --init)
+# endif
+# ifneq ($(findstring +, $(shell git submodule status)),)
+# $(info INFO: New updates in submodules, reinitializing...)
+# $(shell git submodule update --init)
+# endif
 
 setup:
-	poetry install
-	poetry run pip install tensorflow==2.11.0 --force-reinstall
 	mkdir video data
 test:
-	poetry run python -B ./src/test.py
+	python -B ./src/test.py
 
 # If the first argument is "model"
 ifeq (model,$(firstword $(MAKECMDGOALS)))
@@ -23,16 +21,19 @@ ifeq (model,$(firstword $(MAKECMDGOALS)))
   $(eval $(MODELFILE):;@:)
 endif
 model:
-	poetry run python -B ./src/nn/$(MODELFILE).py
+	python -B ./src/nn/$(MODELFILE).py
 
 label:
-	poetry run python -B ./GUI.py select
+	python -B ./GUI.py select
 
 record:
-	poetry run python -B ./src/record_video.py
+	python -B ./src/record_video.py
 
 black:
-	poetry run black ./
+	black ./
 
 predict: 
-	poetry run python -B ./src/predict.py
+	python -B ./src/predict.py
+
+pca:
+	python -B ./src/pca.py
