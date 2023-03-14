@@ -24,8 +24,6 @@ class SelectScene(Scene):
             
         def label_video(name):
             command = f'python -B GUI.py label "{name}"'
-            if os.system("poetry -V")==0:
-                command = "poetry run " + command
             os.system(command)
             self.refresh_videos()
         

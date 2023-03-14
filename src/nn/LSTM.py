@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from mutils import split_data, group_data, group_data_score, labels2int, save_model_info, save_pca_matrix
+from mutils import split_data, group_data, group_data_score, labels2int, save_model_info, Preprocessor
 
 # Don't remove the comment below
 #MODEL_INFO
@@ -21,14 +21,13 @@ BATCH_SIZE  = 16
 TIMESTAMPS  = 16
 
 x_train, y_train, x_valid, y_valid, x_test, y_test = split_data(DATA, VALID_RATIO, TEST_RATIO)
-pca_matrix = save_pca_matrix(x_train)
-x_train = group_data(x_train, TIMESTAMPS, pca_matrix)
+p = Preprocessor()
+x_train = group_data(x_train, TIMESTAMPS, p)
 y_train = group_data_score(y_train, TIMESTAMPS)
-x_valid = group_data(x_valid, TIMESTAMPS, pca_matrix)
+x_valid = group_data(x_valid, TIMESTAMPS, p)
 y_valid = group_data_score(y_valid, TIMESTAMPS)
-x_test = group_data(x_test, TIMESTAMPS, pca_matrix)
+x_test = group_data(x_test, TIMESTAMPS, p)
 y_test = group_data_score(y_test, TIMESTAMPS)
-
 inputs = tf.keras.Input(shape=(x_train.shape[1], x_train.shape[2]))
 lstm = tf.keras.layers.LSTM(256, return_sequences=True)(inputs)
 lstm = tf.keras.layers.LSTM(32)(lstm)

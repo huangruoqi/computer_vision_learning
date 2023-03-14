@@ -4,7 +4,7 @@ import pandas
 import os
 import mediapipe as mp
 import sys
-from .mutils import convert, offset, preprocess
+from .mutils import convert, offset
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
@@ -92,9 +92,8 @@ def convert_video_with_label(video_name):
                         previous_landmarks = converted_landmarks
                     else:
                         offset_landmarks = offset(converted_landmarks, previous_landmarks)
-                        final_data = preprocess(offset_landmarks)
                         previous_landmarks = converted_landmarks
-                        data.append(final_data)
+                        data.append(offset_landmarks)
                         skip_frames[i] = False
                 else:
                     print(f"No pose found for <frame {i}>")

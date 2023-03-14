@@ -2,6 +2,9 @@ import pandas as pd
 import os
 import sys
 import numpy as np
+import pickle
+
+
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
@@ -24,9 +27,23 @@ def offset(curr, prev):
     result = [a-b for a, b in zip(curr, prev)]
     return result
 
-def preprocess(data):
-    result = data
-    return result
+class Preprocessor:
+    def __init__(self):
+        self.pca = None
+        from sklearn.decomposition import PCA
+        try:
+            pardir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+            pca_file = open(os.path.join(pardir, 'pca.pkl'), 'rb')
+            self.pca = pickle.load(pca_file)
+            pca_file.close()
+        except Exception as e:
+            print(e)
+            print("PCA not loaded")
+            pass
+    def transform(self, data):
+        if self.pca is not None:
+            data = self.pca.transform(data)
+        return data
 
 def convert_df_labels(df1, labels2int):
     df = df1.copy()
@@ -112,10 +129,10 @@ def save_model_info(model_type, file_path, model_path, model_acc):
     with open(dst, 'w') as f:
         f.write(label_info)
 
-def group_data(data, group_size, pca_matrix):
-    #TODO: reduce input dimension with pca
+def group_data(data, group_size, preprocessor):
     result = []
     temp = []
+    data = preprocessor.transform(data)
     for i in data:
         temp.append(i)
         if len(temp)==group_size:
@@ -135,6 +152,3 @@ def group_data_score(data, group_size):
 
     return np.array(result)
 
-def save_pca_matrix(data):
-    #TODO: save and return pca matrix from train data set
-    pass

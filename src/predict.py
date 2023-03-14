@@ -6,7 +6,7 @@ import tensorflow as tf
 import pygame
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
-from mutils import convert, offset, preprocess
+from mutils import convert, offset, Preprocessor
 
 MODEL_NAME = "Score"
 FPS = 10
@@ -30,6 +30,7 @@ input_buffer = []
 cap = cv2.VideoCapture(0)
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
     previous_landmarks = None
+    preprocessor = Preprocessor()
     while cap.isOpened():
         success, image = cap.read()
         if not success:
@@ -51,7 +52,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                 previous_landmarks = converted_landmarks
                 input_buffer.append(offset_landmarks)
                 if len(input_buffer) >= TIMESTAMPS:
-                    inputs = np.array([input_buffer])
+                    inputs = np.array([preprocessor.transform(np.array(input_buffer))])
                     outputs = MODEL.predict(inputs, verbose=0)
                     print(outputs)
                     # print([LABELS[next(filter(lambda x: x[1]==max(output), enumerate(output)))[0]] for output in outputs])
