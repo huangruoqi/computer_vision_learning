@@ -10,6 +10,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
     - https://www.tensorflow.org/tfx/transform/api_docs/python/tft/pca
   
 - Performance
+  - [ ] test coral TPU on RaspberryPi with mediapipe pose model
 - Multi camera
 
 ## Usage
