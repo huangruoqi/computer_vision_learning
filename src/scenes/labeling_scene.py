@@ -12,6 +12,7 @@ import cv2
 
 VIDEO_RESIZE_DIMENSION = 640, 480
 
+
 class LabelingScene(Scene):
     def __init__(self, screen, *args, **kwargs):
         super(LabelingScene, self).__init__(screen, *args, **kwargs)
@@ -74,12 +75,14 @@ class LabelingScene(Scene):
                 y=30,
                 animation="opacity",
                 parameter={"factor": 0.5},
-                on_click=lambda: self.app.change_scene(0, lambda scene: scene.refresh_videos()),
+                on_click=lambda: self.app.change_scene(
+                    0, lambda scene: scene.refresh_videos()
+                ),
                 can_hover=lambda: not self.slider.dragged,
             ),
         )
         self.video_name = kwargs.get("video_name")
-        self.vc = None 
+        self.vc = None
 
         def on_change(x):
             self.vc.set(int(self.vc.total * x))
@@ -123,7 +126,7 @@ class LabelingScene(Scene):
         self.colors = list(ColorBar.colors.keys())
         self.colors[len(self.labels) - 1] = "black"
         for i, label in enumerate(self.labels):
-            height = (self.height - 100)// 100 * 100
+            height = (self.height - 100) // 100 * 100
             x = (50 * i) // height * 200
             y = (50 * i) % height
             self.add(
@@ -131,8 +134,8 @@ class LabelingScene(Scene):
                 Button(
                     text=label,
                     text_fontsize=50,
-                    x=x+20,
-                    y=y+20,
+                    x=x + 20,
+                    y=y + 20,
                     align_mode="TOPLEFT",
                     color=ColorBar.colors[self.colors[i]],
                     on_click=get_on_click(i),
@@ -170,9 +173,10 @@ class LabelingScene(Scene):
 
     def set_pixels(self, frame):
         video_width, video_height = VIDEO_RESIZE_DIMENSION
-        res = cv2.resize(frame, dsize=(video_height, video_width), interpolation=cv2.INTER_CUBIC)
+        res = cv2.resize(
+            frame, dsize=(video_height, video_width), interpolation=cv2.INTER_CUBIC
+        )
         self.pixels.set(res)
-
 
     def play(self):
         self.playing = True
@@ -233,11 +237,10 @@ class LabelingScene(Scene):
         if not self.playing:
             return
         if not pressed:
-            self.frame_count+=1
-            if self.frame_count>=self.fps_ratio:
+            self.frame_count += 1
+            if self.frame_count >= self.fps_ratio:
                 self.set_display()
-                self.frame_count-=self.fps_ratio
-            
+                self.frame_count -= self.fps_ratio
 
     def close(self):
         self.vc.close()

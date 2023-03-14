@@ -14,7 +14,6 @@ mp_pose = mp.solutions.pose
 REPEAT = 0
 
 
-
 def data_to_csv_back_up(data, labels, filename):
     """
     data = [
@@ -51,28 +50,24 @@ def data_to_csv_back_up(data, labels, filename):
     df = pandas.DataFrame(data=prepared_data)
     df.to_csv(os.path.join("data", f"{filename}.csv"))
 
+
 def data_to_csv(data, labels, filename):
-    prepared_data = {
-        f"{'xyz'[i%3]}{i//3}": v
-        for i, v in enumerate(list(zip(*data)))
-    }
+    prepared_data = {f"{'xyz'[i%3]}{i//3}": v for i, v in enumerate(list(zip(*data)))}
     prepared_data["label"] = labels
     df = pandas.DataFrame(data=prepared_data)
     df.to_csv(os.path.join("data", f"{filename}.csv"))
 
 
 def convert_video_with_label(video_name):
-    labels = pandas.read_csv(os.path.join("data", f"{video_name}_labels.csv"))[
-        "label"
-    ]
-    skip_frames = [True] * (len(labels) * (REPEAT+1))
+    labels = pandas.read_csv(os.path.join("data", f"{video_name}_labels.csv"))["label"]
+    skip_frames = [True] * (len(labels) * (REPEAT + 1))
     with mp_pose.Pose(
         min_detection_confidence=0.5, min_tracking_confidence=0.5
     ) as pose:
         data = []
         i = 0
 
-        for j in range(REPEAT+1):
+        for j in range(REPEAT + 1):
             cap = cv2.VideoCapture(os.path.join("video", video_name))
             previous_landmarks = None
             while cap.isOpened():
@@ -91,7 +86,9 @@ def convert_video_with_label(video_name):
                     if previous_landmarks is None:
                         previous_landmarks = converted_landmarks
                     else:
-                        offset_landmarks = offset(converted_landmarks, previous_landmarks)
+                        offset_landmarks = offset(
+                            converted_landmarks, previous_landmarks
+                        )
                         previous_landmarks = converted_landmarks
                         data.append(offset_landmarks)
                         skip_frames[i] = False
@@ -101,13 +98,17 @@ def convert_video_with_label(video_name):
             cap.release()
 
         filtered_labels_with_unlabeled = []
-        for k in range(len(labels)*(REPEAT+1)):
+        for k in range(len(labels) * (REPEAT + 1)):
             if not skip_frames[k]:
-                filtered_labels_with_unlabeled.append(labels[k%len(labels)])
+                filtered_labels_with_unlabeled.append(labels[k % len(labels)])
         filtered_data = []
         filtered_labels = []
         for k in range(len(data)):
             if filtered_labels_with_unlabeled[k] != "Unlabeled":
                 filtered_data.append(data[k])
                 filtered_labels.append(filtered_labels_with_unlabeled[k])
-        data_to_csv(filtered_data, filtered_labels, video_name if REPEAT==0 else f"{video_name}x{REPEAT+1}")
+        data_to_csv(
+            filtered_data,
+            filtered_labels,
+            video_name if REPEAT == 0 else f"{video_name}x{REPEAT+1}",
+        )

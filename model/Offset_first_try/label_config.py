@@ -1,4 +1,3 @@
-
 LABELS = [
     "Nothing",
     "Shake",
