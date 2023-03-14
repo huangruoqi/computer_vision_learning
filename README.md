@@ -5,7 +5,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
   - [x] pop "visibility" from inputs
   - [x] convert labels to scores (average of labels in given interval)
   - [x] change LSTM to accept multiple timestamps
-  - [ ] Use methods such as PCA to reduce input dimensions
+  - [x] Use methods such as PCA to reduce input dimensions
     - https://www.datacamp.com/tutorial/principal-component-analysis-in-python
     - https://www.tensorflow.org/tfx/transform/api_docs/python/tft/pca
   
