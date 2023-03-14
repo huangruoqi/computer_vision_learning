@@ -16,6 +16,7 @@ imageio = "^2.25.0"
 av = "^10.0.0"
 psutil = "^5.9.4"
 tensorflow = "^2.11.0"
+scikit_learn = "..."
 
 
 [build-system]
