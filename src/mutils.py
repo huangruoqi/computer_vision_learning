@@ -30,16 +30,16 @@ def offset(curr, prev):
 class Preprocessor:
     def __init__(self):
         self.pca = None
-        from sklearn.decomposition import PCA
-        try:
-            pardir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-            pca_file = open(os.path.join(pardir, 'pca.pkl'), 'rb')
-            self.pca = pickle.load(pca_file)
-            pca_file.close()
-        except Exception as e:
-            print(e)
-            print("PCA not loaded")
-            pass
+        # from sklearn.decomposition import PCA
+        # try:
+        #     pardir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+        #     pca_file = open(os.path.join(pardir, 'pca.pkl'), 'rb')
+        #     self.pca = pickle.load(pca_file)
+        #     pca_file.close()
+        # except Exception as e:
+        #     print(e)
+        #     print("PCA not loaded")
+        #     pass
     def transform(self, data):
         if self.pca is not None:
             data = self.pca.transform(data)
@@ -147,7 +147,7 @@ def group_data_score(data, group_size):
     for i in data:
         temp.append(i)
         if len(temp)==group_size:
-            result.append(sum(temp)/16/2)
+            result.append(sum(temp)/group_size/2)
             temp = []
 
     return np.array(result)
