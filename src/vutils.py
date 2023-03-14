@@ -51,6 +51,15 @@ class VideoContainer:
             start = self.current_index + self.next_frame
             abs_start = self.absolute_index + self.next_frame
             if abs_start >= self.total: 
+                start -= abs_start - self.right_bound
+                abs_start = self.right_bound
+                for i in range(self.next_frame):
+                    if self.reloading:
+                        break
+                    if abs_start+i>=self.total:
+                        break
+                    self.put(self.video.get(abs_start + i), start + i)
+                    self.right_bound = abs_start + i + 1
                 continue
             if abs_start >= self.right_bound:
                 start -= abs_start - self.right_bound

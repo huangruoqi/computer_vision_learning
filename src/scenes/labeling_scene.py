@@ -24,7 +24,8 @@ class LabelingScene(Scene):
         self.add(
             "play_pause",
             Button(
-                image=IMAGE("play-solid.png"),
+                image_file=("play-solid.png"),
+                image_relative=True,
                 height=50,
                 x=25,
                 y=self.height - 30,
@@ -37,7 +38,8 @@ class LabelingScene(Scene):
         self.add(
             "next",
             Button(
-                image=IMAGE("arrow-right-solid.png"),
+                image_file="arrow-right-solid.png",
+                image_relative=True,
                 height=50,
                 x=self.width - 25,
                 y=self.height - 30,
@@ -50,7 +52,8 @@ class LabelingScene(Scene):
         self.add(
             "save",
             Button(
-                image=IMAGE("floppy-disk.png"),
+                image_file="floppy-disk.png",
+                image_relative=True,
                 height=50,
                 x=self.width - 50,
                 y=30,
