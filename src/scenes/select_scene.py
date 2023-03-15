@@ -128,15 +128,15 @@ class SelectScene(Scene):
 
     def update(self, delta_time, mouse_pos, clicked, pressed):
         super().update(delta_time, mouse_pos, clicked, pressed)
-        # if self.convert_task is not None:
-        #     if self.convert_task_wait > 1:
-        #         convert_video_with_label(self.videos[self.convert_task][0])
-        #         self.convert_task = None
-        #         self.refresh_videos()
-        #         self.ci.hide()
-        #         self.convert_task_wait = 0
-        #     else:
-        #         self.convert_task_wait += 1
+        if self.convert_task is not None:
+            if self.convert_task_wait > 1:
+                convert_video_with_label(self.videos[self.convert_task][0])
+                self.convert_task = None
+                self.refresh_videos()
+                self.ci.hide()
+                self.convert_task_wait = 0
+            else:
+                self.convert_task_wait += 1
 
     def get_videos(self):
         videos = os.listdir("video")
