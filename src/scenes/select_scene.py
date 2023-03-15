@@ -9,7 +9,7 @@ import os
 
 class SelectScene(Scene):
     def __init__(self, screen, *args, **kwargs):
-        super(SelectScene, self).__init__(screen, *args, **kwargs)
+        super(SelectScene, self).__init__(screen, bg_file=os.path.join("assets", "images", "white.png"), *args, **kwargs)
         self.item_pos = {}
         self.videos = None
         self.convert_task = None
@@ -32,9 +32,9 @@ class SelectScene(Scene):
         )
         self.ci.hide()
 
-        def convert_video(i):
-            self.ci.show()
-            self.convert_task = i
+        # def convert_video(i):
+        #     self.ci.show()
+        #     self.convert_task = i
 
         def label_video(name):
             self.app.change_scene(
@@ -56,30 +56,30 @@ class SelectScene(Scene):
                     on_click=(lambda x: lambda: label_video(self.videos[x][0]))(i),
                 ),
             )
-            self.add(
-                f"item_{i}_convert_bt",
-                Button(
-                    text="convert",
-                    x=x + 180,
-                    y=y + 50,
-                    text_fontsize=20,
-                    on_click=(lambda x: lambda: convert_video(x))(i),
-                ),
-            )
-            self.add(
-                f"item_{i}_converted",
-                Text(
-                    text="Converted",
-                    x=x + 200,
-                    y=y + 50,
-                    size=60,
-                    color=(100, 120, 140),
-                    align_mode="CENTER",
-                    opacity=50,
-                ),
-                4,
-            )
-            self.get(f"item_{i}_converted").hide()
+            # self.add(
+            #     f"item_{i}_convert_bt",
+            #     Button(
+            #         text="convert",
+            #         x=x + 180,
+            #         y=y + 50,
+            #         text_fontsize=20,
+            #         on_click=(lambda x: lambda: convert_video(x))(i),
+            #     ),
+            # )
+            # self.add(
+            #     f"item_{i}_converted",
+            #     Text(
+            #         text="Converted",
+            #         x=x + 200,
+            #         y=y + 50,
+            #         size=60,
+            #         color=(100, 120, 140),
+            #         align_mode="CENTER",
+            #         opacity=50,
+            #     ),
+            #     4,
+            # )
+            # self.get(f"item_{i}_converted").hide()
 
         self.refresh_videos()
 
@@ -95,32 +95,31 @@ class SelectScene(Scene):
         if info is None:
             self.get(f"item_{index}_name").change_text("")
             self.get(f"item_{index}_label_bt").hide()
-            self.get(f"item_{index}_convert_bt").hide()
-            self.get(f"item_{index}_converted").hide()
+            # self.get(f"item_{index}_convert_bt").hide()
+            # self.get(f"item_{index}_converted").hide()
         else:
             self.get(f"item_{index}_name").change_text(info[0])
             self.get(f"item_{index}_label_bt").show()
-            if info[1]:
-                self.get(f"item_{index}_convert_bt").show()
-            else:
-                self.get(f"item_{index}_convert_bt").hide()
-            if info[2]:
-                self.get(f"item_{index}_converted").show()
-            else:
-                self.get(f"item_{index}_converted").hide()
+            # if info[1]:
+            #     self.get(f"item_{index}_convert_bt").show()
+            # else:
+            #     self.get(f"item_{index}_convert_bt").hide()
+            # if info[2]:
+            #     self.get(f"item_{index}_converted").show()
+            # else:
+            #     self.get(f"item_{index}_converted").hide()
 
     def update(self, delta_time, mouse_pos, clicked, pressed):
         super().update(delta_time, mouse_pos, clicked, pressed)
-        if self.convert_task is not None:
-            if self.convert_task_wait > 1:
-                convert_video_with_label(self.videos[self.convert_task][0])
-                # time.sleep(5)
-                self.convert_task = None
-                self.refresh_videos()
-                self.ci.hide()
-                self.convert_task_wait = 0
-            else:
-                self.convert_task_wait += 1
+        # if self.convert_task is not None:
+        #     if self.convert_task_wait > 1:
+        #         convert_video_with_label(self.videos[self.convert_task][0])
+        #         self.convert_task = None
+        #         self.refresh_videos()
+        #         self.ci.hide()
+        #         self.convert_task_wait = 0
+        #     else:
+        #         self.convert_task_wait += 1
 
     def get_videos(self):
         videos = os.listdir("video")
