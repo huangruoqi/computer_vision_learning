@@ -9,7 +9,12 @@ import os
 
 class SelectScene(Scene):
     def __init__(self, screen, *args, **kwargs):
-        super(SelectScene, self).__init__(screen, bg_file=os.path.join("assets", "images", "white.png"), *args, **kwargs)
+        super(SelectScene, self).__init__(
+            screen,
+            bg_file=os.path.join("assets", "images", "white.png"),
+            *args,
+            **kwargs,
+        )
         self.item_pos = {}
         self.videos = None
         self.convert_task = None
