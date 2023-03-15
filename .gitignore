@@ -4,3 +4,5 @@ video
 Python-3.7.0
 get-pip.py
 __pycache__
+build
+dist

@@ -6,7 +6,7 @@ import pickle
 import json
 
 
-setting_file = open("settings.json")
+setting_file = open(os.path.join("assets", "settings.json"))
 settings = json.load(setting_file)
 setting_file.close()
 labels2int = {b: a for a, b in enumerate(settings["labels"])}

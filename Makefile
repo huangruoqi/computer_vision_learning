@@ -1,4 +1,4 @@
-.PHONY: model
+.PHONY: model build
 
 # check for git submodules
 # ifneq ($(findstring -, $(shell git submodule status)),)
@@ -24,7 +24,7 @@ model:
 	python -B ./src/nn/$(MODELFILE).py
 
 label:
-	python -B ./GUI.py select
+	python -B ./GUI.py
 
 record:
 	python -B ./src/record_video.py
@@ -37,3 +37,8 @@ predict:
 
 pca:
 	python -B ./src/pca.py
+
+build:
+	pip install pyinstaller
+	pyinstaller --noconsole --onefile GUI.py 
+	pyinstaller GUI.spec

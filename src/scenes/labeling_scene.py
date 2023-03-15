@@ -15,7 +15,7 @@ VIDEO_RESIZE_DIMENSION = 640, 480
 
 class LabelingScene(Scene):
     def __init__(self, screen, *args, **kwargs):
-        super(LabelingScene, self).__init__(screen, *args, **kwargs)
+        super(LabelingScene, self).__init__(screen, bg_file=os.path.join("assets", "images", "white.png"), *args, **kwargs)
         self.fps = kwargs.get("fps")
         screen_fps = 30
         self.fps_ratio = screen_fps / self.fps
@@ -27,8 +27,7 @@ class LabelingScene(Scene):
         self.add(
             "play_pause",
             Button(
-                image_file=("play-solid.png"),
-                image_relative=True,
+                image_file=(os.path.join("assets","images", "play-solid.png")),
                 height=50,
                 x=25,
                 y=self.height - 30,
@@ -41,8 +40,7 @@ class LabelingScene(Scene):
         self.add(
             "next",
             Button(
-                image_file="arrow-right-solid.png",
-                image_relative=True,
+                image_file=(os.path.join("assets","images", "arrow-right-solid.png")),
                 height=50,
                 x=self.width - 25,
                 y=self.height - 30,
@@ -55,8 +53,7 @@ class LabelingScene(Scene):
         self.add(
             "save",
             Button(
-                image_file="floppy-disk.png",
-                image_relative=True,
+                image_file=(os.path.join("assets", "images", "floppy-disk.png")),
                 height=50,
                 x=self.width - 50,
                 y=80,
@@ -81,7 +78,7 @@ class LabelingScene(Scene):
                 can_hover=lambda: not self.slider.dragged,
             ),
         )
-        self.video_name = kwargs.get("video_name")
+        self.video_name = None
         self.vc = None
 
         def on_change(x):
@@ -182,7 +179,7 @@ class LabelingScene(Scene):
         self.playing = True
         btn = self.get("play_pause")
         pos = btn.get_pos()
-        btn.set_temp_image(IMAGE("pause-solid.png"), height=50).set_pos(pos)
+        btn.set_temp_image(IMAGE(os.path.join("assets", "images", "pause-solid.png"), False), height=50).set_pos(pos)
         btn.on_click = lambda: self.pause()
         self.get("next").hide()
         self.get("save").hide()
@@ -243,5 +240,6 @@ class LabelingScene(Scene):
                 self.frame_count -= self.fps_ratio
 
     def close(self):
-        self.vc.close()
+        if self.vc is not None:
+            self.vc.close()
         return super().close()
