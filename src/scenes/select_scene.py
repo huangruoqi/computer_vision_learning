@@ -32,9 +32,9 @@ class SelectScene(Scene):
         )
         self.ci.hide()
 
-        # def convert_video(i):
-        #     self.ci.show()
-        #     self.convert_task = i
+        def convert_video(i):
+            self.ci.show()
+            self.convert_task = i
 
         def label_video(name):
             self.app.change_scene(
@@ -56,20 +56,34 @@ class SelectScene(Scene):
                     on_click=(lambda x: lambda: label_video(self.videos[x][0]))(i),
                 ),
             )
+            self.add(
+                f"item_{i}_convert_bt",
+                Button(
+                    text="convert",
+                    x=x + 180,
+                    y=y + 50,
+                    text_fontsize=20,
+                    on_click=(lambda x: lambda: convert_video(x))(i),
+                ),
+            )
+            self.add(
+                f"item_{i}_converted",
+                Text(
+                    text="Converted",
+                    x=x + 200,
+                    y=y + 50,
+                    size=60,
+                    color=(100, 120, 140),
+                    align_mode="CENTER",
+                    opacity=50,
+                ),
+                4,
+            )
+            self.get(f"item_{i}_converted").hide()
             # self.add(
-            #     f"item_{i}_convert_bt",
-            #     Button(
-            #         text="convert",
-            #         x=x + 180,
-            #         y=y + 50,
-            #         text_fontsize=20,
-            #         on_click=(lambda x: lambda: convert_video(x))(i),
-            #     ),
-            # )
-            # self.add(
-            #     f"item_{i}_converted",
+            #     f"item_{i}_labeled",
             #     Text(
-            #         text="Converted",
+            #         text="Labeled",
             #         x=x + 200,
             #         y=y + 50,
             #         size=60,
@@ -79,7 +93,7 @@ class SelectScene(Scene):
             #     ),
             #     4,
             # )
-            # self.get(f"item_{i}_converted").hide()
+            # self.get(f"item_{i}_labeled").hide()
 
         self.refresh_videos()
 
@@ -95,19 +109,22 @@ class SelectScene(Scene):
         if info is None:
             self.get(f"item_{index}_name").change_text("")
             self.get(f"item_{index}_label_bt").hide()
-            # self.get(f"item_{index}_convert_bt").hide()
-            # self.get(f"item_{index}_converted").hide()
+            self.get(f"item_{index}_convert_bt").hide()
+            self.get(f"item_{index}_converted").hide()
+            # self.get(f"item_{index}_labeled").hide()
         else:
             self.get(f"item_{index}_name").change_text(info[0])
             self.get(f"item_{index}_label_bt").show()
-            # if info[1]:
-            #     self.get(f"item_{index}_convert_bt").show()
-            # else:
-            #     self.get(f"item_{index}_convert_bt").hide()
-            # if info[2]:
-            #     self.get(f"item_{index}_converted").show()
-            # else:
-            #     self.get(f"item_{index}_converted").hide()
+            if info[1]:
+                self.get(f"item_{index}_convert_bt").show()
+                # self.get(f"item_{index}_labeled").show()
+            else:
+                self.get(f"item_{index}_convert_bt").hide()
+                # self.get(f"item_{index}_labeled").hide()
+            if info[2]:
+                self.get(f"item_{index}_converted").show()
+            else:
+                self.get(f"item_{index}_converted").hide()
 
     def update(self, delta_time, mouse_pos, clicked, pressed):
         super().update(delta_time, mouse_pos, clicked, pressed)
