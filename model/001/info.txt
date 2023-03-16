@@ -1,0 +1,49 @@
+Model type: LSTM
+Model loss: 0.0253
+
+--- MODEL INFO ---
+MODEL_NAME = "001"
+DATA = [
+    "1676842883.mp4"+MODEL_NAME[:2],
+    "1676843917.mp4"+MODEL_NAME[:2],
+    "1676842496.mp4"+MODEL_NAME[:2],
+    "1676842689.mp4"+MODEL_NAME[:2],
+]
+
+EPOCHS = 40
+VALID_RATIO = 0.1
+TEST_RATIO = 0.1
+BATCH_SIZE = 16
+TIMESTAMPS = 32
+
+x_train, y_train, x_valid, y_valid, x_test, y_test = split_data(
+    DATA, VALID_RATIO, TEST_RATIO
+)
+p = Preprocessor()
+x_train = group_data(x_train, TIMESTAMPS, p)
+y_train = group_data_score(y_train, TIMESTAMPS)
+x_valid = group_data(x_valid, TIMESTAMPS, p)
+y_valid = group_data_score(y_valid, TIMESTAMPS)
+x_test = group_data(x_test, TIMESTAMPS, p)
+y_test = group_data_score(y_test, TIMESTAMPS)
+inputs = tf.keras.Input(shape=(x_train.shape[1], x_train.shape[2]))
+lstm = tf.keras.layers.LSTM(256, return_sequences=True)(inputs)
+if MODEL_NAME[2]=='1':
+    lstm = tf.keras.layers.Dropout(0.5)(lstm)
+    lstm = tf.keras.layers.LSTM(32)(lstm)
+    lstm = tf.keras.layers.Dropout(0.5)(lstm)
+else:
+    lstm = tf.keras.layers.LSTM(32)(lstm)
+outputs = tf.keras.layers.Dense(1, activation="sigmoid")(lstm)
+model = tf.keras.Model(inputs=inputs, outputs=outputs)
+print(model.summary())
+model.compile(
+    loss="mean_squared_error", optimizer="adam", metrics=["mean_squared_error"]
+)
+history = model.fit(
+    x_train,
+    y_train,
+    epochs=EPOCHS,
+    validation_data=(x_valid, y_valid),
+    batch_size=BATCH_SIZE,
+)
