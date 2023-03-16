@@ -58,9 +58,9 @@ def data_to_csv_back_up(data, labels, filename):
 
 
 def data_to_csv(data, labels, filename):
-    '''without visibility'''
+    """without visibility"""
     prepared_data = {f"{'xyz'[i%3]}{i//3}": v for i, v in enumerate(list(zip(*data)))}
-    '''with visibility'''
+    """with visibility"""
     # prepared_data = {f"{'xyzv'[i%4]}{i//4}": v for i, v in enumerate(list(zip(*data)))}
 
     prepared_data["label"] = labels
@@ -96,9 +96,9 @@ def convert_video_with_label(video_name):
                     if previous_landmarks is None:
                         previous_landmarks = converted_landmarks
                     else:
-                        '''without offset'''
+                        """without offset"""
                         final_landmarks = converted_landmarks
-                        '''with offset'''
+                        """with offset"""
                         # final_landmarks = offset(converted_landmarks, previous_landmarks)
 
                         previous_landmarks = converted_landmarks

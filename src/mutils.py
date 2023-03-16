@@ -17,18 +17,18 @@ def convert(landmarks):
     result = []
     for index in landmark_indices:
         landmark = landmarks[index]
-        '''without visibility'''
+        """without visibility"""
         result.extend([landmark.x, landmark.y, landmark.z])
-        '''with visibility'''
+        """with visibility"""
         # result.extend([landmark.x, landmark.y, landmark.z, landmark.visibility])
     return result
 
 
 # offset according to previous frame
 def offset(curr, prev):
-    '''without visibility'''
+    """without visibility"""
     result = [a - b for a, b in zip(curr, prev)]
-    '''with visibility'''
+    """with visibility"""
     # result = [v[0] - v[1] if i%4!=3 else v[0] for i, v in enumerate(zip(curr, prev))]
     return result
 

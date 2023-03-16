@@ -22,10 +22,10 @@ from mutils import (
 # MODEL_INFO
 MODEL_NAME = "111"
 DATA = [
-    "1676842883.mp4"+MODEL_NAME[:2],
-    "1676843917.mp4"+MODEL_NAME[:2],
-    "1676842496.mp4"+MODEL_NAME[:2],
-    "1676842689.mp4"+MODEL_NAME[:2],
+    "1676842883.mp4" + MODEL_NAME[:2],
+    "1676843917.mp4" + MODEL_NAME[:2],
+    "1676842496.mp4" + MODEL_NAME[:2],
+    "1676842689.mp4" + MODEL_NAME[:2],
 ]
 
 EPOCHS = 40
@@ -46,7 +46,7 @@ x_test = group_data(x_test, TIMESTAMPS, p)
 y_test = group_data_score(y_test, TIMESTAMPS)
 inputs = tf.keras.Input(shape=(x_train.shape[1], x_train.shape[2]))
 lstm = tf.keras.layers.LSTM(256, return_sequences=True)(inputs)
-if MODEL_NAME[2]=='1':
+if MODEL_NAME[2] == "1":
     lstm = tf.keras.layers.Dropout(0.5)(lstm)
     lstm = tf.keras.layers.LSTM(32)(lstm)
     lstm = tf.keras.layers.Dropout(0.5)(lstm)
@@ -78,4 +78,4 @@ print("Test loss {:.4f}".format(model_loss))
 print(evaluation[1])
 
 save_model_info("LSTM", __file__, model_path, model_loss)
-print(list(zip(np.array(list(map(lambda x:x[0], model.predict(x_test)))), y_test)))
+print(list(zip(np.array(list(map(lambda x: x[0], model.predict(x_test)))), y_test)))
