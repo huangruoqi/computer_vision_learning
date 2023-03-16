@@ -17,13 +17,19 @@ def convert(landmarks):
     result = []
     for index in landmark_indices:
         landmark = landmarks[index]
+        '''without visibility'''
         result.extend([landmark.x, landmark.y, landmark.z])
+        '''with visibility'''
+        # result.extend([landmark.x, landmark.y, landmark.z, landmark.visibility])
     return result
 
 
 # offset according to previous frame
 def offset(curr, prev):
+    '''without visibility'''
     result = [a - b for a, b in zip(curr, prev)]
+    '''with visibility'''
+    # result = [v[0] - v[1] if i%4!=3 else v[0] for i, v in enumerate(zip(curr, prev))]
     return result
 
 
@@ -128,16 +134,16 @@ def split_data(DATA, VALID_RATIO, TEST_RATIO):
     return split_data_without_label(DB, VALID_RATIO, TEST_RATIO)
 
 
-def save_model_info(model_type, file_path, model_path, model_acc):
+def save_model_info(model_type, file_path, model_path, model_loss):
     dst = os.path.join(model_path, "info.txt")
     src_file = open(file_path, "r")
-    content = src_file.read().split("#MODEL_INFO")
+    content = src_file.read().split("# MODEL_INFO")
     src_file.close()
     assert len(content) == 3
     model_info = content[1]
     with open(dst, "w") as f:
         f.write(f"Model type: {model_type}\n")
-        f.write(f"Model accuracy: {'{:.3f}%'.format(model_acc*100)}\n\n")
+        f.write(f"Model loss: {'{:.4f}'.format(model_loss)}\n\n")
         f.write("--- MODEL INFO ---")
         f.write(model_info)
     # src = 'label_config.py'

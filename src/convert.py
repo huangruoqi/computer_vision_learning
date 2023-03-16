@@ -5,6 +5,7 @@ import os
 import mediapipe as mp
 import mediapipe.python.solutions.pose as mp_pose
 import sys
+import json
 from .mutils import convert, offset
 
 # mp_drawing = mp.solutions.drawing_utils
@@ -13,6 +14,10 @@ from .mutils import convert, offset
 
 # repeating 0 times means only convert one time.
 REPEAT = 0
+setting_file = open(os.path.join("assets", "settings.json"))
+settings = json.load(setting_file)
+setting_file.close()
+labels2int = {b: a for a, b in enumerate(settings["labels"])}
 
 
 def data_to_csv_back_up(data, labels, filename):
@@ -53,7 +58,11 @@ def data_to_csv_back_up(data, labels, filename):
 
 
 def data_to_csv(data, labels, filename):
+    '''without visibility'''
     prepared_data = {f"{'xyz'[i%3]}{i//3}": v for i, v in enumerate(list(zip(*data)))}
+    '''with visibility'''
+    # prepared_data = {f"{'xyzv'[i%4]}{i//4}": v for i, v in enumerate(list(zip(*data)))}
+
     prepared_data["label"] = labels
     df = pandas.DataFrame(data=prepared_data)
     df.to_csv(os.path.join("data", f"{filename}.csv"))
@@ -87,11 +96,13 @@ def convert_video_with_label(video_name):
                     if previous_landmarks is None:
                         previous_landmarks = converted_landmarks
                     else:
-                        offset_landmarks = offset(
-                            converted_landmarks, previous_landmarks
-                        )
+                        '''without offset'''
+                        final_landmarks = converted_landmarks
+                        '''with offset'''
+                        # final_landmarks = offset(converted_landmarks, previous_landmarks)
+
                         previous_landmarks = converted_landmarks
-                        data.append(offset_landmarks)
+                        data.append(final_landmarks)
                         skip_frames[i] = False
                 else:
                     print(f"No pose found for <frame {i}>")
