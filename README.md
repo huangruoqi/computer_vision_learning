@@ -1,13 +1,12 @@
 # computer_vision_learning
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
-- Tensorflow (behavior scores)
-  - [x] pop "visibility" from inputs
-  - [x] convert labels to scores (average of labels in given interval)
-  - [x] change LSTM to accept multiple timestamps
-  - [x] Use methods such as PCA to reduce input dimensions
-    - https://www.datacamp.com/tutorial/principal-component-analysis-in-python
-    - https://www.tensorflow.org/tfx/transform/api_docs/python/tft/pca
+- GUI
+  - [ ] Add scene for setting labels
+  - [ ] Add toggle for numerical or categorical label
+  - [ ] Add component for text input
+  - [ ] Fix memory issue after exiting scene
+  - [ ] Lower memory usage
   
 - Performance
   <!-- - [ ] test coral TPU on RaspberryPi with mediapipe pose model -->
