@@ -16,3 +16,5 @@
 * https://www.researchgate.net/post/Can-data-augmentation-techniques-be-applied-for-numeric-data-sets-If-so-please-suggest-some-of-the-techniques
 * https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0254841
 
+## Others
+* https://github.com/vita-epfl/causalmotion
