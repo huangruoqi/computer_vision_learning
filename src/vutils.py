@@ -1,7 +1,14 @@
 import pims
 import time
 import threading
+import json
+import os
 
+def load_settings():
+    setting_file = open(os.path.join("assets", "settings.json"))
+    settings = json.load(setting_file)
+    setting_file.close()
+    return settings
 
 class VideoContainer:
     def __init__(self, path, size):

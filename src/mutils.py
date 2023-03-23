@@ -4,11 +4,10 @@ import sys
 import numpy as np
 import pickle
 import json
+from .vutils import load_settings
 
 
-setting_file = open(os.path.join("assets", "settings.json"))
-settings = json.load(setting_file)
-setting_file.close()
+settings = load_settings()
 labels2int = {b: a for a, b in enumerate(settings["labels"])}
 
 landmark_indices = [0, 11, 12, 13, 14, 15, 16, 23, 24]

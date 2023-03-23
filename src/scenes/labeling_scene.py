@@ -235,8 +235,8 @@ class LabelingScene(Scene):
             self.colors[self.current_label_index],
         )
 
-    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
-        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
+    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed, screen_clicked):
+        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed, screen_clicked)
         self.set_buffered_bar()
         if not self.playing:
             return

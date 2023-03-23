@@ -6,6 +6,8 @@ import mediapipe as mp
 import mediapipe.python.solutions.pose as mp_pose
 import sys
 import json
+
+from .vutils import load_settings
 from .mutils import convert, offset
 
 # mp_drawing = mp.solutions.drawing_utils
@@ -14,9 +16,8 @@ from .mutils import convert, offset
 
 # repeating 0 times means only convert one time.
 REPEAT = 0
-setting_file = open(os.path.join("assets", "settings.json"))
-settings = json.load(setting_file)
-setting_file.close()
+
+settings = load_settings()
 labels2int = {b: a for a, b in enumerate(settings["labels"])}
 
 
