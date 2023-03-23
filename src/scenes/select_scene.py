@@ -36,6 +36,18 @@ class SelectScene(Scene):
             4,
         )
         self.ci.hide()
+        self.add(
+            "settings",
+            Button(
+                image_file=(os.path.join("assets", "images", "settings.png")),
+                height=30,
+                x=self.width - 25,
+                y=25,
+                animation="opacity",
+                parameter={"factor": 0.5},
+                on_click=lambda: self.app.change_scene(2, lambda s: s.load_settings()),
+            ),
+        )
 
         def convert_video(i):
             self.ci.show()
@@ -55,7 +67,7 @@ class SelectScene(Scene):
                 f"item_{i}_label_bt",
                 Button(
                     text="label",
-                    x=x + 120,
+                    x=x + 90,
                     y=y + 50,
                     text_fontsize=20,
                     on_click=(lambda x: lambda: label_video(self.videos[x][0]))(i),
@@ -65,7 +77,7 @@ class SelectScene(Scene):
                 f"item_{i}_convert_bt",
                 Button(
                     text="convert",
-                    x=x + 180,
+                    x=x + 210,
                     y=y + 50,
                     text_fontsize=20,
                     on_click=(lambda x: lambda: convert_video(x))(i),
@@ -131,8 +143,8 @@ class SelectScene(Scene):
             else:
                 self.get(f"item_{index}_converted").hide()
 
-    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed, screen_clicked):
-        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed, screen_clicked)
+    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
+        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
         if self.convert_task is not None:
             if self.convert_task_wait > 1:
                 convert_video_with_label(self.videos[self.convert_task][0])

@@ -10,7 +10,7 @@ import pandas
 import numpy
 import cv2
 
-VIDEO_RESIZE_DIMENSION = 640, 480
+VIDEO_RESIZE_DIMENSION = 560, 420
 
 
 class LabelingScene(Scene):
@@ -58,10 +58,10 @@ class LabelingScene(Scene):
         self.add(
             "save",
             Button(
-                image_file=(os.path.join("assets", "images", "floppy-disk.png")),
-                height=50,
-                x=self.width - 50,
-                y=80,
+                image_file=(os.path.join("assets", "images", "save.png")),
+                height=30,
+                x=self.width - 25,
+                y=95,
                 animation="opacity",
                 parameter={"factor": 0.5},
                 on_click=lambda: self.save(),
@@ -71,16 +71,27 @@ class LabelingScene(Scene):
         self.add(
             "close",
             Button(
-                text="X",
-                text_fontsize=50,
-                x=self.width - 50,
-                y=30,
+                image_file=(os.path.join("assets", "images", "close.png")),
+                height=30,
+                x=self.width - 25,
+                y=25,
                 animation="opacity",
                 parameter={"factor": 0.5},
                 on_click=lambda: self.app.change_scene(
-                    0, lambda scene: scene.refresh_videos()
+                    self.app.prev_scene_index, lambda scene: scene.refresh_videos() if self.app.prev_scene_index==0 else 0
                 ),
-                can_hover=lambda: not self.slider.dragged,
+            ),
+        )
+        self.add(
+            "settings",
+            Button(
+                image_file=(os.path.join("assets", "images", "settings.png")),
+                height=30,
+                x=self.width - 25,
+                y=60,
+                animation="opacity",
+                parameter={"factor": 0.5},
+                on_click=lambda: self.app.change_scene(2, lambda s: s.load_settings()),
             ),
         )
         self.video_name = None
@@ -128,20 +139,17 @@ class LabelingScene(Scene):
         self.colors = list(ColorBar.colors.keys())
         self.colors[len(self.labels) - 1] = "black"
         for i, label in enumerate(self.labels):
-            height = (self.height - 100) // 100 * 100
-            x = (50 * i) // height * 200
-            y = (50 * i) % height
             self.add(
-                f"label_{label}",
+                f"label_{i}",
                 Button(
                     text=label,
-                    text_fontsize=50,
-                    x=x + 20,
-                    y=y + 20,
                     align_mode="TOPLEFT",
                     color=ColorBar.colors[self.colors[i]],
                     on_click=get_on_click(i),
                     can_hover=lambda: not self.slider.dragged,
+                    text_fontsize=26, 
+                    x=5, 
+                    y=20+i*40,
                 ),
             )
         self.bar = self.add(
@@ -235,8 +243,8 @@ class LabelingScene(Scene):
             self.colors[self.current_label_index],
         )
 
-    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed, screen_clicked):
-        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed, screen_clicked)
+    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
+        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
         self.set_buffered_bar()
         if not self.playing:
             return

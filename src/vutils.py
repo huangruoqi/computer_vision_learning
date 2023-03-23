@@ -6,9 +6,13 @@ import os
 
 def load_settings():
     setting_file = open(os.path.join("assets", "settings.json"))
-    settings = json.load(setting_file)
+    settings = dict(json.load(setting_file))
     setting_file.close()
     return settings
+
+def save_settings(settings):
+    with open(os.path.join("assets", "settings.json"), 'w') as f:
+        json.dump(settings, f)
 
 class VideoContainer:
     def __init__(self, path, size):
