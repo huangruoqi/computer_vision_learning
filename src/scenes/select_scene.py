@@ -131,8 +131,8 @@ class SelectScene(Scene):
             else:
                 self.get(f"item_{index}_converted").hide()
 
-    def update(self, delta_time, mouse_pos, clicked, pressed):
-        super().update(delta_time, mouse_pos, clicked, pressed)
+    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
+        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
         if self.convert_task is not None:
             if self.convert_task_wait > 1:
                 convert_video_with_label(self.videos[self.convert_task][0])
