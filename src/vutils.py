@@ -100,6 +100,8 @@ class VideoContainer:
         return result
 
     def refresh_bound(self):
+        if self.absolute_index + self.previous_frame > self.total:
+            return
         self.left_bound = max(
             self.absolute_index - self.previous_frame, -1, self.left_bound
         )
