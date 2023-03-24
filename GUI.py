@@ -8,7 +8,11 @@ from src.vutils import load_settings
 settings = load_settings()
 
 app = App(
-    [SelectScene, LabelingScene, SettingScene, ],
+    [
+        SelectScene,
+        LabelingScene,
+        SettingScene,
+    ],
     800,
     600,
     title="Videos",

@@ -70,6 +70,7 @@ class LabelingScene(Scene):
                 can_hover=lambda: not self.slider.dragged,
             ),
         )
+
         def close_labeling(scene):
             self.vc.close()
             self.vc = None
@@ -84,8 +85,8 @@ class LabelingScene(Scene):
                 y=25,
                 animation="opacity",
                 parameter={"factor": 0.5},
-                on_click=lambda: self.app.change_scene(0, close_labeling)
-            )
+                on_click=lambda: self.app.change_scene(0, close_labeling),
+            ),
         )
         self.add(
             "settings",
@@ -112,6 +113,7 @@ class LabelingScene(Scene):
             ),
         )
         self.is_score = False
+
         def toggle_score_label():
             self.pause()
             self.is_score = not self.is_score
@@ -120,53 +122,62 @@ class LabelingScene(Scene):
             if self.is_score:
                 text = "SCORE"
             pos = text_btn.get_pos()
-            text_btn.set_image(Text.get_font(30).render(text, True, (0,0,0))).set_pos(pos)
+            text_btn.set_image(Text.get_font(30).render(text, True, (0, 0, 0))).set_pos(
+                pos
+            )
             if self.is_score:
                 for i, label in enumerate(self.labels):
                     self.get(f"label_{i}").hide()
                 self.score_input.show()
-                self.score_input.set_pos(self.width-110, self.height//3)
+                self.score_input.set_pos(self.width - 110, self.height // 3)
                 total = len(self.frame2score)
-                for i, v in enumerate(range(0, total, int(total/100))):
-                    if i==100: break
+                for i, v in enumerate(range(0, total, int(total / 100))):
+                    if i == 100:
+                        break
                     score = self.frame2score[v]
                     color = None
                     if numpy.isnan(score):
                         color = [0, 0, 0]
                     else:
-                        color = [int(200 - score * 128 // 4)]*3
+                        color = [int(200 - score * 128 // 4)] * 3
                     self.bar.set_color(i, tuple(color))
             else:
                 for i, label in enumerate(self.labels):
                     self.get(f"label_{i}").show()
                 self.score_input.hide()
                 total = len(self.frame2label)
-                for i, v in enumerate(range(0, total, int(total/100))):
-                    if i==100: break
+                for i, v in enumerate(range(0, total, int(total / 100))):
+                    if i == 100:
+                        break
                     index = self.frame2label[v]
                     self.bar.set_color(i, self.colors[index])
 
-
-            
-        self.score_input = self.add(f'score_input', NumericInput(
-            image_file='assets/images/black.png', 
-            fontsize=30, 
-            value=0,
-            color=(255,255,255), 
-            width=100,
-            x=-1000,
-            y=-1000,
-            max_character=5,
-        ))
+        self.score_input = self.add(
+            f"score_input",
+            NumericInput(
+                image_file="assets/images/black.png",
+                fontsize=30,
+                value=0,
+                color=(255, 255, 255),
+                width=100,
+                x=-1000,
+                y=-1000,
+                max_character=5,
+            ),
+        )
         self.score_input.hide()
+
         def get_score_on_click():
             on_click = self.score_input.on_click
+
             def func():
                 self.pause()
                 on_click()
+
             return func
+
         self.score_input.on_click = get_score_on_click()
-            
+
         self.add(
             "score_label",
             Button(
@@ -174,7 +185,7 @@ class LabelingScene(Scene):
                 text_fontsize=30,
                 x=self.width - 40,
                 y=self.height - 80,
-                color=(0,0,0),
+                color=(0, 0, 0),
                 animation="opacity",
                 parameter={"factor": 0.5},
                 on_click=toggle_score_label,
@@ -234,9 +245,9 @@ class LabelingScene(Scene):
                     color=ColorBar.colors[self.colors[i]],
                     on_click=get_on_click(i),
                     can_hover=lambda: not self.slider.dragged,
-                    text_fontsize=26, 
-                    x=5, 
-                    y=20+i*40,
+                    text_fontsize=26,
+                    x=5,
+                    y=20 + i * 40,
                 ),
             )
         self.bar = self.add(
@@ -267,7 +278,7 @@ class LabelingScene(Scene):
         self.set_pixels(self.vc.peek())
         self.current_label_index = -1
         self.frame2label = numpy.array([-1] * self.vc.total)
-        self.frame2score = numpy.array([float('nan')] * self.vc.total)
+        self.frame2score = numpy.array([float("nan")] * self.vc.total)
         self.set_buffered_bar()
 
     def set_pixels(self, frame):
@@ -301,9 +312,7 @@ class LabelingScene(Scene):
 
     def save(self):
         if self.is_score:
-            df = pandas.DataFrame(
-                data={"label": list(self.frame2score)}
-            )
+            df = pandas.DataFrame(data={"label": list(self.frame2score)})
             df.to_csv(os.path.join("data", f"{self.video_name}_labels.csv"))
         else:
             df = pandas.DataFrame(
@@ -340,10 +349,9 @@ class LabelingScene(Scene):
             if numpy.isnan(score):
                 color = [0, 0, 0]
             else:
-                color = [int(200 - score * 128 // 4)]*3
+                color = [int(200 - score * 128 // 4)] * 3
             self.bar.set_color(
-                int(self.vc.absolute_index / self.vc.total * 100),
-                tuple(color)
+                int(self.vc.absolute_index / self.vc.total * 100), tuple(color)
             )
 
         else:
@@ -352,10 +360,10 @@ class LabelingScene(Scene):
                 int(self.vc.absolute_index / self.vc.total * 100),
                 self.colors[self.current_label_index],
             )
-    
+
     def reset_label(self):
         if self.is_score:
-            self.frame2score = numpy.array([float('nan')]*self.vc.total)
+            self.frame2score = numpy.array([float("nan")] * self.vc.total)
         else:
             self.frame2label = numpy.array([-1] * self.vc.total)
             self.current_label_index = -1

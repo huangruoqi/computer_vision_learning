@@ -5,15 +5,18 @@ import threading
 import json
 import os
 
+
 def load_settings():
     setting_file = open(os.path.join("assets", "settings.json"))
     settings = dict(json.load(setting_file))
     setting_file.close()
     return settings
 
+
 def save_settings(settings):
-    with open(os.path.join("assets", "settings.json"), 'w') as f:
+    with open(os.path.join("assets", "settings.json"), "w") as f:
         json.dump(settings, f)
+
 
 class VideoContainer:
     def __init__(self, path, size, width=None, height=None):
@@ -28,8 +31,6 @@ class VideoContainer:
         self.height = height
         if width is None or height is None:
             self.resizing = False
-        
-
 
         self.circular_list_data = [None] * self.size
         self.current_index = 0
@@ -112,7 +113,9 @@ class VideoContainer:
     def put(self, data, index):
         if data is not None:
             if self.resizing:
-                data = cv2.resize(data, dsize=(self.width, self.height), interpolation=cv2.INTER_CUBIC)
+                data = cv2.resize(
+                    data, dsize=(self.width, self.height), interpolation=cv2.INTER_CUBIC
+                )
             self.circular_list_data[self.mod(index)] = data.swapaxes(0, 1)
         else:
             self.circular_list_data[self.mod(index)] = data
