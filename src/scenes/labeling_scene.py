@@ -312,6 +312,9 @@ class LabelingScene(Scene):
             for i in range(len(self.frame2score)):
                 if not (lower_bound <= self.frame2score[i] <= upper_bound):
                     self.frame2score[i] = float('nan')
+        self.upper_bound = upper_bound
+        self.lower_bound = lower_bound
+        self.score_input.change_value(self.upper_bound)
         self.set_labels(labels)
         self.render_label_bar_and_labels()
 
