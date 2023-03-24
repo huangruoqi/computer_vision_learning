@@ -5,9 +5,9 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
   - [x] Add scene for setting labels
   - [x] Add toggle for numerical or categorical label
   - [x] Add component for text input
-  - [ ] Add validation for text input
-  - [ ] Fix memory issue after exiting scene
-  - [ ] Lower memory usage
+  - [x] Add validation for text input
+  - [x] Fix memory issue after exiting scene
+  - [x] Lower memory usage
 - Tensorflow
   - [ ] Automate training and record all details
   - [ ] Dropout rate in LSTM layer

@@ -300,10 +300,16 @@ class LabelingScene(Scene):
         self.set_display()
 
     def save(self):
-        df = pandas.DataFrame(
-            data={"label": list(map(lambda i: self.labels[i], self.frame2label))}
-        )
-        df.to_csv(os.path.join("data", f"{self.video_name}_labels.csv"))
+        if self.is_score:
+            df = pandas.DataFrame(
+                data={"label": list(self.frame2score)}
+            )
+            df.to_csv(os.path.join("data", f"{self.video_name}_labels.csv"))
+        else:
+            df = pandas.DataFrame(
+                data={"label": list(map(lambda i: self.labels[i], self.frame2label))}
+            )
+            df.to_csv(os.path.join("data", f"{self.video_name}_labels.csv"))
 
     def set_display(self):
         self.set_label()
