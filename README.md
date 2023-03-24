@@ -2,9 +2,10 @@
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
 - GUI
-  - [ ] Add scene for setting labels
-  - [ ] Add toggle for numerical or categorical label
-  - [ ] Add component for text input
+  - [x] Add scene for setting labels
+  - [x] Add toggle for numerical or categorical label
+  - [x] Add component for text input
+  - [ ] Add validation for text input
   - [ ] Fix memory issue after exiting scene
   - [ ] Lower memory usage
 - Tensorflow
