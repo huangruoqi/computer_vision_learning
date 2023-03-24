@@ -17,7 +17,6 @@ app = App(
     600,
     title="Videos",
     fps=settings["fps"],
-    labels=settings["labels"],
 )
 
 app.run()

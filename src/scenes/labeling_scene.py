@@ -6,13 +6,13 @@ from UI_BASE.UI.components.color_bar import ColorBar
 from UI_BASE.UI.components.pixel_display import PixelDisplay
 from UI_BASE.UI.components.slider import Slider
 from UI_BASE.UI.utils import IMAGE
-from ..vutils import VideoContainer
+from ..vutils import VideoContainer, load_settings
 import os
 import pandas
 import numpy
 import cv2
 
-VIDEO_RESIZE_DIMENSION = 560, 420
+VIDEO_RESIZE_DIMENSION = 540, 405
 
 
 class LabelingScene(Scene):
@@ -28,8 +28,12 @@ class LabelingScene(Scene):
         self.fps_ratio = screen_fps / self.fps
         self.frame_count = 0
 
-        self.labels = kwargs.get("labels")
-        self.labels.append("Unlabeled")
+        self.add(
+            "title",
+            Text(text="", align_mode="CENTER", size=30, x=self.width // 2, y=35)
+        )
+
+
         self.playing = False
         self.add(
             "play_pause",
@@ -150,6 +154,8 @@ class LabelingScene(Scene):
                     if i == 100:
                         break
                     index = self.frame2label[v]
+                    if index == len(self.labels) - 1:
+                        index = -1
                     self.bar.set_color(i, self.colors[index])
 
         self.score_input = self.add(
@@ -163,19 +169,17 @@ class LabelingScene(Scene):
                 x=-1000,
                 y=-1000,
                 max_character=5,
+                use_indicator=True
             ),
         )
         self.score_input.hide()
 
         def get_score_on_click():
             on_click = self.score_input.on_click
-
             def func():
                 self.pause()
                 on_click()
-
             return func
-
         self.score_input.on_click = get_score_on_click()
 
         self.add(
@@ -213,6 +217,7 @@ class LabelingScene(Scene):
                 interval=[0, 1],
                 width=20,
                 height=50,
+                parameter={"factor": 0.15},
             ),
             1,
         )
@@ -227,29 +232,10 @@ class LabelingScene(Scene):
         self.current_label_index = -1
         self.frame2label = None
 
-        def get_on_click(i):
-            def on_click():
-                self.current_label_index = i
-                self.set_label()
 
-            return on_click
-
+        self.labels = []
         self.colors = list(ColorBar.colors.keys())
-        self.colors[len(self.labels) - 1] = "black"
-        for i, label in enumerate(self.labels):
-            self.add(
-                f"label_{i}",
-                Button(
-                    text=label,
-                    align_mode="TOPLEFT",
-                    color=ColorBar.colors[self.colors[i]],
-                    on_click=get_on_click(i),
-                    can_hover=lambda: not self.slider.dragged,
-                    text_fontsize=26,
-                    x=5,
-                    y=20 + i * 40,
-                ),
-            )
+
         self.bar = self.add(
             "progress_bar",
             ColorBar(
@@ -274,12 +260,53 @@ class LabelingScene(Scene):
     def set_video(self, video_path, video_name):
         self.video_name = video_name
         assert self.vc is None
+        self.get('title').change_text(video_name)
         self.vc = VideoContainer(video_path, 3000, width=400, height=300)
         self.set_pixels(self.vc.peek())
         self.current_label_index = -1
         self.frame2label = numpy.array([-1] * self.vc.total)
         self.frame2score = numpy.array([float("nan")] * self.vc.total)
         self.set_buffered_bar()
+        self.set_labels()
+    
+    def set_labels(self, labels = None):
+        def get_on_click(i):
+            def on_click():
+                self.current_label_index = i
+                self.set_label()
+            return on_click
+        for i, label in enumerate(self.labels):
+            self.remove(f'label_{i}')
+        if labels is None:
+            self.labels = load_settings().get("labels")
+            self.labels.append("Unlabeled")
+        else:
+            self.labels = labels
+        for i, label in enumerate(self.labels):
+            self.add(
+                f"label_{i}",
+                Button(
+                    text=label,
+                    align_mode="TOPLEFT",
+                    color=ColorBar.colors[self.colors[i if i<len(self.labels)-1 else -1]],
+                    on_click=get_on_click(i),
+                    can_hover=lambda: not self.slider.dragged,
+                    text_fontsize=26,
+                    x=5,
+                    y=20 + i * 40,
+                ),
+            )
+
+    def check_settings(self):
+        settings = load_settings()
+        labels = settings.get("labels")
+        labels.append("Unlabeled")
+        if len(labels) < len(self.labels):
+            for i in range(len(self.frame2label)):
+                if self.frame2label[i] >= len(labels):
+                    self.frame2label[i] = -1
+        self.set_labels(labels)
+
 
     def set_pixels(self, frame):
         video_width, video_height = VIDEO_RESIZE_DIMENSION
@@ -298,6 +325,7 @@ class LabelingScene(Scene):
         btn.on_click = lambda: self.pause()
         self.get("next").hide()
         self.get("save").hide()
+        self.get("reset").hide()
 
     def pause(self):
         self.playing = False
@@ -306,6 +334,7 @@ class LabelingScene(Scene):
         btn.on_click = lambda: self.play()
         self.get("next").show()
         self.get("save").show()
+        self.get("reset").show()
 
     def next(self):
         self.set_display()
@@ -355,10 +384,13 @@ class LabelingScene(Scene):
             )
 
         else:
+            index = self.current_label_index
+            if index == len(self.labels) - 1:
+                index = -1
             self.frame2label[self.vc.absolute_index] = self.current_label_index
             self.bar.set_color(
                 int(self.vc.absolute_index / self.vc.total * 100),
-                self.colors[self.current_label_index],
+                self.colors[index],
             )
 
     def reset_label(self):
@@ -372,6 +404,13 @@ class LabelingScene(Scene):
     def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
         super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
         self.set_buffered_bar()
+        if keyboard_inputs:
+            for k in keyboard_inputs:
+                if k == ' ':
+                    if not self.playing:
+                        self.play()
+                    else:
+                        self.pause()
         if not self.playing:
             return
         if not pressed:
