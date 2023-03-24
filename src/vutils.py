@@ -1,3 +1,4 @@
+import cv2
 import pims
 import time
 import threading
@@ -15,13 +16,20 @@ def save_settings(settings):
         json.dump(settings, f)
 
 class VideoContainer:
-    def __init__(self, path, size):
+    def __init__(self, path, size, width=None, height=None):
         self.size = size * 4 // 4
         self.next_frame = self.size // 4
         self.previous_frame = self.size // 2
         self.absolute_index = 0
         self.left_bound = 0
         self.right_bound = 0
+        self.resizing = True
+        self.width = width
+        self.height = height
+        if width is None or height is None:
+            self.resizing = False
+        
+
 
         self.circular_list_data = [None] * self.size
         self.current_index = 0
@@ -101,6 +109,8 @@ class VideoContainer:
 
     def put(self, data, index):
         if data is not None:
+            if self.resizing:
+                data = cv2.resize(data, dsize=(self.width, self.height), interpolation=cv2.INTER_CUBIC)
             self.circular_list_data[self.mod(index)] = data.swapaxes(0, 1)
         else:
             self.circular_list_data[self.mod(index)] = data

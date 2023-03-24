@@ -259,7 +259,7 @@ class LabelingScene(Scene):
 
     def set_video(self, video_path, video_name):
         self.video_name = video_name
-        self.vc = VideoContainer(video_path, 2000)
+        self.vc = VideoContainer(video_path, 2000, width=400, height=300)
         self.set_pixels(self.vc.peek())
         self.current_label_index = -1
         self.frame2label = numpy.array([-1] * self.vc.total)
