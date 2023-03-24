@@ -70,6 +70,11 @@ class LabelingScene(Scene):
                 can_hover=lambda: not self.slider.dragged,
             ),
         )
+        def close_labeling(scene):
+            self.vc.close()
+            self.vc = None
+            scene.refresh_videos()
+
         self.add(
             "close",
             Button(
@@ -79,10 +84,8 @@ class LabelingScene(Scene):
                 y=25,
                 animation="opacity",
                 parameter={"factor": 0.5},
-                on_click=lambda: self.app.change_scene(
-                    self.app.prev_scene_index, lambda scene: scene.refresh_videos() if self.app.prev_scene_index==0 else 0
-                ),
-            ),
+                on_click=lambda: self.app.change_scene(0, close_labeling)
+            )
         )
         self.add(
             "settings",
