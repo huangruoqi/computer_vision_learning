@@ -1,7 +1,6 @@
 from UI_BASE.UI.scene import Scene
 from UI_BASE.UI.components.button import Button
 from UI_BASE.UI.components.text import Text
-from UI_BASE.UI.components.color_bar import ColorBar
 from UI_BASE.UI.components.input import Input
 import os
 from src.vutils import load_settings, save_settings

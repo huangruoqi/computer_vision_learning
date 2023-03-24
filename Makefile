@@ -42,3 +42,4 @@ build:
 	pip install pyinstaller
 	pyinstaller --noconsole --onefile GUI.py 
 	pyinstaller GUI.spec
+	python -B ./build_utils.py

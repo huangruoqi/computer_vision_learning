@@ -1,7 +1,6 @@
 from UI_BASE.UI.scene import Scene
 from UI_BASE.UI.components.button import Button
 from UI_BASE.UI.components.text import Text
-from ..convert import convert_video_with_label
 import os
 
 
@@ -72,19 +71,9 @@ class SelectScene(Scene):
                 ),
             )
             self.add(
-                f"item_{i}_convert_bt",
-                Button(
-                    text="convert",
-                    x=x + 210,
-                    y=y + 50,
-                    text_fontsize=20,
-                    on_click=(lambda x: lambda: convert_video(x))(i),
-                ),
-            )
-            self.add(
-                f"item_{i}_converted",
+                f"item_{i}_labeled",
                 Text(
-                    text="Converted",
+                    text="Labeled",
                     x=x + 200,
                     y=y + 50,
                     size=60,
@@ -94,21 +83,7 @@ class SelectScene(Scene):
                 ),
                 4,
             )
-            self.get(f"item_{i}_converted").hide()
-            # self.add(
-            #     f"item_{i}_labeled",
-            #     Text(
-            #         text="Labeled",
-            #         x=x + 200,
-            #         y=y + 50,
-            #         size=60,
-            #         color=(100, 120, 140),
-            #         align_mode="CENTER",
-            #         opacity=50,
-            #     ),
-            #     4,
-            # )
-            # self.get(f"item_{i}_labeled").hide()
+            self.get(f"item_{i}_labeled").hide()
 
         self.refresh_videos()
 
@@ -124,34 +99,14 @@ class SelectScene(Scene):
         if info is None:
             self.get(f"item_{index}_name").change_text("")
             self.get(f"item_{index}_label_bt").hide()
-            self.get(f"item_{index}_convert_bt").hide()
-            self.get(f"item_{index}_converted").hide()
-            # self.get(f"item_{index}_labeled").hide()
+            self.get(f"item_{index}_labeled").hide()
         else:
             self.get(f"item_{index}_name").change_text(info[0])
             self.get(f"item_{index}_label_bt").show()
             if info[1]:
-                self.get(f"item_{index}_convert_bt").show()
-                # self.get(f"item_{index}_labeled").show()
+                self.get(f"item_{index}_labeled").show()
             else:
-                self.get(f"item_{index}_convert_bt").hide()
-                # self.get(f"item_{index}_labeled").hide()
-            if info[2]:
-                self.get(f"item_{index}_converted").show()
-            else:
-                self.get(f"item_{index}_converted").hide()
-
-    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
-        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
-        if self.convert_task is not None:
-            if self.convert_task_wait > 1:
-                convert_video_with_label(self.videos[self.convert_task][0])
-                self.convert_task = None
-                self.refresh_videos()
-                self.ci.hide()
-                self.convert_task_wait = 0
-            else:
-                self.convert_task_wait += 1
+                self.get(f"item_{index}_labeled").hide()
 
     def get_videos(self):
         videos = os.listdir("video")

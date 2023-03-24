@@ -3,16 +3,15 @@ import numpy as np
 import pandas
 import os
 import mediapipe as mp
-import mediapipe.python.solutions.pose as mp_pose
-import sys
-import json
+
+# import mediapipe.python.solutions.pose as mp_pose
 
 from .vutils import load_settings
 from .mutils import convert, offset
 
-# mp_drawing = mp.solutions.drawing_utils
-# mp_drawing_styles = mp.solutions.drawing_styles
-# mp_pose = mp.solutions.pose
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
+mp_pose = mp.solutions.pose
 
 # repeating 0 times means only convert one time.
 REPEAT = 0
