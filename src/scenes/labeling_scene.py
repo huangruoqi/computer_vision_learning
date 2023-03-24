@@ -1,4 +1,4 @@
-from UI_BASE.UI.components.input import Input
+from UI_BASE.UI.components.numeric_input import NumericInput
 from UI_BASE.UI.components.text import Text
 from UI_BASE.UI.scene import Scene
 from UI_BASE.UI.components.button import Button
@@ -96,9 +96,21 @@ class LabelingScene(Scene):
                 on_click=lambda: self.app.change_scene(2, lambda s: s.load_settings()),
             ),
         )
+        self.add(
+            "reset",
+            Button(
+                image_file=(os.path.join("assets", "images", "reset.png")),
+                height=30,
+                x=self.width - 25,
+                y=130,
+                animation="opacity",
+                parameter={"factor": 0.5},
+                on_click=lambda: self.reset_label(),
+            ),
+        )
         self.is_score = False
         def toggle_score_label():
-            self.reset_label()
+            self.pause()
             self.is_score = not self.is_score
             text_btn = self.get("score_label")
             text = "LABEL"
@@ -111,21 +123,37 @@ class LabelingScene(Scene):
                     self.get(f"label_{i}").hide()
                 self.score_input.show()
                 self.score_input.set_pos(self.width-110, self.height//3)
+                total = len(self.frame2score)
+                for i, v in enumerate(range(0, total, int(total/100))):
+                    if i==100: break
+                    score = self.frame2score[v]
+                    color = None
+                    if numpy.isnan(score):
+                        color = [0, 0, 0]
+                    else:
+                        color = [int(200 - score * 128 // 4)]*3
+                    self.bar.set_color(i, tuple(color))
             else:
                 for i, label in enumerate(self.labels):
                     self.get(f"label_{i}").show()
                 self.score_input.hide()
+                total = len(self.frame2label)
+                for i, v in enumerate(range(0, total, int(total/100))):
+                    if i==100: break
+                    index = self.frame2label[v]
+                    self.bar.set_color(i, self.colors[index])
 
 
             
-        self.score_input = self.add(f'score_input', Input(
+        self.score_input = self.add(f'score_input', NumericInput(
             image_file='assets/images/black.png', 
-            text='4',
             fontsize=30, 
+            value=0,
             color=(255,255,255), 
             width=100,
             x=-1000,
             y=-1000,
+            max_character=5,
         ))
         self.score_input.hide()
         def get_score_on_click():
@@ -235,6 +263,7 @@ class LabelingScene(Scene):
         self.set_pixels(self.vc.peek())
         self.current_label_index = -1
         self.frame2label = numpy.array([-1] * self.vc.total)
+        self.frame2score = numpy.array([float('nan')] * self.vc.total)
         self.set_buffered_bar()
 
     def set_pixels(self, frame):
@@ -294,11 +323,17 @@ class LabelingScene(Scene):
 
     def set_label(self):
         if self.is_score:
-            score = float(self.score_input.text)
-            self.frame2label[self.vc.absolute_index] = score
+            score = self.score_input.value
+            self.frame2score[self.vc.absolute_index] = score
+
+            color = None
+            if numpy.isnan(score):
+                color = [0, 0, 0]
+            else:
+                color = [int(200 - score * 128 // 4)]*3
             self.bar.set_color(
                 int(self.vc.absolute_index / self.vc.total * 100),
-                tuple([int(200 - score * 128 // 4)]*3)
+                tuple(color)
             )
 
         else:
@@ -309,8 +344,11 @@ class LabelingScene(Scene):
             )
     
     def reset_label(self):
-        self.frame2label = numpy.array([-1] * self.vc.total)
-        self.current_label_index = -1
+        if self.is_score:
+            self.frame2score = numpy.array([float('nan')]*self.vc.total)
+        else:
+            self.frame2label = numpy.array([-1] * self.vc.total)
+            self.current_label_index = -1
         self.bar.set_arr(numpy.array([(0, 0, 0)] * 100))
 
     def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):

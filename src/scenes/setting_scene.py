@@ -78,7 +78,6 @@ class SettingScene(Scene):
         )
         self.settings = None
         self.label_keys = []
-        # self.load_settings()
     
     def add_label_editor(self, i, label):
         self.input_counter += 1
