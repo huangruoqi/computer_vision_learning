@@ -27,6 +27,8 @@ class LabelingScene(Scene):
         screen_fps = 30
         self.fps_ratio = screen_fps / self.fps
         self.frame_count = 0
+        self.upper_bound = 0
+        self.lower_bound = 0
 
         self.add(
             "title",
@@ -129,34 +131,7 @@ class LabelingScene(Scene):
             text_btn.set_image(Text.get_font(30).render(text, True, (0, 0, 0))).set_pos(
                 pos
             )
-            if self.is_score:
-                for i, label in enumerate(self.labels):
-                    self.get(f"label_{i}").hide()
-                self.score_input.show()
-                self.score_input.set_pos(self.width - 110, self.height // 3)
-                total = len(self.frame2score)
-                for i, v in enumerate(range(0, total, int(total / 100))):
-                    if i == 100:
-                        break
-                    score = self.frame2score[v]
-                    color = None
-                    if numpy.isnan(score):
-                        color = [0, 0, 0]
-                    else:
-                        color = [int(200 - score * 128 // 4)] * 3
-                    self.bar.set_color(i, tuple(color))
-            else:
-                for i, label in enumerate(self.labels):
-                    self.get(f"label_{i}").show()
-                self.score_input.hide()
-                total = len(self.frame2label)
-                for i, v in enumerate(range(0, total, int(total / 100))):
-                    if i == 100:
-                        break
-                    index = self.frame2label[v]
-                    if index == len(self.labels) - 1:
-                        index = -1
-                    self.bar.set_color(i, self.colors[index])
+            self.render_label_bar_and_labels()
 
         self.score_input = self.add(
             f"score_input",
@@ -267,9 +242,9 @@ class LabelingScene(Scene):
         self.frame2label = numpy.array([-1] * self.vc.total)
         self.frame2score = numpy.array([float("nan")] * self.vc.total)
         self.set_buffered_bar()
-        self.set_labels()
+        self.check_settings()
     
-    def set_labels(self, labels = None):
+    def set_labels(self, labels):
         def get_on_click(i):
             def on_click():
                 self.current_label_index = i
@@ -277,11 +252,7 @@ class LabelingScene(Scene):
             return on_click
         for i, label in enumerate(self.labels):
             self.remove(f'label_{i}')
-        if labels is None:
-            self.labels = load_settings().get("labels")
-            self.labels.append("Unlabeled")
-        else:
-            self.labels = labels
+        self.labels = labels
         for i, label in enumerate(self.labels):
             self.add(
                 f"label_{i}",
@@ -296,16 +267,53 @@ class LabelingScene(Scene):
                     y=20 + i * 40,
                 ),
             )
+    def render_label_bar_and_labels(self):
+        if self.is_score:
+            for i, label in enumerate(self.labels):
+                self.get(f"label_{i}").hide()
+            self.score_input.show()
+            self.score_input.set_pos(self.width - 110, self.height // 3)
+            total = len(self.frame2score)
+            for i, v in enumerate(range(0, total, int(total / 100))):
+                if i == 100:
+                    break
+                score = self.frame2score[v]
+                color = None
+                if numpy.isnan(score):
+                    color = [0, 0, 0]
+                else:
+                    color = [int(200 - score * 128 // 4)] * 3
+                self.bar.set_color(i, tuple(color))
+        else:
+            for i, label in enumerate(self.labels):
+                self.get(f"label_{i}").show()
+            self.score_input.hide()
+            total = len(self.frame2label)
+            for i, v in enumerate(range(0, total, int(total / 100))):
+                if i == 100:
+                    break
+                index = self.frame2label[v]
+                if index == len(self.labels) - 1:
+                    index = -1
+                self.bar.set_color(i, self.colors[index])
+
 
     def check_settings(self):
         settings = load_settings()
         labels = settings.get("labels")
         labels.append("Unlabeled")
+        upper_bound = settings.get("score_upper_bound")
+        lower_bound = settings.get("score_lower_bound")
         if len(labels) < len(self.labels):
             for i in range(len(self.frame2label)):
                 if self.frame2label[i] >= len(labels):
                     self.frame2label[i] = -1
+        if not (self.upper_bound <= upper_bound and self.lower_bound >= lower_bound):
+            for i in range(len(self.frame2score)):
+                if not (lower_bound <= self.frame2score[i] <= upper_bound):
+                    self.frame2score[i] = float('nan')
         self.set_labels(labels)
+        self.render_label_bar_and_labels()
 
 
     def set_pixels(self, frame):
@@ -402,15 +410,22 @@ class LabelingScene(Scene):
         self.bar.set_arr(numpy.array([(0, 0, 0)] * 100))
 
     def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
-        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
-        self.set_buffered_bar()
         if keyboard_inputs:
-            for k in keyboard_inputs:
-                if k == ' ':
+            for i in range(len(keyboard_inputs)-1, -1, -1):
+                if keyboard_inputs[i] == ' ':
+                    keyboard_inputs.pop(i)
                     if not self.playing:
                         self.play()
+                        if self.is_score:
+                            self.score_input.editing = False
                     else:
                         self.pause()
+                        if self.is_score:
+                            self.score_input.editing = True
+                
+                
+        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
+        self.set_buffered_bar()
         if not self.playing:
             return
         if not pressed:
