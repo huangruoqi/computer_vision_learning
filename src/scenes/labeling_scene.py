@@ -1,3 +1,5 @@
+from UI_BASE.UI.components.input import Input
+from UI_BASE.UI.components.text import Text
 from UI_BASE.UI.scene import Scene
 from UI_BASE.UI.components.button import Button
 from UI_BASE.UI.components.color_bar import ColorBar
@@ -92,6 +94,60 @@ class LabelingScene(Scene):
                 animation="opacity",
                 parameter={"factor": 0.5},
                 on_click=lambda: self.app.change_scene(2, lambda s: s.load_settings()),
+            ),
+        )
+        self.is_score = False
+        def toggle_score_label():
+            self.reset_label()
+            self.is_score = not self.is_score
+            text_btn = self.get("score_label")
+            text = "LABEL"
+            if self.is_score:
+                text = "SCORE"
+            pos = text_btn.get_pos()
+            text_btn.set_image(Text.get_font(30).render(text, True, (0,0,0))).set_pos(pos)
+            if self.is_score:
+                for i, label in enumerate(self.labels):
+                    self.get(f"label_{i}").hide()
+                self.score_input.show()
+                self.score_input.set_pos(self.width-110, self.height//3)
+            else:
+                for i, label in enumerate(self.labels):
+                    self.get(f"label_{i}").show()
+                self.score_input.hide()
+
+
+            
+        self.score_input = self.add(f'score_input', Input(
+            image_file='assets/images/black.png', 
+            text='4',
+            fontsize=30, 
+            color=(255,255,255), 
+            width=100,
+            x=-1000,
+            y=-1000,
+        ))
+        self.score_input.hide()
+        def get_score_on_click():
+            on_click = self.score_input.on_click
+            def func():
+                self.pause()
+                on_click()
+            return func
+        self.score_input.on_click = get_score_on_click()
+            
+        self.add(
+            "score_label",
+            Button(
+                text="LABEL",
+                text_fontsize=30,
+                x=self.width - 40,
+                y=self.height - 80,
+                color=(0,0,0),
+                animation="opacity",
+                parameter={"factor": 0.5},
+                on_click=toggle_score_label,
+                can_hover=lambda: not self.slider.dragged,
             ),
         )
         self.video_name = None
@@ -237,11 +293,25 @@ class LabelingScene(Scene):
         self.buffered.set_arr(np_arr)
 
     def set_label(self):
-        self.frame2label[self.vc.absolute_index] = self.current_label_index
-        self.bar.set_color(
-            int(self.vc.absolute_index / self.vc.total * 100),
-            self.colors[self.current_label_index],
-        )
+        if self.is_score:
+            score = float(self.score_input.text)
+            self.frame2label[self.vc.absolute_index] = score
+            self.bar.set_color(
+                int(self.vc.absolute_index / self.vc.total * 100),
+                tuple([int(200 - score * 128 // 4)]*3)
+            )
+
+        else:
+            self.frame2label[self.vc.absolute_index] = self.current_label_index
+            self.bar.set_color(
+                int(self.vc.absolute_index / self.vc.total * 100),
+                self.colors[self.current_label_index],
+            )
+    
+    def reset_label(self):
+        self.frame2label = numpy.array([-1] * self.vc.total)
+        self.current_label_index = -1
+        self.bar.set_arr(numpy.array([(0, 0, 0)] * 100))
 
     def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
         super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
