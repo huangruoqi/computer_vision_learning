@@ -6,3 +6,4 @@ get-pip.py
 __pycache__
 build
 dist
+*.zip
