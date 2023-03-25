@@ -140,7 +140,7 @@ class LabelingScene(Scene):
                 fontsize=30,
                 value=0,
                 color=(255, 255, 255),
-                width=100,
+                width=120,
                 x=-1000,
                 y=-1000,
                 max_character=5,
@@ -272,7 +272,7 @@ class LabelingScene(Scene):
             for i, label in enumerate(self.labels):
                 self.get(f"label_{i}").hide()
             self.score_input.show()
-            self.score_input.set_pos(self.width - 110, self.height // 3)
+            self.score_input.set_pos(self.width - 125, self.height // 3)
             total = len(self.frame2score)
             for i, v in enumerate(range(0, total, int(total / 100))):
                 if i == 100:

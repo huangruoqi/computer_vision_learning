@@ -41,8 +41,8 @@ class SettingScene(Scene):
                 fontsize=30,
                 value=0,
                 color=(255, 255, 255),
-                width=100,
-                x=self.width // 4 * 3-130, 
+                width=120,
+                x=self.width // 4 * 3-140, 
                 y=120,
                 max_character=5,
             ),
@@ -54,8 +54,8 @@ class SettingScene(Scene):
                 fontsize=30,
                 value=0,
                 color=(255, 255, 255),
-                width=100,
-                x=self.width // 4 * 3+24, 
+                width=120,
+                x=self.width // 4 * 3+14, 
                 y=120,
                 max_character=5,
             ),
@@ -209,16 +209,16 @@ class SettingScene(Scene):
             if len(text.strip()) != 0:
                 labels.append(text)
         self.settings["labels"] = labels
-        if self.upper_bound < self.lower_bound:
+        if self.upper_bound >= self.lower_bound:
+            self.get('warning').change_text("")
+            self.valid_upper_bound = self.upper_bound
+            self.valid_lower_bound = self.lower_bound
+        else:
             self.upper_bound = self.valid_upper_bound
             self.lower_bound = self.valid_lower_bound
             self.get('warning').change_text("Range not valid")
             self.score_input_lower.change_value(self.lower_bound)
             self.score_input_upper.change_value(self.upper_bound)
-        else:
-            self.get('warning').change_text("")
-            self.valid_upper_bound = self.upper_bound
-            self.valid_lower_bound = self.lower_bound
 
         self.settings["score_upper_bound"] = self.upper_bound
         self.settings["score_lower_bound"] = self.lower_bound
