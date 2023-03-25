@@ -2,7 +2,7 @@
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
 - GUI
-  - [ ] Fix setting label not in sync
+  - [x] Fix setting label not in sync
   - [x] Add scene for setting labels
   - [x] Add toggle for numerical or categorical label
   - [x] Add component for text input
