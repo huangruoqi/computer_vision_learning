@@ -1,1 +1,1 @@
-{"fps": 30, "labels": ["avav aa", "aaaa"], "score_lower_bound": 0.01, "score_upper_bound": 0.567}
+{"fps": 30, "labels": ["avav aa", "aaaa"], "score_lower_bound": -1.1, "score_upper_bound": 0.567}
