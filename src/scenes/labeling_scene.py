@@ -282,7 +282,7 @@ class LabelingScene(Scene):
                 if numpy.isnan(score):
                     color = [0, 0, 0]
                 else:
-                    color = [int(200 - score * 128 // 4)] * 3
+                    color = [int(min(230, max(30, 30+(score-self.lower_bound)/(self.upper_bound - self.lower_bound)*200)))] * 3
                 self.bar.set_color(i, tuple(color))
         else:
             for i, label in enumerate(self.labels):
@@ -391,7 +391,7 @@ class LabelingScene(Scene):
             if numpy.isnan(score):
                 color = [0, 0, 0]
             else:
-                color = [int(200 - score * 128 // 4)] * 3
+                color = [int(min(200, max(100, 100+(score-self.lower_bound)/(self.upper_bound - self.lower_bound)*100)))] * 3
             self.bar.set_color(
                 int(self.vc.absolute_index / self.vc.total * 100), tuple(color)
             )
