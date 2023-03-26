@@ -33,9 +33,8 @@ class LabelingScene(Scene):
 
         self.add(
             "title",
-            Text(text="", align_mode="CENTER", size=30, x=self.width // 2, y=35)
+            Text(text="", align_mode="CENTER", size=30, x=self.width // 2, y=35),
         )
-
 
         self.playing = False
         self.add(
@@ -134,12 +133,15 @@ class LabelingScene(Scene):
             )
             self.render_label_bar_and_labels()
 
-        self.label_prompt = self.add('label_prompt', Text(
-            'Choose label:',
-            size=16,
-            x=5,
-            y=80,
-        ))
+        self.label_prompt = self.add(
+            "label_prompt",
+            Text(
+                "Choose label:",
+                size=16,
+                x=5,
+                y=80,
+            ),
+        )
 
         self.score_input = self.add(
             f"score_input",
@@ -152,24 +154,30 @@ class LabelingScene(Scene):
                 x=-1000,
                 y=-1000,
                 max_character=5,
-                use_indicator=True
+                use_indicator=True,
             ),
         )
         self.score_input.hide()
-        self.score_prompt = self.add('score_prompt', Text(
-            'Enter score:',
-            size=16,
-            x=-1000,
-            y=-1000,
-        ))
+        self.score_prompt = self.add(
+            "score_prompt",
+            Text(
+                "Enter score:",
+                size=16,
+                x=-1000,
+                y=-1000,
+            ),
+        )
         self.score_prompt.hide()
 
         def get_score_on_click():
             on_click = self.score_input.on_click
+
             def func():
                 self.pause()
                 on_click()
+
             return func
+
         self.score_input.on_click = get_score_on_click()
 
         self.add(
@@ -222,7 +230,6 @@ class LabelingScene(Scene):
         self.current_label_index = -1
         self.frame2label = None
 
-
         self.labels = []
         self.colors = list(ColorBar.colors.keys())
 
@@ -250,7 +257,7 @@ class LabelingScene(Scene):
     def set_video(self, video_path, video_name):
         self.video_name = video_name
         assert self.vc is None
-        self.get('title').change_text(video_name)
+        self.get("title").change_text(video_name)
         self.vc = VideoContainer(video_path, 3000, width=400, height=300)
         self.set_pixels(self.vc.peek())
         self.current_label_index = -1
@@ -259,15 +266,17 @@ class LabelingScene(Scene):
         self.set_buffered_bar()
         self.check_settings()
         self.pause()
-    
+
     def set_labels(self, labels):
         def get_on_click(i):
             def on_click():
                 self.current_label_index = i
                 self.set_label()
+
             return on_click
+
         for i, label in enumerate(self.labels):
-            self.remove(f'label_{i}')
+            self.remove(f"label_{i}")
         self.labels = labels
         for i, label in enumerate(self.labels):
             x = 5
@@ -278,7 +287,9 @@ class LabelingScene(Scene):
                 Button(
                     text=label,
                     align_mode="TOPLEFT",
-                    color=ColorBar.colors[self.colors[i if i<len(self.labels)-1 else -1]],
+                    color=ColorBar.colors[
+                        self.colors[i if i < len(self.labels) - 1 else -1]
+                    ],
                     on_click=get_on_click(i),
                     can_hover=lambda: not self.slider.dragged,
                     text_fontsize=20,
@@ -290,16 +301,15 @@ class LabelingScene(Scene):
                 label_btn.hide()
                 label_btn.set_pos(-1000, -1000)
 
-
     def render_label_bar_and_labels(self):
         if self.is_score:
             for i, label in enumerate(self.labels):
-                self.get(f'label_{i}').hide()
+                self.get(f"label_{i}").hide()
             self.label_prompt.hide()
             self.score_input.show()
             self.score_input.set_pos(self.width - 125, self.height // 3)
             self.score_prompt.show()
-            self.score_prompt.set_pos(self.width - 125, self.height // 3-20)
+            self.score_prompt.set_pos(self.width - 125, self.height // 3 - 20)
             total = len(self.frame2score)
             for i, v in enumerate(range(0, total, int(total / 100))):
                 if i == 100:
@@ -309,11 +319,24 @@ class LabelingScene(Scene):
                 if numpy.isnan(score):
                     color = [0, 0, 0]
                 else:
-                    color = [int(min(230, max(30, 30+(score-self.lower_bound)/(self.upper_bound - self.lower_bound)*200)))] * 3
+                    color = [
+                        int(
+                            min(
+                                230,
+                                max(
+                                    30,
+                                    30
+                                    + (score - self.lower_bound)
+                                    / (self.upper_bound - self.lower_bound)
+                                    * 200,
+                                ),
+                            )
+                        )
+                    ] * 3
                 self.bar.set_color(i, tuple(color))
         else:
             for i, label in enumerate(self.labels):
-                label_btn = self.get(f'label_{i}')
+                label_btn = self.get(f"label_{i}")
                 label_btn.show()
                 label_btn.set_pos(self.pos_dict[i])
             self.score_input.hide()
@@ -328,7 +351,6 @@ class LabelingScene(Scene):
                     index = -1
                 self.bar.set_color(i, self.colors[index])
 
-
     def check_settings(self):
         settings = load_settings()
         labels = settings.get("labels")
@@ -342,7 +364,7 @@ class LabelingScene(Scene):
         if not (self.upper_bound <= upper_bound and self.lower_bound >= lower_bound):
             for i in range(len(self.frame2score)):
                 if not (lower_bound <= self.frame2score[i] <= upper_bound):
-                    self.frame2score[i] = float('nan')
+                    self.frame2score[i] = float("nan")
         self.upper_bound = upper_bound
         self.lower_bound = lower_bound
         self.score_input.upper_bound = upper_bound
@@ -350,7 +372,6 @@ class LabelingScene(Scene):
         self.score_input.change_value(self.upper_bound)
         self.set_labels(labels)
         self.render_label_bar_and_labels()
-
 
     def set_pixels(self, frame):
         video_width, video_height = VIDEO_RESIZE_DIMENSION
@@ -422,7 +443,20 @@ class LabelingScene(Scene):
             if numpy.isnan(score):
                 color = [0, 0, 0]
             else:
-                color = [int(min(200, max(100, 100+(score-self.lower_bound)/(self.upper_bound - self.lower_bound)*100)))] * 3
+                color = [
+                    int(
+                        min(
+                            200,
+                            max(
+                                100,
+                                100
+                                + (score - self.lower_bound)
+                                / (self.upper_bound - self.lower_bound)
+                                * 100,
+                            ),
+                        )
+                    )
+                ] * 3
             self.bar.set_color(
                 int(self.vc.absolute_index / self.vc.total * 100), tuple(color)
             )
@@ -447,8 +481,8 @@ class LabelingScene(Scene):
 
     def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
         if keyboard_inputs:
-            for i in range(len(keyboard_inputs)-1, -1, -1):
-                if keyboard_inputs[i] == ' ':
+            for i in range(len(keyboard_inputs) - 1, -1, -1):
+                if keyboard_inputs[i] == " ":
                     keyboard_inputs.pop(i)
                     if not self.playing:
                         self.play()
@@ -458,8 +492,7 @@ class LabelingScene(Scene):
                         self.pause()
                         if self.is_score:
                             self.score_input.editing = True
-                
-                
+
         super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
         self.set_buffered_bar()
         if not self.playing:

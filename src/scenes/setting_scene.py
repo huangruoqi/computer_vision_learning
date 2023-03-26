@@ -32,7 +32,9 @@ class SettingScene(Scene):
         )
         self.add(
             "score",
-            Text(text="Score", align_mode="CENTER", size=40, x=self.width // 4 * 3, y=80),
+            Text(
+                text="Score", align_mode="CENTER", size=40, x=self.width // 4 * 3, y=80
+            ),
         )
         self.score_input_lower = self.add(
             "score_lower",
@@ -42,7 +44,7 @@ class SettingScene(Scene):
                 value=0,
                 color=(255, 255, 255),
                 width=120,
-                x=self.width // 4 * 3-140, 
+                x=self.width // 4 * 3 - 140,
                 y=120,
                 max_character=5,
             ),
@@ -55,7 +57,7 @@ class SettingScene(Scene):
                 value=0,
                 color=(255, 255, 255),
                 width=120,
-                x=self.width // 4 * 3+14, 
+                x=self.width // 4 * 3 + 14,
                 y=120,
                 max_character=5,
             ),
@@ -63,16 +65,23 @@ class SettingScene(Scene):
         self.add(
             "tilde",
             Text(
-                text='~',
+                text="~",
                 size=50,
-                align_mode='CENTER',
-                x=self.width // 4 *3 ,
+                align_mode="CENTER",
+                x=self.width // 4 * 3,
                 y=132,
             ),
         )
         self.add(
             "warning",
-            Text(text="", align_mode="CENTER", size=30, color=(240, 50, 50), x=self.width * 3 // 4, y=self.height-100)
+            Text(
+                text="",
+                align_mode="CENTER",
+                size=30,
+                color=(240, 50, 50),
+                x=self.width * 3 // 4,
+                y=self.height - 100,
+            ),
         )
 
         def close():
@@ -92,8 +101,8 @@ class SettingScene(Scene):
                 y=25,
                 animation="opacity",
                 parameter={"factor": 0.5},
-                on_click=close
-            )
+                on_click=close,
+            ),
         )
         self.add(
             "save",
@@ -157,6 +166,7 @@ class SettingScene(Scene):
                     )
                 else:
                     self.add_button.hide()
+
             return remove
 
         self.add(
@@ -210,13 +220,13 @@ class SettingScene(Scene):
                 labels.append(text)
         self.settings["labels"] = labels
         if self.upper_bound >= self.lower_bound:
-            self.get('warning').change_text("")
+            self.get("warning").change_text("")
             self.valid_upper_bound = self.upper_bound
             self.valid_lower_bound = self.lower_bound
         else:
             self.upper_bound = self.valid_upper_bound
             self.lower_bound = self.valid_lower_bound
-            self.get('warning').change_text("Range not valid")
+            self.get("warning").change_text("Range not valid")
             self.score_input_lower.change_value(self.lower_bound)
             self.score_input_upper.change_value(self.upper_bound)
 
