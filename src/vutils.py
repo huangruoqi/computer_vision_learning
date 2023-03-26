@@ -55,10 +55,10 @@ class VideoContainer:
         if self.absolute_index < self.previous_frame:
             start = 0
             self.current_index = self.absolute_index
-        for i in range(self.previous_frame + self.next_frame):
+        for i in range(self.next_frame):
             self.put(self.video.get(i + start), i)
         self.left_bound = start - 1
-        self.right_bound = start + self.previous_frame + self.next_frame
+        self.right_bound = start + self.next_frame
         self.reloading = False
 
     def loop(self):
