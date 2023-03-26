@@ -260,6 +260,7 @@ class LabelingScene(Scene):
         self.get("title").change_text(video_name)
         self.vc = VideoContainer(video_path, 3000, width=400, height=300)
         self.set_pixels(self.vc.peek())
+        self.slider.set_progress(0)
         self.current_label_index = -1
         self.frame2label = numpy.array([-1] * self.vc.total)
         self.frame2score = numpy.array([float("nan")] * self.vc.total)
