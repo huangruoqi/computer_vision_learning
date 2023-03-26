@@ -29,6 +29,7 @@ class LabelingScene(Scene):
         self.frame_count = 0
         self.upper_bound = 0
         self.lower_bound = 0
+        self.pos_dict = {}
 
         self.add(
             "title",
@@ -254,7 +255,10 @@ class LabelingScene(Scene):
             self.remove(f'label_{i}')
         self.labels = labels
         for i, label in enumerate(self.labels):
-            self.add(
+            x = 5
+            y = 20 + i * 40
+            self.pos_dict[i] = x, y
+            label_btn = self.add(
                 f"label_{i}",
                 Button(
                     text=label,
@@ -263,14 +267,19 @@ class LabelingScene(Scene):
                     on_click=get_on_click(i),
                     can_hover=lambda: not self.slider.dragged,
                     text_fontsize=26,
-                    x=5,
-                    y=20 + i * 40,
+                    x=x,
+                    y=y,
                 ),
             )
+            if self.is_score:
+                label_btn.hide()
+                label_btn.set_pos(-1000, -1000)
+
+
     def render_label_bar_and_labels(self):
         if self.is_score:
             for i, label in enumerate(self.labels):
-                self.get(f"label_{i}").hide()
+                self.get(f'label_{i}').hide()
             self.score_input.show()
             self.score_input.set_pos(self.width - 125, self.height // 3)
             total = len(self.frame2score)
@@ -286,7 +295,9 @@ class LabelingScene(Scene):
                 self.bar.set_color(i, tuple(color))
         else:
             for i, label in enumerate(self.labels):
-                self.get(f"label_{i}").show()
+                label_btn = self.get(f'label_{i}')
+                label_btn.show()
+                label_btn.set_pos(self.pos_dict[i])
             self.score_input.hide()
             total = len(self.frame2label)
             for i, v in enumerate(range(0, total, int(total / 100))):
