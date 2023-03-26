@@ -134,6 +134,13 @@ class LabelingScene(Scene):
             )
             self.render_label_bar_and_labels()
 
+        self.label_prompt = self.add('label_prompt', Text(
+            'Choose label:',
+            size=16,
+            x=5,
+            y=80,
+        ))
+
         self.score_input = self.add(
             f"score_input",
             NumericInput(
@@ -149,6 +156,13 @@ class LabelingScene(Scene):
             ),
         )
         self.score_input.hide()
+        self.score_prompt = self.add('score_prompt', Text(
+            'Enter score:',
+            size=16,
+            x=-1000,
+            y=-1000,
+        ))
+        self.score_prompt.hide()
 
         def get_score_on_click():
             on_click = self.score_input.on_click
@@ -244,6 +258,7 @@ class LabelingScene(Scene):
         self.frame2score = numpy.array([float("nan")] * self.vc.total)
         self.set_buffered_bar()
         self.check_settings()
+        self.pause()
     
     def set_labels(self, labels):
         def get_on_click(i):
@@ -256,7 +271,7 @@ class LabelingScene(Scene):
         self.labels = labels
         for i, label in enumerate(self.labels):
             x = 5
-            y = 20 + i * 40
+            y = 104 + i * 33
             self.pos_dict[i] = x, y
             label_btn = self.add(
                 f"label_{i}",
@@ -266,7 +281,7 @@ class LabelingScene(Scene):
                     color=ColorBar.colors[self.colors[i if i<len(self.labels)-1 else -1]],
                     on_click=get_on_click(i),
                     can_hover=lambda: not self.slider.dragged,
-                    text_fontsize=26,
+                    text_fontsize=20,
                     x=x,
                     y=y,
                 ),
@@ -280,8 +295,11 @@ class LabelingScene(Scene):
         if self.is_score:
             for i, label in enumerate(self.labels):
                 self.get(f'label_{i}').hide()
+            self.label_prompt.hide()
             self.score_input.show()
             self.score_input.set_pos(self.width - 125, self.height // 3)
+            self.score_prompt.show()
+            self.score_prompt.set_pos(self.width - 125, self.height // 3-20)
             total = len(self.frame2score)
             for i, v in enumerate(range(0, total, int(total / 100))):
                 if i == 100:
@@ -299,6 +317,8 @@ class LabelingScene(Scene):
                 label_btn.show()
                 label_btn.set_pos(self.pos_dict[i])
             self.score_input.hide()
+            self.score_prompt.hide()
+            self.label_prompt.show()
             total = len(self.frame2label)
             for i, v in enumerate(range(0, total, int(total / 100))):
                 if i == 100:
