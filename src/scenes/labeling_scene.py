@@ -305,7 +305,9 @@ class LabelingScene(Scene):
     def render_label_bar_and_labels(self):
         if self.is_score:
             for i, label in enumerate(self.labels):
-                self.get(f"label_{i}").hide()
+                label_btn = self.get(f"label_{i}")
+                if label_btn is not None:
+                    label_btn.hide()
             self.label_prompt.hide()
             self.score_input.show()
             self.score_input.set_pos(self.width - 125, self.height // 3)
@@ -338,8 +340,9 @@ class LabelingScene(Scene):
         else:
             for i, label in enumerate(self.labels):
                 label_btn = self.get(f"label_{i}")
-                label_btn.show()
-                label_btn.set_pos(self.pos_dict[i])
+                if label_btn is not None:
+                    label_btn.show()
+                    label_btn.set_pos(self.pos_dict[i])
             self.score_input.hide()
             self.score_prompt.hide()
             self.label_prompt.show()
