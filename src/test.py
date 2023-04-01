@@ -12,17 +12,20 @@ class ModelTest:
         # for i in range(len(self.base_model.layers)):
         #     self.final_options[f'layer{i}']
         self.final_options = []
-        self.extend_options(options.items())
+        self.expand_options(options.items())
         self.current_options = [None] * len(self.final_options)
 
-    def extend_options(self, options):
+    def expand_options(self, options, name=None):
         for option in options:
             if isinstance(option[1], list):
-                self.extend_options(option[1])
+                self.extend_options(option[1], name=option[0])
             else:
-                if callable(option[1][0]):
-                    self.final_options.append(option[1])
-                    self.counter+=1
+                if name is None:
+                    self.final_options.append(option)
+                else:
+                    self.final_options.append((name, option))
+                
+                    
 
     def process_options(self):
         
