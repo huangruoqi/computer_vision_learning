@@ -18,7 +18,7 @@ class ModelTest:
     def expand_options(self, options, name=None):
         for option in options:
             if isinstance(option[1], list):
-                self.extend_options(option[1], name=option[0])
+                self.expand_options(option[1], name=option[0])
             else:
                 if name is None:
                     self.final_options.append(option)
