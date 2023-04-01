@@ -4,7 +4,7 @@ import sys
 import numpy as np
 import pickle
 import json
-from .vutils import load_settings
+from vutils import load_settings
 
 
 settings = load_settings()
