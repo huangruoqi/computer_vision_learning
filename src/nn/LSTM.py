@@ -57,7 +57,7 @@ outputs = tf.keras.layers.Dense(1, activation="sigmoid")(lstm)
 model = tf.keras.Model(inputs=inputs, outputs=outputs)
 print(model.summary())
 model.compile(
-    loss="mean_squared_error", optimizer="adam", metrics=["mean_squared_error"]
+    loss="mse", optimizer="adam", metrics=["mse"]
 )
 history = model.fit(
     x_train,
