@@ -72,7 +72,7 @@ class ModelTest:
     def build(self):
         self.process_options()
         self.final_inputs = np.array(self.final_inputs)
-        input_shape = self.final_inputs.shape
+        input_shape = (self.final_inputs.shape[1], self.final_inputs.shape[2])
         
         
         
