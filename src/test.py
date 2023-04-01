@@ -1,3 +1,5 @@
+import numpy as np
+
 class ModelTest:
     def __init__(self, base_model, raw_input, raw_output, options):
         self.counter = 0
@@ -45,7 +47,8 @@ class ModelTest:
                 self.process(option, self.final_inputs)
             elif name in ['batch_size', 'time_stamp']:
                 self.final_params[name] = option
-        
+            else:
+                raise Exception(f"option <{name}> not found")
 
     def process(self, func, data):
         return [func(row) for row in data]
@@ -68,4 +71,9 @@ class ModelTest:
 
     def build(self):
         self.process_options()
+        self.final_inputs = np.array(self.final_inputs)
+        input_shape = self.final_inputs.shape
+        
+        
+        
         
