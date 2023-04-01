@@ -1,1 +1,1 @@
-{"fps": 30, "labels": ["label 1", "label 2", "label 3", "ddd", "ddd", "ddd"], "score_lower_bound": -1.234, "score_upper_bound": 5.999}
+{"fps": 30, "labels": ["label 1", "label 2", "label 3"], "score_lower_bound": -1.234, "score_upper_bound": 5.999}
