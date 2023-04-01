@@ -17,7 +17,7 @@ class ModelTest:
 
     def expand_options(self, options, name=None):
         for option in options:
-            if isinstance(option[1], list):
+            if isinstance(option[1], list) and callable(option[1][0]):
                 self.expand_options(option[1], name=option[0])
             else:
                 if name is None:
@@ -40,13 +40,14 @@ class ModelTest:
             self.build()
             pass
 
-        if callable(self.final_options[option_idx]):
-            self.current_options[option_idx] = False
+        if callable(self.final_options[option_idx][0]):
+            self.current_options[option_idx] = None
             self.test(option_idx+1)
-            self.current_options[option_idx] = True
-            self.test(option_idx+1)
+            for i in self.final_options[option_idx]:
+                self.current_options[option_idx] = i
+                self.test(option_idx+1)
         else:
-            for i in self.options[option_idx]:
+            for i in self.final_options[option_idx]:
                 self.current_options[option_idx] = i
                 self.test(option_idx+1)
 
