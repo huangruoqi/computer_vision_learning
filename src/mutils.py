@@ -122,7 +122,7 @@ def split_data_without_label(df, valid_size, test_size):
         (
             y_train if i < n_train else y_valid if i < n_train + n_valid else y_test
         ).append(df_target[i])
-    return x_train, y_train, x_valid, y_valid, x_test, y_test
+    return [x_train, y_train, x_valid, y_valid, x_test, y_test]
 
 
 def split_data(DATA, VALID_RATIO, TEST_RATIO):
@@ -158,10 +158,9 @@ def save_model_info(model_type, file_path, model_path, model_loss):
     #     f.write(label_info)
 
 
-def group_data(data, group_size, preprocessor):
+def group_data(data, group_size):
     result = []
     temp = []
-    data = preprocessor.transform(data)
     for i in data:
         temp.append(i)
         if len(temp) == group_size:

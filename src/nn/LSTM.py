@@ -38,12 +38,11 @@ TIMESTAMPS = 32
 x_train, y_train, x_valid, y_valid, x_test, y_test = split_data(
     DATA, VALID_RATIO, TEST_RATIO
 )
-p = Preprocessor()
-x_train = group_data(x_train, TIMESTAMPS, p)
+x_train = group_data(x_train, TIMESTAMPS)
 y_train = group_data_score(y_train, TIMESTAMPS)
-x_valid = group_data(x_valid, TIMESTAMPS, p)
+x_valid = group_data(x_valid, TIMESTAMPS)
 y_valid = group_data_score(y_valid, TIMESTAMPS)
-x_test = group_data(x_test, TIMESTAMPS, p)
+x_test = group_data(x_test, TIMESTAMPS)
 y_test = group_data_score(y_test, TIMESTAMPS)
 inputs = tf.keras.Input(shape=(x_train.shape[1], x_train.shape[2]))
 lstm = tf.keras.layers.LSTM(256, return_sequences=True)(inputs)
