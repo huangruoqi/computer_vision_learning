@@ -33,8 +33,13 @@ def offset(curr, prev):
     # result = [v[0] - v[1] if i%4!=3 else v[0] for i, v in enumerate(zip(curr, prev))]
     return result
 
-
 class Preprocessor:
+    def transform(self, data):
+        raise Exception("<transform> method must be defined for Preprocessor")
+    def __str__(self):
+        raise Exception("<__str__> method must be defined for Preprocessor")
+
+class PCA(Preprocessor):
     def __init__(self):
         self.pca = None
         # from sklearn.decomposition import PCA
@@ -52,6 +57,32 @@ class Preprocessor:
         if self.pca is not None:
             data = self.pca.transform(data)
         return data
+
+    def __str__(self):
+        return "Principle Component Analysis"
+
+class RemoveVisibility(Preprocessor):
+    def __init__(self):
+        self.pca = None
+        # from sklearn.decomposition import PCA
+        # try:
+        #     pardir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+        #     pca_file = open(os.path.join(pardir, 'pca.pkl'), 'rb')
+        #     self.pca = pickle.load(pca_file)
+        #     pca_file.close()
+        # except Exception as e:
+        #     print(e)
+        #     print("PCA not loaded")
+        #     pass
+
+    def transform(self, data):
+        if self.pca is not None:
+            data = self.pca.transform(data)
+        return data
+
+    def __str__(self):
+        return "Remove Visibility"
+
 
 
 def convert_df_labels(df1, labels2int):
