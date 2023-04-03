@@ -10,9 +10,9 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
   - [x] Fix memory issue after exiting scene
   - [x] Lower memory usage
 - Tensorflow
-  - [ ] Automate training and record all details
+  - [x] Automate training and record all details
   - [ ] Dropout rate in LSTM layer
-  - [ ] Use script to find best epoch
+  - [x] Use script to find best epoch
 - Performance
   <!-- - [ ] test coral TPU on RaspberryPi with mediapipe pose model -->
 - Multi camera
