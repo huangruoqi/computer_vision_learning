@@ -33,6 +33,7 @@ def offset(curr, prev):
     # result = [v[0] - v[1] if i%4!=3 else v[0] for i, v in enumerate(zip(curr, prev))]
     return result
 
+
 def convert_df_labels(df1, labels2int):
     df = df1.copy()
     for i in range(len(df)):
@@ -85,6 +86,7 @@ def split_data_with_label(df, valid_size, test_size):
         np.array(y_test),
     )
 
+
 def split_data_without_label(df, valid_size, test_size):
     df_input = df.copy()
     df_target = df_input.pop("label")
@@ -136,22 +138,23 @@ def group_data_score(data, group_size):
 
     return np.array(result)
 
-class ModelTest:
-    def __init__(self, 
-            base_model, 
-            data, 
-            options={},
-            max_epochs=100,
-            valid_ratio=0.1,
-            test_ratio=0.1,
-            early_stop_valid_patience=10,
-            early_stop_train_patience=5,
-            num_train_per_config=10
-        ):
-        self.max_epochs=max_epochs
-        self.early_stop_valid_patience=early_stop_valid_patience
-        self.early_stop_train_patience=early_stop_train_patience
-        self.num_train_per_config=num_train_per_config
+
+class ModelOperation:
+    def __init__(
+        self,
+        base_model,
+        data,
+        max_epochs=100,
+        valid_ratio=0.1,
+        test_ratio=0.1,
+        early_stop_valid_patience=10,
+        early_stop_train_patience=5,
+        num_train_per_config=10,
+    ):
+        self.max_epochs = max_epochs
+        self.early_stop_valid_patience = early_stop_valid_patience
+        self.early_stop_train_patience = early_stop_train_patience
+        self.num_train_per_config = num_train_per_config
 
         self.counter = 0
         self.base_model = base_model
@@ -168,94 +171,16 @@ class ModelTest:
             "optimizer": "adam",
             "preprocess": None,
         }
-        # for i in range(len(self.base_model.layers)):
-        #     self.final_options[f'layer{i}']
-        self.final_options = [
-            (k, (v if isinstance(v, list) else [v]))
-            for k, v in options.items()
-            if not (isinstance(v, list) and len(v) == 0)
-        ]
-        for name1, param1 in self.defalut_params.items():
-            found = False
-            for name2, param2 in self.final_options:
-                if name1 == name2:
-                    found = True
-            if not found:
-                self.final_options.append((name1, [param1]))
-        self.current_options = [None] * len(self.final_options)
 
+        self.model = None
         self.final_data = None
-        self.final_params = None
+        self.params = self.defalut_params
         self.history = None
 
-    def get_param(self, key):
-        param = self.final_params.get(key)
-        if param is None:
-            raise Exception(f"option <{key}> not found")
-        return param
-
-    def process_options(self):
-        self.final_data = list(self.raw_data)
-        self.final_params = {}
-        for i in range(len(self.layer_options)):
-            self.layer_options[i] = None
-        for i, (name, options) in enumerate(self.final_options):
-            option_idx = self.current_options[i]
-            option = options[option_idx]
-            if name == "preprocess" and option is not None:
-                # x_train
-                self.final_data[0] = option.transform(self.final_data[0])
-                # x_valid
-                self.final_data[2] = option.transform(self.final_data[2])
-                # x_test
-                self.final_data[4] = option.transform(self.final_data[4])
-
-            if name[:5] == "layer":
-                layer_number = int(name[5:])
-                self.layer_options[layer_number] = option
-
-            self.final_params[name] = option
-
-        timestamp = self.get_param("timestamp")
-        for i in range(6):
-            self.final_data[i] = (group_data_score if i & 1 else group_data)(
-                self.final_data[i], timestamp
-            )
-
     def run(self):
-        self.history = []
-        self.test_helper(0)
-        output_path = os.path.join("test_results", str(int(time.time())) + ".csv")
-        pd.DataFrame(
-            data=self.history,
-            columns=list(next(zip(*self.final_options)))
-            + ["avg_epochs", "avg_loss", "avg_valid_loss", "avg_test_loss"],
-        ).to_csv(output_path)
-
-    def test_helper(self, option_idx):
-        if option_idx == len(self.final_options):
-            self.process_options()
-            self.history.append(
-                [
-                    self.final_params.get(name) or "No Change"
-                    for name, options in self.final_options
-                ]
-                + self.build()
-            )
-            return
-        name, options = self.final_options[option_idx]
-        for i, v in enumerate(options):
-            self.current_options[option_idx] = i
-            self.test_helper(option_idx + 1)
+        raise Exception("<run> method must be defined for ModelOperation")
 
     def build(self):
-        print("=================================================================")
-        [
-            print(f"{name:12}: {self.final_params.get(name) or 'No Change'}")
-            for name, options in self.final_options
-        ]
-        print()
-
         # Reconstruct model
         layers = self.base_model.layers
         input_shape = self.final_data[0].shape[1:]
@@ -269,28 +194,15 @@ class ModelTest:
                     config[k] = v
             current_layer = layer.__class__(**config)(current_layer)
         model = Model(inputs=input_layer, outputs=current_layer)
-
-        history = []
-        for i in range(self.num_train_per_config):
-            history.append(self.train(model))
-
-        record = [sum(i) / len(i) for i in zip(*history)]
-        print(
-            "Average [epochs: {:.0f} - loss: {:.5f} - val_loss: {:.5f} - test_loss: {:.5f}]".format(
-                *record
-            )
-        )
-        print("-----------------------------------------------------------------")
-        print()
-        return record
+        return model
 
     def train(self, clean_model):
         x_train, y_train, x_valid, y_valid, x_test, y_test = self.final_data
         model = models.clone_model(clean_model)
         model.compile(
-            optimizer=self.get_param("optimizer"), loss="mse", metrics=["mse"]
+            optimizer=self.params.get("optimizer"), loss="mse", metrics=["mse"]
         )
-        batchsize = self.get_param("batchsize")
+        batchsize = self.params.get("batchsize")
         history = model.fit(
             x_train,
             y_train,
@@ -317,11 +229,148 @@ class ModelTest:
             shuffle=False,
         )
         epochs = len(history.history["loss"])
-        train_loss = model.evaluate(x_train, y_train, batch_size=batchsize, verbose=0)[
-            0
-        ]
-        valid_loss = model.evaluate(x_valid, y_valid, batch_size=batchsize, verbose=0)[
-            0
-        ]
+        loss = model.evaluate(x_train, y_train, batch_size=batchsize, verbose=0)[0]
+        val_loss = model.evaluate(x_valid, y_valid, batch_size=batchsize, verbose=0)[0]
         test_loss = model.evaluate(x_test, y_test, batch_size=batchsize, verbose=0)[0]
-        return epochs, train_loss, valid_loss, test_loss
+        self.model = model
+        return epochs, loss, val_loss, test_loss
+
+
+class ModelTest(ModelOperation):
+    def __init__(self, base_model, data, options, *args, **kwargs):
+        super().__init__(base_model=base_model, data=data, *args, **kwargs)
+        self.final_options = [
+            (k, (v if isinstance(v, list) else [v]))
+            for k, v in options.items()
+            if not (isinstance(v, list) and len(v) == 0)
+        ]
+        for name1, param1 in self.defalut_params.items():
+            found = False
+            for name2, param2 in self.final_options:
+                if name1 == name2:
+                    found = True
+            if not found:
+                self.final_options.append((name1, [param1]))
+        self.current_options = [None] * len(self.final_options)
+
+    def process_options(self):
+        self.final_data = list(self.raw_data)
+        self.params = {}
+        for i in range(len(self.layer_options)):
+            self.layer_options[i] = None
+        for i, (name, options) in enumerate(self.final_options):
+            option_idx = self.current_options[i]
+            option = options[option_idx]
+            if name == "preprocess" and option is not None:
+                self.final_data[0] = option.transform(self.final_data[0])  # x_train
+                self.final_data[2] = option.transform(self.final_data[2])  # x_valid
+                self.final_data[4] = option.transform(self.final_data[4])  # x_test
+            if name[:5] == "layer":
+                layer_number = int(name[5:])
+                self.layer_options[layer_number] = option
+            self.params[name] = option
+        timestamp = self.params.get("timestamp")
+        for i in range(6):
+            self.final_data[i] = (group_data_score if i & 1 else group_data)(
+                self.final_data[i], timestamp
+            )
+
+    def run(self):
+        self.history = []
+        self.test(0)
+        output_path = os.path.join("test_results", str(int(time.time())) + ".csv")
+        pd.DataFrame(
+            data=self.history,
+            columns=list(next(zip(*self.final_options)))
+            + ["avg_epochs", "avg_loss", "avg_valid_loss", "avg_test_loss"],
+        ).to_csv(output_path)
+
+    def test(self, option_idx):
+        if option_idx == len(self.final_options):
+            return self.build_and_train()
+        name, options = self.final_options[option_idx]
+        for i, v in enumerate(options):
+            self.current_options[option_idx] = i
+            self.test(option_idx + 1)
+
+    def build_and_train(self):
+        self.process_options()
+        print("=================================================================")
+        [
+            print(f"{name:12}: {self.params.get(name) or 'No Change'}")
+            for name in self.params.keys()
+        ]
+        print()
+        model = self.build()
+        # model.summary()
+        train_results = []
+        labels = ["round", "epochs", "train", "valid", "test"]
+        print("{:>8} {:>8} {:>8} {:>8} {:>8}".format(*labels))
+        for i in range(self.num_train_per_config):
+            record = self.train(model)
+            train_results.append(record)
+            print("{:8} {:8.0f} {:8.4f} {:8.4f} {:8.4f}".format(i, *record))
+        record = [sum(i) / len(i) for i in zip(*train_results)]
+        print("{:>8} {:8.0f} {:8.4f} {:8.4f} {:8.4f}".format("avg", *record))
+        self.history.append(
+            [self.params.get(name) or "No Change" for name in self.params.keys()]
+            + record
+        )
+        print("-----------------------------------------------------------------\n")
+
+
+class ModelTrain(ModelOperation):
+    def __init__(self, base_model, data, options, *args, **kwargs):
+        super().__init__(base_model=base_model, data=data, *args, **kwargs)
+        for name, param in options.items():
+            self.params[name] = param
+
+        option = self.params.get("preprocess")
+        self.final_data = list(self.raw_data)
+        if option is not None:
+            self.final_data[0] = option.transform(self.final_data[0])  # x_train
+            self.final_data[2] = option.transform(self.final_data[2])  # x_valid
+            self.final_data[4] = option.transform(self.final_data[4])  # x_test
+        for i in range(6):
+            self.final_data[i] = (group_data_score if i & 1 else group_data)(
+                self.final_data[i], self.params.get("timestamp")
+            )
+
+    def run(self):
+        print("=================================================================")
+        [
+            print(f"{name:12}: {self.params.get(name) or 'No Change'}")
+            for name in self.params.keys()
+        ]
+        print()
+        model = self.build()
+        model.summary()
+        train_results = []
+        labels = ["round", "epochs", "train", "valid", "test"]
+        print("{:>8} {:>8} {:>8} {:>8} {:>8}".format(*labels))
+        models = []
+        for i in range(self.num_train_per_config):
+            record = self.train(model)
+            train_results.append(record)
+            print("{:8} {:8.0f} {:8.4f} {:8.4f} {:8.4f}".format(i, *record))
+            models.append(self.model)
+        try:
+            number = int(input("Enter the round number to save model: "))
+            self.save_model(models[number], train_results[number])
+        except:
+            print("Model not saved.")
+        print("-----------------------------------------------------------------\n")
+
+
+    def save_model(self, model, record):
+        join = os.path.join
+        model_path = join("model", str(int(time.time())))
+        if not os.path.exists(model_path):
+            os.mkdir(model_path)
+        models.save_model(model, join(model_path, 'model.h5'))
+        with open(join(model_path, 'info.txt'), 'w') as f:
+            labels = ["epochs", "train", "valid", "test"]
+            f.write("{:>8} {:>8} {:>8} {:>8}\n".format(*labels))
+            f.write("{:8.0f} {:8.4f} {:8.4f} {:8.4f}\n\n".format(*record))
+            f.write(str(self.params))
+        print(f"Model saved to <{model_path}>.")

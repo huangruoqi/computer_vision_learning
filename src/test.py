@@ -18,4 +18,4 @@ OPTIONS = {
 }
 
 
-ModelTest(LSTM.model, DATA, OPTIONS).run()
+ModelTest(LSTM.model, DATA, OPTIONS, ).run()

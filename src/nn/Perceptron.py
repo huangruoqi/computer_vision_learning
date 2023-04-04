@@ -1,5 +1,6 @@
 from keras import Input, layers, Sequential
 
+
 class Perceptron:
     model = Sequential(
         [
