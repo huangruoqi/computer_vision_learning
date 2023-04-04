@@ -24,6 +24,7 @@ OPTIONS = {
     # 'preprocess': [],
     'batchsize': [16, 20, 30],
     'timestamp': [32, 50],
+    'optimizer': ['sgd', 'adam']
 }
 
 def main():
@@ -50,9 +51,9 @@ class ModelTest:
         )
 
         self.defalut_params = {
-            'preprocess': [],
             'batchsize': 16,
             'timestamp': 32,
+            'optimizer': 'adam'
         }
         # for i in range(len(self.base_model.layers)):
         #     self.final_options[f'layer{i}']
@@ -137,7 +138,7 @@ class ModelTest:
     def train(self, clean_model):
         x_train, y_train, x_valid, y_valid, x_test, y_test = self.final_data
         model = models.clone_model(clean_model)
-        model.compile(optimizer='adam', loss='mse', metrics=['mse'])
+        model.compile(optimizer=self.get_param('optimizer'), loss='mse', metrics=['mse'])
         # print(model.summary())
         batchsize = self.get_param('batchsize')
         history = model.fit(
