@@ -2,23 +2,11 @@
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
 - GUI
-  - [x] Fix setting label not in sync
-  - [x] Add scene for setting labels
-  - [x] Add toggle for numerical or categorical label
-  - [x] Add component for text input
-  - [x] Add validation for text input
-  - [x] Fix memory issue after exiting scene
-  - [x] Lower memory usage
-- Tensorflow
-  - [x] Automate training and record all details
-  - [ ] Dropout rate in LSTM layer
-  - [x] Use script to find best epoch
-- Performance
-  <!-- - [ ] test coral TPU on RaspberryPi with mediapipe pose model -->
-- Multi camera
+  - Add menu helper
+
 
 ## Usage
-* `make test` to open camera and display real-time estimation for body and hands
+* `make test` to test different configurations specify in `src/test.py`
 * `make record` to record video to `video/` folder 
   * change MAX_TIME, FPS for record time or frame per second in `src/convert.py`
 * `make label` to show all videos in `video/` folder (max=10) with GUI, click 'label' then 'convert' to label each video.
