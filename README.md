@@ -3,6 +3,7 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
 - GUI
   - [ ] Add menu helper
+  - [ ] Add current label indicator
 
 
 ## Usage
