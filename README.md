@@ -4,6 +4,8 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 - GUI
   - [ ] Add menu helper
   - [ ] Add current label indicator
+  - [ ] Add Auto-Refresh
+  - [ ] Add playback speed controls
 
 
 ## Usage
