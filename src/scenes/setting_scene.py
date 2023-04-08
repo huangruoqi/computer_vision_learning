@@ -234,7 +234,7 @@ class SettingScene(Scene):
         self.settings["score_lower_bound"] = self.lower_bound
         save_settings(self.settings)
 
-    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
-        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
+    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, mouse_pressed, keyboard_pressed):
+        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, mouse_pressed, keyboard_pressed)
         self.upper_bound = self.score_input_upper.value
         self.lower_bound = self.score_input_lower.value
