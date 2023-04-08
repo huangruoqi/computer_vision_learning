@@ -1,0 +1,2 @@
+,batchsize,timestamp,optimizer,preprocess,avg_epochs,avg_loss,avg_valid_loss,avg_test_loss
+0,16,180,adam,No Change,18.5,0.20566834807395934,0.19277904480695723,0.0

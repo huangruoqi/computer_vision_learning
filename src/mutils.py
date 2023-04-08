@@ -2,6 +2,8 @@ import time
 import pandas as pd
 import os
 import numpy as np
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__)))
 from vutils import load_settings
 from keras import models, Input, Model
 from keras.callbacks import EarlyStopping
@@ -115,7 +117,7 @@ def split_data(DATA, VALID_RATIO, TEST_RATIO):
     return split_data_without_label(DB, VALID_RATIO, TEST_RATIO)
 
 
-def group_data(data, group_size):
+def group_data_input(data, group_size):
     result = []
     temp = []
     for i in data:
@@ -127,15 +129,15 @@ def group_data(data, group_size):
     return np.array(result)
 
 
-def group_data_score(data, group_size):
+def group_data_output(data, group_size):
     result = []
     temp = []
     for i in data:
         temp.append(i)
         if len(temp) == group_size:
-            result.append(sum(temp) / group_size / 2)
+            # result.append(sum(temp) / group_size / 2)
+            result.append(max(temp))
             temp = []
-
     return np.array(result)
 
 
@@ -150,11 +152,17 @@ class ModelOperation:
         early_stop_valid_patience=10,
         early_stop_train_patience=5,
         num_train_per_config=10,
+        loss='mse',
+        metrics=['mse'],
+        verbose=0,
     ):
         self.max_epochs = max_epochs
         self.early_stop_valid_patience = early_stop_valid_patience
         self.early_stop_train_patience = early_stop_train_patience
         self.num_train_per_config = num_train_per_config
+        self.loss= loss
+        self.metrics = metrics
+        self.verbose = verbose
 
         self.counter = 0
         self.base_model = base_model
@@ -194,13 +202,15 @@ class ModelOperation:
                     config[k] = v
             current_layer = layer.__class__(**config)(current_layer)
         model = Model(inputs=input_layer, outputs=current_layer)
+        if self.verbose:
+            model.summary()
         return model
 
     def train(self, clean_model):
         x_train, y_train, x_valid, y_valid, x_test, y_test = self.final_data
         model = models.clone_model(clean_model)
         model.compile(
-            optimizer=self.params.get("optimizer"), loss="mse", metrics=["mse"]
+            optimizer=self.params.get("optimizer"), loss=self.loss, metrics=self.metrics
         )
         batchsize = self.params.get("batchsize")
         history = model.fit(
@@ -214,24 +224,26 @@ class ModelOperation:
                     monitor="loss",
                     patience=self.early_stop_train_patience,
                     restore_best_weights=True,
-                    verbose=0,
+                    verbose=self.verbose,
                     start_from_epoch=8,
                 ),
                 EarlyStopping(
                     monitor="val_loss",
                     patience=self.early_stop_valid_patience,
                     restore_best_weights=True,
-                    verbose=0,
+                    verbose=self.verbose,
                     start_from_epoch=8,
                 ),
             ],
-            verbose=0,
+            verbose=self.verbose,
             shuffle=False,
         )
         epochs = len(history.history["loss"])
         loss = model.evaluate(x_train, y_train, batch_size=batchsize, verbose=0)[0]
         val_loss = model.evaluate(x_valid, y_valid, batch_size=batchsize, verbose=0)[0]
-        test_loss = model.evaluate(x_test, y_test, batch_size=batchsize, verbose=0)[0]
+        test_loss = 0
+        if len(x_test)>0:
+            test_loss = model.evaluate(x_test, y_test, batch_size=batchsize, verbose=0)[0]
         self.model = model
         return epochs, loss, val_loss, test_loss
 
@@ -271,7 +283,7 @@ class ModelTest(ModelOperation):
             self.params[name] = option
         timestamp = self.params.get("timestamp")
         for i in range(6):
-            self.final_data[i] = (group_data_score if i & 1 else group_data)(
+            self.final_data[i] = (group_data_output if i & 1 else group_data_input)(
                 self.final_data[i], timestamp
             )
 

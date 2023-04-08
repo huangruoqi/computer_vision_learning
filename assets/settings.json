@@ -1,1 +1,1 @@
-{"fps": 30, "labels": ["Nothing", "Shake", "Fall", "aaa", "aaa", "aaa", "aaa"], "score_lower_bound": -1.234, "score_upper_bound": 5.999}
+{"fps": 30, "labels": ["Stable", "Minimum Sway"], "score_lower_bound": -1.234, "score_upper_bound": 5.999}
