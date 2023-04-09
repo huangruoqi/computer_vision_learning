@@ -6,5 +6,5 @@ class LSTM:
     lstm = layers.LSTM(256, return_sequences=True)(inputs)
     lstm = layers.LSTM(32)(lstm)
     # outputs = layers.Dense(1, activation="sigmoid")(lstm)
-    outputs = layers.Dense(2, activation="softmax")(lstm)
+    outputs = layers.Dense(3, activation="softmax")(lstm)
     model = Model(inputs=inputs, outputs=outputs)

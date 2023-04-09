@@ -4,13 +4,16 @@ from mutils import ModelTest
 
 DATA = [
     "FrontView_1.mp4",
+    "FrontView_2.mp4",
+    "SideView_1.mp4",
+    "SideView_2.mp4",
 ]
 OPTIONS = {
     # "preprocess": [None],
     "batchsize": [16],
-    "timestamp": [180],
+    "timestamp": [90, 180],
     "optimizer": ["adam"],
-    # "layer1": [None, {"units": 128, "return_sequences": True}],
+    "layer1": [{"units": 64 * i, "return_sequences": True} for i in range(1, 5)],
     # "layer2": [None, {"units": 128, "return_sequences": True}],
 }
 SETTINGS = {

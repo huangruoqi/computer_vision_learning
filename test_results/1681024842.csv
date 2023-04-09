@@ -1,0 +1,9 @@
+,batchsize,timestamp,optimizer,layer1,preprocess,avg_epochs,avg_loss,avg_valid_loss,avg_test_loss
+0,16,90,adam,"{'units': 64, 'return_sequences': True}",No Change,19.0,0.24866945743560792,0.30120542347431184,0.0
+1,16,90,adam,"{'units': 128, 'return_sequences': True}",No Change,20.0,0.24893169850111008,0.30160142481327057,0.0
+2,16,90,adam,"{'units': 192, 'return_sequences': True}",No Change,20.9,0.24854327440261842,0.3019914090633392,0.0
+3,16,90,adam,"{'units': 256, 'return_sequences': True}",No Change,24.9,0.24828333258628846,0.30274598598480223,0.0
+4,16,180,adam,"{'units': 64, 'return_sequences': True}",No Change,19.0,0.36990882754325866,0.4373707115650177,0.0
+5,16,180,adam,"{'units': 128, 'return_sequences': True}",No Change,21.6,0.3699860811233521,0.4385722756385803,0.0
+6,16,180,adam,"{'units': 192, 'return_sequences': True}",No Change,22.4,0.3691065937280655,0.4385837733745575,0.0
+7,16,180,adam,"{'units': 256, 'return_sequences': True}",No Change,20.9,0.36895264089107516,0.4396647185087204,0.0
