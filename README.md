@@ -1,6 +1,8 @@
 # computer_vision_learning
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 ## TODO
+- Poster
+  - [ ] imbalance, occlusion, specific library in experiments
 - GUI
   - [ ] Add menu helper
   - [ ] Add current label indicator
