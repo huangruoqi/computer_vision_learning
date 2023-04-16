@@ -1,19 +1,23 @@
 from nn.lstm import LSTM
-# from preprocessor import RemoveVisibility, PCA
 from mutils import ModelTest
+from preprocessor import Balancer
 
 DATA = [
-    "FrontView_1.mp4",
-    "FrontView_2.mp4",
     "SideView_1.mp4",
     "SideView_2.mp4",
+    "SideView_3.mp4",
 ]
+'''
+    "FrontView_1.mp4",
+    "FrontView_2.mp4",
+    "FrontView_3.mp4",
+'''
 OPTIONS = {
-    # "preprocess": [None],
-    "batchsize": [16],
-    "timestamp": [90, 180],
+    "preprocess": [Balancer(100, 10)],
+    "batchsize": [i * 30 for i in range(1, 5)],
+    "timestamp": [i * 5 for i in range(1, 6)],
     "optimizer": ["adam"],
-    "layer1": [{"units": 64 * i, "return_sequences": True} for i in range(1, 5)],
+    # "layer1": [{"units": 64 , "return_sequences": True} for i in range(1, 5)],
     # "layer2": [None, {"units": 128, "return_sequences": True}],
 }
 SETTINGS = {
