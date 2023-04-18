@@ -1,6 +1,6 @@
 from nn.lstm import LSTM
 from mutils import ModelTest
-from preprocessor import Balancer
+from preprocessor import Balancer, Jitter
 
 DATA = [
     "SideView_1.mp4",
@@ -13,7 +13,8 @@ DATA = [
     "FrontView_3.mp4",
 '''
 OPTIONS = {
-    "preprocess": [Balancer(100, 10)],
+    # "preprocess": [Balancer(100, 10)],
+    "preprocess": [Jitter()],
     "batchsize": [i * 30 for i in range(1, 5)],
     "timestamp": [i * 5 for i in range(1, 6)],
     "optimizer": ["adam"],

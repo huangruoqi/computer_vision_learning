@@ -1,6 +1,11 @@
 import os
 import pickle
 
+import numpy
+from collections import Counter
+from tsa import helper as hlp
+from tsa import augmentation as aug
+
 
 class Preprocessor:
     def transform(self, data):
@@ -85,12 +90,36 @@ class Balancer(Preprocessor):
             x_result.extend(x_temp)
             y_result.extend(y_temp)
 
-        label_count = {}
-        for i in y_result:
-            label_count[i] = label_count.get(i, 0) + 1
-        print(label_count)
+        print(Counter(y_result))
 
         return x_result, y_result
 
     def __str__(self):
         return "Balance Input"
+
+class Augmentation(Balancer):
+    def __init__(self):
+        super().__init__(100, 10)
+
+    def _get_minority(self, data):
+        x, y = data
+        most_common = Counter(y).most_common()[0][0]
+        self.threshold
+        for i in range(len(x)):
+            if y[i]!=most_common:
+                pass
+
+        return data
+
+
+    
+class Jitter(Augmentation):
+    def transform(self, data):
+        data = super().transform(data)
+        if len(data[0])==0:
+            return data
+        minority = self._get_minority(data)
+        # x = aug.jitter(x)
+        # s = numpy.swapaxes(numpy.array(x), 1, 0)
+        # hlp.plot1d(s[0])
+        return data
