@@ -66,32 +66,39 @@ class Balancer(Preprocessor):
         y_temp = []
         x_result = []
         y_result = []
-        for i in range(len(x)):
-            if y[i] == label:
+        index = 0
+        while index < len(x):
+            if y[index] == label:
                 count += 1
             else:
-                label = y[i]
-                count = 0
+                label = y[index]
+                count = 1
                 x_result.extend(x_temp)
                 y_result.extend(y_temp)
                 x_temp = []
                 y_temp = []
-            x_temp.append(x[i])
-            y_temp.append(y[i])
+            x_temp.append(x[index])
+            y_temp.append(y[index])
             if count >= self.threshold:
                 count = 0
                 label = None
-                x_result.extend(x_temp[:self.threshold//self.ratio])
-                y_result.extend(y_temp[:self.threshold//self.ratio])
+                index+=1
+                while index < len(x):
+                    if y[index] == label:
+                        index+=1
+                        x_temp.append(x[index])
+                        y_temp.append(y[index])
+                    else:
+                        break
+                x_result.extend(x_temp[::self.ratio])
+                y_result.extend(y_temp[::self.ratio])
                 x_temp = []
                 y_temp = []
+            index += 1
         
         if len(x_temp):
             x_result.extend(x_temp)
             y_result.extend(y_temp)
-
-        print(Counter(y_result))
-
         return x_result, y_result
 
     def __str__(self):
@@ -99,27 +106,45 @@ class Balancer(Preprocessor):
 
 class Augmentation(Balancer):
     def __init__(self):
-        super().__init__(100, 10)
+        super().__init__(200, 50)
 
     def _get_minority(self, data):
         x, y = data
         most_common = Counter(y).most_common()[0][0]
-        self.threshold
-        for i in range(len(x)):
-            if y[i]!=most_common:
-                pass
-
-        return data
+        index = 0
+        padding = self.threshold//self.ratio
+        x_result = []
+        y_result = []
+        while index < len(x):
+            if y[index]!=most_common:
+                start = max(0, index - padding)
+                end = start + 1
+                while y[end]!=most_common and end < len(x):
+                    end += 1
+                end = min(len(x)-1, end + padding)
+                x_result.extend(x[start:end+1])
+                y_result.extend(y[start:end+1])
+                index = end
+            index += 1
+        return x_result, y_result
 
 
     
 class Jitter(Augmentation):
     def transform(self, data):
         data = super().transform(data)
+        x_result, y_result = [], []
         if len(data[0])==0:
             return data
-        minority = self._get_minority(data)
-        # x = aug.jitter(x)
-        # s = numpy.swapaxes(numpy.array(x), 1, 0)
-        # hlp.plot1d(s[0])
+        x, y = self._get_minority(data)
+        for i in range(2):
+            x_j = aug.jitter(numpy.array(x))
+            x_result.extend(x_j)
+            y_result.extend(y)
+        x_result.extend(data[0])
+        y_result.extend(data[1])
+        print(Counter(y_result))
         return data
+
+    def __str__(self):
+        return "Jitter"

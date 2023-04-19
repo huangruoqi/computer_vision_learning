@@ -1,19 +1,19 @@
 from nn.lstm import LSTM
-from preprocessor import Balancer
+from preprocessor import Jitter
 from mutils import ModelTrain
 
 DATA = [
-    "FrontView_1.mp4",
-    "FrontView_2.mp4",
-    "FrontView_3.mp4",
+    # "FrontView_3.mp4",
+    # "FrontView_2.mp4",
+    # "FrontView_1.mp4",
     "SideView_1.mp4",
     "SideView_2.mp4",
     "SideView_3.mp4",
 ]
 OPTIONS = {
-    "preprocess": Balancer(100, 10),
+    "preprocess": Jitter(),
     "batchsize": 40,
-    "timestamp": 15,
+    "timestamp": 5,
     "optimizer": "adam",
 }
 SETTINGS = {

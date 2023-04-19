@@ -1,0 +1,4 @@
+batchsize: 40
+timestamp: 5
+optimizer: adam
+preprocess: Jitter
