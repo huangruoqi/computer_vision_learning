@@ -12,8 +12,12 @@
 
 setup:
 	mkdir video data
+
 test:
 	python -B ./src/test.py
+
+train:
+	python -B ./src/train.py
 
 # If the first argument is "model"
 ifeq (model,$(firstword $(MAKECMDGOALS)))

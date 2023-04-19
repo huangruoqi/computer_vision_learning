@@ -228,6 +228,7 @@ class LabelingScene(Scene):
             ),
         )
         self.current_label_index = -1
+        self.default_label_index = self.current_label_index
         self.frame2label = None
 
         self.labels = []
@@ -272,6 +273,7 @@ class LabelingScene(Scene):
         def get_on_click(i):
             def on_click():
                 self.current_label_index = i
+                self.default_label_index = self.current_label_index
                 self.set_label()
 
             return on_click
@@ -286,7 +288,7 @@ class LabelingScene(Scene):
             label_btn = self.add(
                 f"label_{i}",
                 Button(
-                    text=label,
+                    text=f"{i+1}.{label}",
                     align_mode="TOPLEFT",
                     color=ColorBar.colors[
                         self.colors[i if i < len(self.labels) - 1 else -1]
@@ -481,27 +483,37 @@ class LabelingScene(Scene):
         else:
             self.frame2label = numpy.array([-1] * self.vc.total)
             self.current_label_index = -1
+            self.default_label_index = self.current_label_index
         self.bar.set_arr(numpy.array([(0, 0, 0)] * 100))
 
-    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, pressed):
-        if keyboard_inputs:
-            for i in range(len(keyboard_inputs) - 1, -1, -1):
-                if keyboard_inputs[i] == " ":
-                    keyboard_inputs.pop(i)
-                    if not self.playing:
-                        self.play()
-                        if self.is_score:
-                            self.score_input.editing = False
+    def update(self, delta_time, mouse_pos, keyboard_inputs, clicked, mouse_pressed, keyboard_pressed):
+        if not any(keyboard_pressed.values()):
+            self.current_label_index = self.default_label_index
+        else:
+            if keyboard_inputs:
+                for i in range(len(keyboard_inputs) - 1, -1, -1):
+                    if keyboard_inputs[i] == " ":
+                        keyboard_inputs.pop(i)
+                        if not self.playing:
+                            self.play()
+                            if self.is_score:
+                                self.score_input.editing = False
+                        else:
+                            self.pause()
+                            if self.is_score:
+                                self.score_input.editing = True
                     else:
-                        self.pause()
-                        if self.is_score:
-                            self.score_input.editing = True
+                        if '1' <= keyboard_inputs[i] <= '9':
+                            label_index = int(keyboard_inputs[i]) - 1
+                            print(label_index)
+                            if label_index < len(self.labels):
+                                self.current_label_index = label_index
 
-        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, pressed)
+        super().update(delta_time, mouse_pos, keyboard_inputs, clicked, mouse_pressed, keyboard_pressed)
         self.set_buffered_bar()
         if not self.playing:
             return
-        if not pressed:
+        if not mouse_pressed:
             self.frame_count += 1
             if self.frame_count >= self.fps_ratio:
                 self.set_display()
