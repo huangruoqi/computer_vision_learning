@@ -1,5 +1,6 @@
 # computer_vision_learning
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
+
 *autoencoder-decoder to do binary classification for stable and non-stable event.*
 ## TODO
 - Poster
