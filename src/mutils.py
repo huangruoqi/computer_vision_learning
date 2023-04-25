@@ -169,6 +169,8 @@ class ModelOperation:
 
         # x_train, y_train, x_valid, y_valid, x_test, y_test
         self.raw_data = split_data(data, valid_ratio, test_ratio)
+        if base_model.get_io:
+            self.raw_data = base_model.get_io(self.raw_data)
 
         self.defalut_params = {
             "batchsize": 16,
