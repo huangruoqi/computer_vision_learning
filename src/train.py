@@ -30,4 +30,4 @@ SETTINGS = {
     "verbose": 1
 }
 
-ModelTrain(LSTM.model, DATA, OPTIONS, **SETTINGS).run()
+ModelTrain(LSTM, DATA, OPTIONS, **SETTINGS).run()

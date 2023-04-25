@@ -162,7 +162,7 @@ class ModelOperation:
         self.verbose = verbose
 
         self.counter = 0
-        self.base_model = base_model
+        self.base_model = base_model.model
         self.preprocess = False
         self.preprocessor = None
         self.layer_options = [None] * len(base_model.layers)
