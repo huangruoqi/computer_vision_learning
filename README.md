@@ -2,6 +2,8 @@
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 
 *autoencoder-decoder to do binary classification for stable and non-stable event.*
+
+*segment-anything*
 ## TODO
 - Poster
   - [ ] imbalance, occlusion, specific library in experiments
