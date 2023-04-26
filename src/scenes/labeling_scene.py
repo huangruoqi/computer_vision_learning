@@ -12,7 +12,7 @@ import pandas
 import numpy
 import cv2
 
-VIDEO_RESIZE_DIMENSION = 540, 405
+VIDEO_RESIZE_DIMENSION = 500, 500
 
 
 class LabelingScene(Scene):
@@ -30,6 +30,7 @@ class LabelingScene(Scene):
         self.upper_bound = 0
         self.lower_bound = 0
         self.pos_dict = {}
+        self.angle = 0
 
         self.add(
             "title",
@@ -115,7 +116,7 @@ class LabelingScene(Scene):
                 y=130,
                 animation="opacity",
                 parameter={"factor": 0.5},
-                on_click=lambda: self.reset_label(),
+                on_click=lambda: self.rotate_view(),
             ),
         )
         self.is_score = False
@@ -254,6 +255,10 @@ class LabelingScene(Scene):
                 color="grey",
             ),
         )
+    
+    def rotate_view(self):
+        self.pixels.rot90 += 1
+        self.set_pixels(self.vc.peek())
 
     def set_video(self, video_path, video_name):
         self.video_name = video_name
@@ -396,7 +401,6 @@ class LabelingScene(Scene):
         btn.on_click = lambda: self.pause()
         self.get("next").hide()
         self.get("save").hide()
-        self.get("reset").hide()
 
     def pause(self):
         self.playing = False
@@ -405,7 +409,6 @@ class LabelingScene(Scene):
         btn.on_click = lambda: self.play()
         self.get("next").show()
         self.get("save").show()
-        self.get("reset").show()
 
     def next(self):
         self.set_display()
