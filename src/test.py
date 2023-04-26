@@ -36,4 +36,4 @@ SETTINGS = {
 }
 
 
-ModelTest(LSTM.model, DATA, OPTIONS, **SETTINGS).run()
+ModelTest(LSTM, DATA, OPTIONS, **SETTINGS).run()
