@@ -119,7 +119,7 @@ class Augmentation(Balancer):
             if y[index]!=most_common:
                 start = max(0, index - padding)
                 end = start + 1
-                while y[end]!=most_common and end < len(x):
+                while end < len(x) and y[end]!=most_common:
                     end += 1
                 end = min(len(x)-1, end + padding)
                 x_result.extend(x[start:end+1])
@@ -148,3 +148,30 @@ class Jitter(Augmentation):
 
     def __str__(self):
         return "Jitter"
+
+
+class StableFilter(Preprocessor):
+    def __init__(self, label, padding):
+        self.label = label
+        self.padding = padding
+
+    def transform(self, data):
+        x_result = []
+        x, y = data
+        index = 0
+        while index < len(x):
+            if y[index]!=self.label:
+                start = max(0, index - self.padding)
+                end = start + 1
+                while end < len(x) and y[end]!=self.label:
+                    end += 1
+                end = min(len(x)-1, end + self.padding)
+                index = end
+            else:
+                x_result.append(x[index])
+            index += 1
+
+        return x_result, x_result
+
+    def __str__(self):
+        return "Stable Filter"

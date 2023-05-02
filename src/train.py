@@ -1,6 +1,6 @@
 from nn.lstm import LSTM
 from nn.encoder_decoder import Encoder_Decoder
-from preprocessor import Jitter
+from preprocessor import StableFilter
 from mutils import ModelTrain
 
 DATA = [
@@ -12,7 +12,7 @@ DATA = [
     "SideView_3.mp4",
 ]
 OPTIONS = {
-    # "preprocess": Jitter(),
+    "preprocess": StableFilter(label=0, padding=30),
     "batchsize": 40,
     "timestamp": 16,
     "optimizer": "adam",
@@ -24,8 +24,8 @@ SETTINGS = {
     "early_stop_valid_patience":20,
     "early_stop_train_patience":20,
     "num_train_per_config":10,
-    "loss":'mse',
-    "metrics": ['mse'],
+    "loss":'mae',
+    "metrics": ['mae'],
     # "loss":"sparse_categorical_crossentropy",
     # "metrics": ['accuracy'],
     "verbose": 1
