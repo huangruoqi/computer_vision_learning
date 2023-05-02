@@ -14,7 +14,7 @@ DATA = [
 OPTIONS = {
     # "preprocess": Jitter(),
     "batchsize": 40,
-    "timestamp": 5,
+    "timestamp": 16,
     "optimizer": "adam",
 }
 SETTINGS = {
