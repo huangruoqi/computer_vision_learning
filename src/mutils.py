@@ -117,7 +117,7 @@ def split_data(DATA, VALID_RATIO, TEST_RATIO):
     return split_data_without_label(DB, VALID_RATIO, TEST_RATIO)
 
 
-def group_data(data, group_size):
+def group_data(data, group_size, target_function):
     x, y = data
     x_result = []
     y_result = []
@@ -132,7 +132,7 @@ def group_data(data, group_size):
         y_temp.append(i)
         if len(y_temp) == group_size:
             # result.append(sum(y_temp) / group_size / 2)
-            y_result.append(max(y_temp))
+            y_result.append(target_function(y_temp))
             y_temp = []
 
     return np.array(x_result), np.array(y_result)
@@ -141,7 +141,7 @@ def group_data(data, group_size):
 class ModelOperation:
     def __init__(
         self,
-        base_model,
+        model_class,
         data,
         max_epochs=100,
         valid_ratio=0.1,
@@ -162,15 +162,16 @@ class ModelOperation:
         self.verbose = verbose
 
         self.counter = 0
-        self.base_model = base_model.model
+        self.model_class = model_class
+        self.base_model = model_class.model
         self.preprocess = False
         self.preprocessor = None
-        self.layer_options = [None] * len(base_model.layers)
+        self.layer_options = [None] * len(self.base_model.layers)
 
         # x_train, y_train, x_valid, y_valid, x_test, y_test
         self.raw_data = split_data(data, valid_ratio, test_ratio)
-        if base_model.get_io:
-            self.raw_data = base_model.get_io(self.raw_data)
+        if model_class.get_io:
+            self.raw_data = model_class.get_io(self.raw_data)
 
         self.defalut_params = {
             "batchsize": 16,
@@ -191,6 +192,7 @@ class ModelOperation:
         # Reconstruct model
         layers = self.base_model.layers
         input_shape = self.final_data[0][0].shape[1:]
+        print(self.final_data[0][0].shape)
         input_layer = Input(shape=input_shape)
         current_layer = input_layer
         for i, option in enumerate(self.layer_options[1:]):
@@ -249,8 +251,8 @@ class ModelOperation:
 
 
 class ModelTest(ModelOperation):
-    def __init__(self, base_model, data, options, *args, **kwargs):
-        super().__init__(base_model=base_model, data=data, *args, **kwargs)
+    def __init__(self, model_class, data, options, *args, **kwargs):
+        super().__init__(model_class=model_class, data=data, *args, **kwargs)
         self.final_options = [
             (k, (v if isinstance(v, list) else [v]))
             for k, v in options.items()
@@ -282,7 +284,7 @@ class ModelTest(ModelOperation):
             self.params[name] = option
         timestamp = self.params.get("timestamp")
         for i in range(3):
-            self.final_data[i] = group_data(self.final_data[i], timestamp)
+            self.final_data[i] = group_data(self.final_data[i], timestamp, self.model_class.target_function)
 
     def run(self):
         self.history = []
@@ -329,8 +331,8 @@ class ModelTest(ModelOperation):
 
 
 class ModelTrain(ModelOperation):
-    def __init__(self, base_model, data, options, *args, **kwargs):
-        super().__init__(base_model=base_model, data=data, *args, **kwargs)
+    def __init__(self, model_class, data, options, *args, **kwargs):
+        super().__init__(model_class=model_class, data=data, *args, **kwargs)
         for name, param in options.items():
             self.params[name] = param
 
@@ -341,7 +343,7 @@ class ModelTrain(ModelOperation):
                 self.final_data[i] = option.transform(self.final_data[i]) 
         for i in range(3):
             self.final_data[i] = group_data(
-                self.final_data[i], self.params.get("timestamp")
+                self.final_data[i], self.params.get("timestamp"), self.model_class.target_function
             )
 
     def run(self):
