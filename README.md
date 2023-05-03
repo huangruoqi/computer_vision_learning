@@ -1,4 +1,5 @@
 # computer_vision_learning
+
 Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 
 *autoencoder-decoder to do binary classification for stable and non-stable event.*
@@ -29,6 +30,10 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 * `make predict` to test model
   * specify MODEL_NAME to load in `src/predict.py`
   * might need to retrain model on different machine to get the working `keras_metadata.pb` file
+  
+## Visitor Count
+![Visitor Count](https://profile-counter.glitch.me/huangruoqi/count.svg)
+
 
 ## Setup
 * **Windows** *(recommended)*
