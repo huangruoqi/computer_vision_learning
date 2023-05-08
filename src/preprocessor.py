@@ -149,29 +149,71 @@ class Jitter(Augmentation):
     def __str__(self):
         return "Jitter"
 
-
 class StableFilter(Preprocessor):
-    def __init__(self, label, padding):
-        self.label = label
+    def __init__(self, stable_label, padding):
+        self.stable_label = stable_label
         self.padding = padding
 
     def transform(self, data):
         x_result = []
         x, y = data
-        index = 0
-        while index < len(x):
-            if y[index]!=self.label:
-                start = max(0, index - self.padding)
-                end = start + 1
-                while end < len(x) and y[end]!=self.label:
-                    end += 1
-                end = min(len(x)-1, end + self.padding)
-                index = end
+        n = len(x)
+        forward, backward = [0]*n, [0]*n
+        f_count = 0
+        for i in range(n):
+            if y[i]!=self.stable_label:
+                forward[i] = 1
+                f_count = self.padding
+            elif f_count > 0:
+                forward[i] = 1
+                f_count -= 1
+            if y[n-i-1]!=self.stable_label:
+                backward[n-i-1] = 1
+                b_count = self.padding
+            elif f_count > 0:
+                backward[n-i-1] = 1
+                b_count -= 1
+        for i in range(n):
+            if forward[i]==1 or backward[i]==1:
+                pass
             else:
-                x_result.append(x[index])
-            index += 1
-
+                x_result.append(x[i])
         return x_result, x_result
 
     def __str__(self):
         return "Stable Filter"
+
+
+class UnstableFilter(Preprocessor):
+    def __init__(self, stable_label, padding):
+        self.stable_label = stable_label
+        self.padding = padding
+
+    def transform(self, data):
+        x_result = []
+        x, y = data
+        n = len(x)
+        forward, backward = [0]*n, [0]*n
+        f_count = 0
+        for i in range(n):
+            if y[i]!=self.stable_label:
+                forward[i] = 1
+                f_count = self.padding
+            elif f_count > 0:
+                forward[i] = 1
+                f_count -= 1
+            if y[n-i-1]!=self.stable_label:
+                backward[n-i-1] = 1
+                b_count = self.padding
+            elif f_count > 0:
+                backward[n-i-1] = 1
+                b_count -= 1
+        for i in range(n):
+            if forward[i]==1 or backward[i]==1:
+                x_result.append(x[i])
+            else:
+                pass
+        return x_result, x_result
+
+    def __str__(self):
+        return "Unstable Filter"
