@@ -159,7 +159,7 @@ class StableFilter(Preprocessor):
         x, y = data
         n = len(x)
         forward, backward = [0]*n, [0]*n
-        f_count = 0
+        f_count, b_count = 0, 0
         for i in range(n):
             if y[i]!=self.stable_label:
                 forward[i] = 1
@@ -170,7 +170,7 @@ class StableFilter(Preprocessor):
             if y[n-i-1]!=self.stable_label:
                 backward[n-i-1] = 1
                 b_count = self.padding
-            elif f_count > 0:
+            elif b_count > 0:
                 backward[n-i-1] = 1
                 b_count -= 1
         for i in range(n):
@@ -194,7 +194,7 @@ class UnstableFilter(Preprocessor):
         x, y = data
         n = len(x)
         forward, backward = [0]*n, [0]*n
-        f_count = 0
+        f_count, b_count = 0, 0
         for i in range(n):
             if y[i]!=self.stable_label:
                 forward[i] = 1
@@ -205,12 +205,13 @@ class UnstableFilter(Preprocessor):
             if y[n-i-1]!=self.stable_label:
                 backward[n-i-1] = 1
                 b_count = self.padding
-            elif f_count > 0:
+            elif b_count > 0:
                 backward[n-i-1] = 1
                 b_count -= 1
         for i in range(n):
             if forward[i]==1 or backward[i]==1:
                 x_result.append(x[i])
+                print(y[i])
             else:
                 pass
         return x_result, x_result

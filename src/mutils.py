@@ -104,7 +104,7 @@ def split_data_without_label(df, valid_size, test_size):
         (
             y_train if i < n_train else y_valid if i < n_train + n_valid else y_test
         ).append(df_target[i])
-    return (x_train, y_train), (x_valid, y_valid), (x_test, y_test)
+    return [(x_train, y_train), (x_valid, y_valid), (x_test, y_test)]
 
 
 def split_data(DATA, VALID_RATIO, TEST_RATIO):
@@ -152,6 +152,8 @@ class ModelOperation:
         loss='mse',
         metrics=['mse'],
         verbose=0,
+        validation_data=None,
+        test_data=None
     ):
         self.max_epochs = max_epochs
         self.early_stop_valid_patience = early_stop_valid_patience
@@ -170,6 +172,13 @@ class ModelOperation:
 
         # x_train, y_train, x_valid, y_valid, x_test, y_test
         self.raw_data = split_data(data, valid_ratio, test_ratio)
+        if validation_data is not None:
+            self.raw_data[1] = validation_data
+        if test_data is not None:
+            self.raw_data[2] = test_data
+        self.validation_data = validation_data
+        self.test_data = test_data
+
 
         self.defalut_params = {
             "batchsize": 16,
@@ -275,6 +284,8 @@ class ModelTest(ModelOperation):
             option = options[option_idx]
             if name == "preprocess" and option is not None:
                 for i in range(3):
+                    if self.validation_data and i==1: continue
+                    if self.test_data and i==2: continue
                     self.final_data[i] = option.transform(self.final_data[i])
             if name[:5] == "layer":
                 layer_number = int(name[5:])
@@ -338,6 +349,8 @@ class ModelTrain(ModelOperation):
         self.final_data = list(self.raw_data)
         if option is not None:
             for i in range(3):
+                if self.validation_data and i==1: continue
+                if self.test_data and i==2: continue
                 self.final_data[i] = option.transform(self.final_data[i]) 
         for i in range(3):
             self.final_data[i] = group_data(
@@ -359,6 +372,7 @@ class ModelTrain(ModelOperation):
         # for i in range(self.num_train_per_config):
         record = self.train(model)
         train_results.append(record)
+        print(record)
             # print("{:8} {:8.0f} {:8.4f} {:8.4f} {:8.4f}".format(i, *record))
             # models.append(self.model)
         try:

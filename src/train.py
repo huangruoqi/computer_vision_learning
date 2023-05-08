@@ -1,7 +1,7 @@
 from nn.lstm import LSTM
 from nn.encoder_decoder import Encoder_Decoder
-from preprocessor import StableFilter
-from mutils import ModelTrain
+from preprocessor import StableFilter, UnstableFilter
+from mutils import ModelTrain, split_data
 
 DATA = [
     "FrontView_3.mp4",
@@ -12,13 +12,13 @@ DATA = [
     "SideView_3.mp4",
 ]
 OPTIONS = {
-    "preprocess": StableFilter(label=0, padding=30),
+    "preprocess": StableFilter(stable_label=0, padding=30),
     "batchsize": 40,
     "timestamp": 16,
     "optimizer": "adam",
 }
 SETTINGS = {
-    "max_epochs":1000,
+    "max_epochs":200,
     "valid_ratio":0.3,
     "test_ratio":0,
     "early_stop_valid_patience":20,
@@ -28,7 +28,8 @@ SETTINGS = {
     "metrics": ['mae'],
     # "loss":"sparse_categorical_crossentropy",
     # "metrics": ['accuracy'],
-    "verbose": 1
+    "verbose": 1,
+    "test_data": UnstableFilter(stable_label=0, padding=1).transform(split_data(DATA, 0, 0)[0])
 }
 
 ModelTrain(Encoder_Decoder, DATA, OPTIONS, **SETTINGS).run()
