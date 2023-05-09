@@ -29,7 +29,7 @@ SETTINGS = {
     # "loss":"sparse_categorical_crossentropy",
     # "metrics": ['accuracy'],
     "verbose": 1,
-    "test_data": UnstableFilter(stable_label=0, padding=1).transform(split_data(DATA, 0, 0)[0])
+    "test_data": UnstableFilter(stable_label=0, padding=6).transform(split_data(DATA, 0, 0)[0])
 }
 
 ModelTrain(Encoder_Decoder, DATA, OPTIONS, **SETTINGS).run()

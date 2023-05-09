@@ -211,7 +211,6 @@ class UnstableFilter(Preprocessor):
         for i in range(n):
             if forward[i]==1 or backward[i]==1:
                 x_result.append(x[i])
-                print(y[i])
             else:
                 pass
         return x_result, x_result
