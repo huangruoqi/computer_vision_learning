@@ -18,7 +18,7 @@ OPTIONS = {
     "batchsize": [40],
     "timestamp": [16],
     "optimizer": ["adam"],
-    "layer1": [{"units": i*5} for i in range(1, 3)],
+    "layer1": [{"units": i*5} for i in range(1, 10)],
 }
 
 MAX_EPOCHS = 200
@@ -29,7 +29,7 @@ SETTINGS = {
     "test_ratio":0,
     "early_stop_valid_patience":20,
     "early_stop_train_patience":20,
-    "num_train_per_config":1,
+    "num_train_per_config":10,
     "loss":'mae',
     "metrics": ['mae'],
     # "loss":"sparse_categorical_crossentropy",
