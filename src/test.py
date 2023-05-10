@@ -18,7 +18,7 @@ OPTIONS = {
     "batchsize": [40],
     "timestamp": [16],
     "optimizer": ["adam"],
-    "layer1": [{"units": i*2} for i in range(1, 13)],
+    "layer1": [{"units": i*5} for i in range(1, 3)],
 }
 
 MAX_EPOCHS = 200
@@ -29,14 +29,14 @@ SETTINGS = {
     "test_ratio":0,
     "early_stop_valid_patience":20,
     "early_stop_train_patience":20,
-    "num_train_per_config":5,
+    "num_train_per_config":1,
     "loss":'mae',
     "metrics": ['mae'],
     # "loss":"sparse_categorical_crossentropy",
     # "metrics": ['accuracy'],
     "verbose": 1,
-    "test_data": UnstableFilter(stable_label=0, padding=10).transform(split_data(DATA, 0, 0)[0])
+    "test_data": [UnstableFilter(stable_label=0, padding=10).transform(split_data([DATA[5]], 0, 0)[0]), StableFilter(stable_label=0, padding=30).transform(split_data([DATA[5]], 0, 0)[0])]
 }
 
 
-ModelTest(Encoder_Decoder, DATA, OPTIONS, **SETTINGS).run()
+ModelTest(Encoder_Decoder, DATA[:5], OPTIONS, **SETTINGS).run()

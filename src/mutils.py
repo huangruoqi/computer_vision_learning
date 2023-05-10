@@ -152,7 +152,6 @@ class ModelOperation:
         loss='mse',
         metrics=['mse'],
         verbose=0,
-        validation_data=None,
         test_data=None
     ):
         self.max_epochs = max_epochs
@@ -172,11 +171,6 @@ class ModelOperation:
 
         # x_train, y_train, x_valid, y_valid, x_test, y_test
         self.raw_data = split_data(data, valid_ratio, test_ratio)
-        if validation_data is not None:
-            self.raw_data[1] = validation_data
-        if test_data is not None:
-            self.raw_data[2] = test_data
-        self.validation_data = validation_data
         self.test_data = test_data
 
 
@@ -250,9 +244,14 @@ class ModelOperation:
         epochs = len(history.history["loss"])
         loss = model.evaluate(x_train, y_train, batch_size=batchsize, verbose=0)[0]
         val_loss = model.evaluate(x_valid, y_valid, batch_size=batchsize, verbose=0)[0]
-        test_loss = 0
-        if len(x_test)>0:
-            test_loss = model.evaluate(x_test, y_test, batch_size=batchsize, verbose=0)[0]
+        test_loss = []
+        if self.test_data is not None:
+            timestamp = self.params.get("timestamp")
+            for test in self.test_data:
+                x_test, y_test = group_data(test, timestamp, self.model_class.target_function)
+                test_loss.append(model.evaluate(x_test, y_test, batch_size=batchsize, verbose=0)[0])
+        elif len(x_test)>0:
+            test_loss.append(model.evaluate(x_test, y_test, batch_size=batchsize, verbose=0)[0])
         self.model = model
         return epochs, loss, val_loss, test_loss
 
@@ -284,7 +283,6 @@ class ModelTest(ModelOperation):
             option = options[option_idx]
             if name == "preprocess" and option is not None:
                 for i in range(3):
-                    if self.validation_data and i==1: continue
                     if self.test_data and i==2: continue
                     self.final_data[i] = option.transform(self.final_data[i])
             if name[:5] == "layer":
@@ -302,7 +300,7 @@ class ModelTest(ModelOperation):
         pd.DataFrame(
             data=self.history,
             columns=list(next(zip(*self.final_options)))
-            + ["avg_epochs", "avg_loss", "avg_valid_loss", "avg_test_loss"],
+            + ["avg_epochs", "avg_loss", "avg_valid_loss"]+ [f"avg_test_loss_{i}" for i in range(len(self.test_data))],
         ).to_csv(output_path)
 
     def test(self, option_idx):
@@ -328,10 +326,11 @@ class ModelTest(ModelOperation):
         # print("{:>8} {:>8} {:>8} {:>8} {:>8}".format(*labels))
         for i in range(self.num_train_per_config):
             record = self.train(model)
+            record = list(record[:-1]) + list(record[-1])
             train_results.append(record)
             # print("{:8} {:8.0f} {:8.4f} {:8.4f} {:8.4f}".format(i, *record))
         record = [sum(i) / len(i) for i in zip(*train_results)]
-        print("{:>8} {:8.0f} {:8.4f} {:8.4f} {:8.4f}".format("avg", *record))
+        print(("{:>8} {:8.0f}"+" {:8.4f}"*(len(record)-1)).format("avg", *record))
         self.history.append(
             [self.params.get(name) or "No Change" for name in self.params.keys()]
             + record
@@ -349,7 +348,6 @@ class ModelTrain(ModelOperation):
         self.final_data = list(self.raw_data)
         if option is not None:
             for i in range(3):
-                if self.validation_data and i==1: continue
                 if self.test_data and i==2: continue
                 self.final_data[i] = option.transform(self.final_data[i]) 
         for i in range(3):
