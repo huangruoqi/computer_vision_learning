@@ -6,9 +6,6 @@ Pose Estimation Model: https://google.github.io/mediapipe/solutions/pose.html
 
 *segment-anything*
 ## TODO
-- Poster
-  - [ ] imbalance, occlusion, specific library in experiments
-  - [ ] seperate front view and side view
 - GUI
   - [ ] Add menu helper
   - [ ] Add current label indicator
