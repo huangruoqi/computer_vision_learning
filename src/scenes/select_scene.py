@@ -26,7 +26,7 @@ class SelectScene(Scene):
             Text(
                 text="Converting...",
                 align_mode="CENTER",
-                size=160,
+                size=100,
                 color=(100, 120, 140),
                 x=self.width // 2,
                 y=self.height // 2,
